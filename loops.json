@@ -97,6 +97,15 @@
     { "id": "reflexion", "name": "Reflexion", "category": "Patterns & theory", "description": "Actor + Evaluator + Self-Reflection; verbal self-feedback stored in memory across trials. 91% pass@1 on HumanEval.", "creator": "Shinn et al.", "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/1b44b878bb782e6954cd888628510e90-Paper-Conference.pdf" },
     { "id": "evaluator-optimizer", "name": "Evaluator-Optimizer", "category": "Patterns & theory", "description": "Generator proposes, evaluator scores, loop until a quality threshold — the generic critic loop.", "creator": "Anthropic, Building Effective Agents", "url": "https://arxiv.org/pdf/2405.10467" },
     { "id": "self-consistency-tot", "name": "Self-Consistency / Tree of Thoughts", "category": "Patterns & theory", "description": "Sample many reasoning paths / search a tree of thoughts, then select the best.", "creator": "Wang et al. / Yao et al.", "url": "https://arxiv.org/pdf/2405.10467" },
-    { "id": "agent-pattern-catalogue", "name": "Agent Design Pattern Catalogue", "category": "Patterns & theory", "description": "A catalogue of architectural patterns for foundation-model agents.", "creator": "Liu et al.", "url": "https://arxiv.org/pdf/2405.10467" }
+    { "id": "agent-pattern-catalogue", "name": "Agent Design Pattern Catalogue", "category": "Patterns & theory", "description": "A catalogue of architectural patterns for foundation-model agents.", "creator": "Liu et al.", "url": "https://arxiv.org/pdf/2405.10467" },
+    { "id": "anthropic-workflows", "name": "Anthropic's Agent Workflow Patterns", "category": "Patterns & theory", "description": "The five canonical patterns: prompt chaining, routing, parallelization, orchestrator-worker, and evaluator-optimizer.", "creator": "Anthropic", "url": "https://www.anthropic.com/research/building-effective-agents" },
+
+    { "id": "loop-marketing", "name": "Loop Marketing / Growth Loop", "category": "Marketing & growth", "description": "Run small fast A/B tests on hooks, offers and audiences; roll each learning back into creative, targeting and spend — compounding every cycle.", "creator": "HubSpot", "url": "https://www.hubspot.com/loop-marketing" },
+
+    { "id": "support-attd", "name": "The Support Resolution Loop (ATTD)", "category": "Support & sales", "description": "Analyze -> Train -> Test -> Deploy: resolve tickets, learn from human-corrected escalations, and improve resolution over time.", "creator": "Fin AI (Intercom)", "url": "https://fin.ai/learn/ai-agents-resolve-tickets-faster" },
+
+    { "id": "active-learning-labeling", "name": "The Active-Learning Labeling Loop", "category": "Data & analytics", "description": "Auto-label high-confidence items, route low-confidence ones to humans, retrain, repeat until a quality/budget stop rule is hit.", "creator": "community", "url": "https://dev.co/ai/ai-assisted-data-labeling-using-active-learning-loops" },
+
+    { "id": "videoagent", "name": "VideoAgent", "category": "Design", "description": "Agentic video understanding/editing framework with reflection rounds and adaptive feedback loops that refine the plan via self-evaluation.", "creator": "HKUDS", "url": "https://github.com/HKUDS/VideoAgent" }
   ]
 }

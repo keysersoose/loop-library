@@ -7,8 +7,8 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-80-8957e5.svg)
-![Domains](https://img.shields.io/badge/domains-15-1f6feb.svg)
+![Loops](https://img.shields.io/badge/loops-85-8957e5.svg)
+![Domains](https://img.shields.io/badge/domains-17-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
@@ -60,6 +60,8 @@ flowchart LR
 - [Design](#design)
 - [Accessibility](#accessibility)
 - [Data & analytics](#data--analytics)
+- [Marketing & growth](#marketing--growth)
+- [Support & sales](#support--sales)
 - [Operations](#operations)
 - [DevOps & infrastructure](#devops--infrastructure)
 - [Autonomous coding agents (loop-based)](#autonomous-coding-agents-loop-based)
@@ -180,6 +182,7 @@ Loops that improve the *prompt or model itself* against a metric.
 | **The Boeing 747 Benchmark** | Build the most realistic Boeing 747 you can in Three.js — a model-capability benchmark. | @victormustar | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Infinite Clickbait Loop** | Generate ten thumbnail concepts and score each against a rubric. | @Alex_FF | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Three.js Game Loop** | Build a playable loop first, then iterate (playtest → tweak → re-test) until it passes gameplay, visual, perf & release checks. | majidmanzarpour | [github](https://github.com/majidmanzarpour/threejs-game-skills) |
+| **VideoAgent** | Agentic video understanding/editing with reflection rounds + adaptive feedback loops that refine the plan via self-evaluation. | HKUDS | [github](https://github.com/HKUDS/VideoAgent) |
 
 ---
 
@@ -197,6 +200,23 @@ Loops that improve the *prompt or model itself* against a metric.
 | Loop | What it does | Creator | Source |
 |------|--------------|---------|--------|
 | **The Text-to-SQL Self-Correction Loop** | Creator generates SQL → Runner executes → Enhancer critiques → regenerate, until the query is executable and semantically correct. | Rudder Analytics | [writeup](https://medium.com/@rudderanalytics/ai-agent-for-sql-queries-and-visualization-using-multi-agent-framework-7f9f3d639108) |
+| **The Active-Learning Labeling Loop** | Auto-label high-confidence items, route low-confidence ones to humans, retrain, repeat until a quality/budget stop rule is hit. | (community) | [guide](https://dev.co/ai/ai-assisted-data-labeling-using-active-learning-loops) |
+
+---
+
+## Marketing & growth
+
+| Loop | What it does | Creator | Source |
+|------|--------------|---------|--------|
+| **Loop Marketing / Growth Loop** | Run small, fast A/B tests on hooks, offers and audiences; roll each learning back into creative, targeting and spend — compounding every cycle. | HubSpot | [hubspot.com](https://www.hubspot.com/loop-marketing) |
+
+---
+
+## Support & sales
+
+| Loop | What it does | Creator | Source |
+|------|--------------|---------|--------|
+| **The Support Resolution Loop (ATTD)** | Analyze → Train → Test → Deploy: resolve tickets, learn from human-corrected escalations, and improve resolution over time. | Fin AI (Intercom) | [fin.ai](https://fin.ai/learn/ai-agents-resolve-tickets-faster) |
 
 ---
 
@@ -266,6 +286,7 @@ The academic patterns every loop is built on.
 | **Evaluator-Optimizer** | Generator proposes, evaluator scores, loop until a quality threshold — the generic critic loop. | (Anthropic, *Building Effective Agents*) | [pattern catalogue](https://arxiv.org/pdf/2405.10467) |
 | **Self-Consistency / Tree of Thoughts** | Sample many reasoning paths / search a tree of thoughts, then select the best. | Wang et al. / Yao et al. | [pattern catalogue](https://arxiv.org/pdf/2405.10467) |
 | **Agent Design Pattern Catalogue** | A catalogue of architectural patterns for foundation-model agents. | Liu et al. | [arXiv](https://arxiv.org/pdf/2405.10467) |
+| **Anthropic's Agent Workflow Patterns** | The five canonical patterns: prompt chaining, routing, parallelization, orchestrator-worker, and evaluator-optimizer. | Anthropic | [anthropic.com](https://www.anthropic.com/research/building-effective-agents) |
 
 ---
 
