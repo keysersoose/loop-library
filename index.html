@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loop Library — repeatable AI-agent loops</title>
+<meta name="description" content="A curated, credited collection of AI-agent loops for Claude Code, Cursor & Codex. Search, filter, and copy 80+ loops.">
+<style>
+  :root{
+    --bg:#0a0a0f; --panel:#12121c; --panel2:#171724; --line:rgba(255,255,255,.09);
+    --ink:#f3f4f8; --mut:#9aa0b4; --mut2:#6f7488; --accent:#b98bff; --accent2:#c5203e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(120% 90% at 90% -10%, rgba(137,87,229,.18), transparent 55%),
+      radial-gradient(120% 90% at -10% 110%, rgba(197,32,62,.12), transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.5; min-height:100vh;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header{padding:64px 0 28px;text-align:center}
+  .logo{font-size:48px;line-height:1;filter:drop-shadow(0 4px 18px rgba(137,87,229,.5))}
+  h1{font-size:clamp(38px,7vw,68px);font-weight:850;letter-spacing:-.03em;margin:14px 0 6px}
+  h1 .a{background:linear-gradient(90deg,#b98bff,#c5203e);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--mut);font-size:19px;max-width:680px;margin:0 auto}
+  .mono{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;font-weight:650;font-size:15px;
+    padding:11px 18px;border-radius:11px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--ink);cursor:pointer;transition:.15s
+  }
+  .btn:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+  .btn.primary{background:linear-gradient(90deg,#7c4dd6,#b98bff);border-color:transparent;color:#fff}
+  .controls{position:sticky;top:0;z-index:5;padding:16px 0;margin-top:14px;
+    background:linear-gradient(180deg,var(--bg) 70%,transparent);backdrop-filter:blur(6px)}
+  .search{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);font-size:16px;outline:none}
+  .search:focus{border-color:var(--accent)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-size:13px;font-weight:600;color:var(--mut);background:var(--panel);
+    border:1px solid var(--line);padding:7px 13px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .chip:hover{color:var(--ink)}
+  .chip.on{background:rgba(137,87,229,.18);border-color:var(--accent);color:#fff}
+  .count{color:var(--mut2);font-size:13px;margin:6px 2px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;padding:18px 0 60px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .card:hover{border-color:rgba(185,139,255,.45)}
+  .cat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .name{font-size:17px;font-weight:750;margin:0}
+  .desc{color:var(--mut);font-size:14px;flex:1}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
+  .by{font-size:12.5px;color:var(--mut2)}
+  .by b{color:#c7cad6;font-weight:600}
+  .row{display:flex;gap:8px}
+  .mini{font-size:12.5px;font-weight:650;padding:7px 11px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--ink);cursor:pointer}
+  .mini:hover{border-color:var(--accent)}
+  .mini.ok{border-color:#3fb950;color:#3fb950}
+  footer{border-top:1px solid var(--line);padding:28px 0 60px;color:var(--mut2);font-size:13.5px;text-align:center}
+  .err{padding:40px;text-align:center;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🔁</div>
+    <h1>Loop <span class="a">Library</span></h1>
+    <p class="sub">The credited home for AI-agent <b>loops</b> — repeatable workflows that make your coding agent iterate until the job is done. <span class="mono">refactor until clean · test until 100% · hunt bugs until none remain</span></p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/keysersoose/loop-library" target="_blank" rel="noopener">★ Star on GitHub</a>
+      <a class="btn" href="./loops.json" download>⬇ Download loops.json</a>
+      <a class="btn" href="https://github.com/keysersoose/loop-library/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">+ Add a loop</a>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input id="q" class="search" type="search" placeholder="Search loops — try &quot;test&quot;, &quot;security&quot;, &quot;refactor&quot;, &quot;ralph&quot;…" autocomplete="off">
+    <div id="chips" class="chips"></div>
+    <div id="count" class="count"></div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    Built by <a href="https://github.com/keysersoose" target="_blank" rel="noopener">keysersoose</a> · loops credited to their original creators ·
+    <a href="https://github.com/keysersoose/loop-library" target="_blank" rel="noopener">contribute on GitHub</a><br>
+    Wrong credit? Open an issue — we fix those first.
+  </div>
+</footer>
+
+<script>
+const grid=document.getElementById('grid'),q=document.getElementById('q'),
+      chipsEl=document.getElementById('chips'),countEl=document.getElementById('count');
+let LOOPS=[],active='All';
+
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function snippet(l){return `Loop: ${l.name}\n${l.description}\n(Category: ${l.category} · via ${l.creator})\nSource: ${l.url}`}
+
+function render(){
+  const term=q.value.trim().toLowerCase();
+  const list=LOOPS.filter(l=>{
+    const inCat=active==='All'||l.category===active;
+    const hay=(l.name+' '+l.description+' '+l.creator+' '+l.category).toLowerCase();
+    return inCat && (!term||hay.includes(term));
+  });
+  countEl.textContent=`${list.length} loop${list.length!==1?'s':''}${active!=='All'?' in '+active:''}${term?' matching “'+q.value+'”':''}`;
+  grid.innerHTML = list.length? list.map(l=>`
+    <div class="card">
+      <div class="cat">${esc(l.category)}</div>
+      <h3 class="name">${esc(l.name)}</h3>
+      <p class="desc">${esc(l.description)}</p>
+      <div class="meta">
+        <span class="by">by <b>${esc(l.creator)}</b></span>
+        <div class="row">
+          <button class="mini" data-copy="${esc(snippet(l))}">Copy</button>
+          <a class="mini" href="${esc(l.url)}" target="_blank" rel="noopener">Source ↗</a>
+        </div>
+      </div>
+    </div>`).join('') : `<div class="err">No loops match. Try a different term — or <a href="https://github.com/keysersoose/loop-library/blob/main/CONTRIBUTING.md">add one</a>.</div>`;
+}
+
+grid.addEventListener('click',e=>{
+  const b=e.target.closest('[data-copy]'); if(!b)return;
+  navigator.clipboard.writeText(b.getAttribute('data-copy')).then(()=>{
+    const t=b.textContent;b.textContent='Copied ✓';b.classList.add('ok');
+    setTimeout(()=>{b.textContent=t;b.classList.remove('ok')},1200);
+  });
+});
+q.addEventListener('input',render);
+
+fetch('./loops.json').then(r=>r.json()).then(data=>{
+  LOOPS=data.loops||[];
+  const cats=['All',...[...new Set(LOOPS.map(l=>l.category))]];
+  chipsEl.innerHTML=cats.map(c=>`<span class="chip${c==='All'?' on':''}" data-cat="${esc(c)}">${esc(c)}${c==='All'?' · '+LOOPS.length:''}</span>`).join('');
+  chipsEl.addEventListener('click',e=>{
+    const c=e.target.closest('[data-cat]'); if(!c)return;
+    active=c.getAttribute('data-cat');
+    [...chipsEl.children].forEach(x=>x.classList.toggle('on',x===c));
+    render();
+  });
+  render();
+}).catch(()=>{grid.innerHTML='<div class="err">Could not load loops.json. View the <a href="https://github.com/keysersoose/loop-library">repo</a>.</div>'});
+</script>
+</body>
+</html>

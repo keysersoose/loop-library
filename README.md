@@ -12,6 +12,9 @@
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
 
+### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
+*Searchable, filterable, one-click copy. Or grab the raw data: [**`loops.json`**](./loops.json) (80+ loops, machine-readable).*
+
 </div>
 
 ---
@@ -100,6 +103,8 @@ The patterns that defined loop-driven development.
 | **The LLM Codegen Workflow** | Brainstorm a spec (LLM asks one question at a time) → generate a `prompt_plan.md` + `todo.md` → feed prompts to the agent in order. | Harper Reed (popularized by Simon Willison) | [harper.blog](https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/) |
 | **The Multi-File Refactor Loop** | Plan the change, apply rule-based transforms across call sites, run tests after each, repeat until behavior is preserved and clean. | (community) | [Augment Code](https://www.augmentcode.com/learn/automate-multi-file-code-refactoring-with-ai-agents-a-step-by-step-guide) |
 | **The Code Migration Loop** | "Environment-in-the-loop": plan → set up env → migrate → run tests → refine, iterating until the port passes. | (research) | [arXiv](https://arxiv.org/pdf/2602.09944) |
+| **The Self-Correcting Agent Loop** | A state-machine loop (LangGraph/CrewAI) with conditional edges: act → check → retry, bounded by iteration limits. | (community) | [guide](https://www.matterai.so/guides/agentic-workflows-building-self-correcting-loops-with-langgraph-and-crewai-state-machines) |
+| **The Mobile Closed-Loop Build** | Install on a virtual device, tap through every screen, verify layouts across sizes, fix crashes, repeat until store-ready. | Alexander Zanfir | [writeup](https://medium.com/@alexzanfir/closed-loop-development-how-ai-agents-build-software-while-you-sleep-6df42cd05a85) |
 
 ---
 
@@ -140,6 +145,7 @@ Loops that improve the *prompt or model itself* against a metric.
 | **The AI Scientist** | Autonomous loop: generate research ideas, run experiments, analyze results, write the paper. | Sakana AI (Lu et al.) | [survey](https://arxiv.org/pdf/2503.24047) |
 | **Agentomics-ML** | Autonomous ML experimentation loop for genomic/transcriptomic data. | (research) | [arXiv](https://arxiv.org/pdf/2506.05542) |
 | **Deep Research Loop** | Planner → search sub-agents → synthesize → "need more?" → loop until coverage is sufficient, then cite. | LangChain (Open Deep Research) | [blog](https://www.langchain.com/blog/open-deep-research) |
+| **The MLOps Retraining Loop** | Monitor for drift → when it exceeds threshold, retrain → compare vs current → ship only if better → keep monitoring. | (community) | [guide](https://www.auxiliobits.com/blog/mlops-for-agentic-ai-continuous-learning-and-model-drift-detection/) |
 
 ---
 
@@ -238,6 +244,7 @@ Open-source repos that *run* the loop for you.
 | **loop-engineering** | Patterns, starters & CLI tools (`loop-audit`, `loop-init`, `loop-cost`) for loop engineering. | Cobus Greyling | [github](https://github.com/cobusgreyling/loop-engineering) |
 | **autoloop** | Agent-agnostic iterative-optimization loops for Claude Code, Codex, Cursor, OpenCode, Gemini CLI. | Arm Gabrielyan | [github](https://github.com/armgabrielyan/autoloop) |
 | **agentic-loop** | Autonomous Claude Code toolkit based on RALPH + PRD-driven development. | allierays | [github](https://github.com/allierays/agentic-loop) |
+| **agent-loop** | A guide + workflows for orchestrating specialized AI personas to build, test, and deploy in a loop. | Saik0s | [github](https://github.com/Saik0s/agent-loop) |
 | **ralph** | An autonomous loop that runs until every item in a PRD is complete. | snarktank | [github](https://github.com/snarktank/ralph) |
 | **ralph-claude-code** | A Ralph loop for Claude Code with intelligent exit detection. | Frank Bria | [github](https://github.com/frankbria/ralph-claude-code) |
 | **codex-autoresearch-harness** | Bash harness to run Karpathy's autoresearch with Codex CLI + an A/B framework. | SarahXC | [github](https://github.com/SarahXC/codex-autoresearch-harness) |
