@@ -54,7 +54,15 @@
   .card:hover{border-color:rgba(185,139,255,.45)}
   .cat{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
   .name{font-size:17px;font-weight:750;margin:0}
-  .desc{color:var(--mut);font-size:14px;flex:1}
+  .desc{color:var(--mut);font-size:14px}
+  .prm{margin-top:2px;flex:1}
+  .prm summary{cursor:pointer;font-size:12.5px;font-weight:650;color:var(--accent);list-style:none}
+  .prm summary::-webkit-details-marker{display:none}
+  .prm summary:before{content:"▸ ";}
+  .prm[open] summary:before{content:"▾ ";}
+  .prm pre{white-space:pre-wrap;word-wrap:break-word;font-family:ui-monospace,Menlo,monospace;
+    font-size:12px;line-height:1.45;color:#cdd0dc;background:var(--panel2);border:1px solid var(--line);
+    border-radius:9px;padding:11px;margin:8px 0 0;max-height:260px;overflow:auto}
   .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
   .by{font-size:12.5px;color:var(--mut2)}
   .by b{color:#c7cad6;font-weight:600}
@@ -74,8 +82,9 @@
     <h1>Loop <span class="a">Library</span></h1>
     <p class="sub">The credited home for AI-agent <b>loops</b> — repeatable workflows that make your coding agent iterate until the job is done. <span class="mono">refactor until clean · test until 100% · hunt bugs until none remain</span></p>
     <div class="cta">
-      <a class="btn primary" href="https://github.com/keysersoose/loop-library" target="_blank" rel="noopener">★ Star on GitHub</a>
-      <a class="btn" href="./loops.json" download>⬇ Download loops.json</a>
+      <a class="btn primary" href="./ALL-LOOPS.md" download>⬇ Download all 85 prompts</a>
+      <a class="btn" href="https://github.com/keysersoose/loop-library" target="_blank" rel="noopener">★ Star on GitHub</a>
+      <a class="btn" href="./loops.json" download>⬇ loops.json</a>
       <a class="btn" href="https://github.com/keysersoose/loop-library/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">+ Add a loop</a>
     </div>
   </header>
@@ -103,7 +112,7 @@ const grid=document.getElementById('grid'),q=document.getElementById('q'),
 let LOOPS=[],active='All';
 
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function snippet(l){return `Loop: ${l.name}\n${l.description}\n(Category: ${l.category} · via ${l.creator})\nSource: ${l.url}`}
+function copyText(l){return `${l.prompt}\n\n— ${l.name} · via ${l.creator} · ${l.url}`}
 
 function render(){
   const term=q.value.trim().toLowerCase();
@@ -118,10 +127,11 @@ function render(){
       <div class="cat">${esc(l.category)}</div>
       <h3 class="name">${esc(l.name)}</h3>
       <p class="desc">${esc(l.description)}</p>
+      <details class="prm"><summary>Show prompt</summary><pre>${esc(l.prompt||'')}</pre></details>
       <div class="meta">
         <span class="by">by <b>${esc(l.creator)}</b></span>
         <div class="row">
-          <button class="mini" data-copy="${esc(snippet(l))}">Copy</button>
+          <button class="mini" data-copy="${esc(copyText(l))}">Copy prompt</button>
           <a class="mini" href="${esc(l.url)}" target="_blank" rel="noopener">Source ↗</a>
         </div>
       </div>

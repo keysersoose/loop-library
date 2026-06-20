@@ -14,7 +14,8 @@
 *You bring the vision — the loop brings the senior engineer.*
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
-*Searchable, filterable, one-click copy. Or grab the raw data: [**`loops.json`**](./loops.json) (80+ loops, machine-readable).*
+*Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
+**⬇ [Download all 85 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
