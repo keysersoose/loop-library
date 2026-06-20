@@ -7,15 +7,15 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-85-8957e5.svg)
-![Domains](https://img.shields.io/badge/domains-17-1f6feb.svg)
+![Loops](https://img.shields.io/badge/loops-98-8957e5.svg)
+![Domains](https://img.shields.io/badge/domains-18-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
 *Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
-**⬇ [Download all 85 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
+**⬇ [Download all 98 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
@@ -66,6 +66,7 @@ flowchart LR
 - [Operations](#operations)
 - [DevOps & infrastructure](#devops--infrastructure)
 - [Autonomous coding agents (loop-based)](#autonomous-coding-agents-loop-based)
+- [Loop frameworks (GitHub)](#loop-frameworks-github)
 - [🛠 Tools & harnesses (run-it-yourself loop repos)](#-tools--harnesses-run-it-yourself-loop-repos)
 - [📚 Patterns & theory (the research behind loops)](#-patterns--theory-the-research-behind-loops)
 - [Full loops included in this repo](#full-loops-included-in-this-repo)
@@ -254,6 +255,28 @@ The agent frameworks whose whole architecture *is* a loop.
 | **OpenHands** (ex-OpenDevin) | Multi-agent delegation loop: plan → act → observe across a dev environment. | All-Hands-AI | [github](https://github.com/All-Hands-AI/OpenHands) |
 | **AutoGPT** | The original autonomous goal loop: decompose a goal into tasks and execute them until the objective is met. | Significant-Gravitas | [github](https://github.com/Significant-Gravitas/AutoGPT) |
 | **BabyAGI** | Task-creation/prioritization/execution loop backed by a vector store of prior results. | Yohei Nakajima | [github](https://github.com/yoheinakajima/babyagi) |
+
+---
+
+## Loop frameworks (GitHub)
+
+Battle-tested open-source repos whose whole job is to run a loop for you — verified live, with star counts.
+
+| Repo | The loop it runs | Creator | Stars | Source |
+|------|------------------|---------|-------|--------|
+| **agent-skills** | Slash-command suite (`/spec /plan /build /test /review /ship`) — a verifiable multi-phase loop; `/build auto` removes human stepping. | Addy Osmani | ~64k | [github](https://github.com/addyosmani/agent-skills) |
+| **ouroboros** | Socratic interview → immutable spec → decompose → execute → evaluator scores → loop until spec satisfied. | Q00 | ~4.6k | [github](https://github.com/Q00/ouroboros) |
+| **EvoAgentX** | Self-evolving agents: evaluators score, then TextGrad/AFlow/EvoPrompt evolve prompts + workflow across iterations. | EvoAgentX | ~3.1k | [github](https://github.com/EvoAgentX/EvoAgentX) |
+| **claude-code-harness** | Enforces Plan → Work → Review → Ship; spec approved before code, review gated, evidence packaged before release. | Chachamaru127 | ~2.8k | [github](https://github.com/Chachamaru127/claude-code-harness) |
+| **awesome-harness-engineering** | Reference index of agent-loop primitives: planning, context, MCP, memory, orchestration, verification, HITL. | ai-boost | ~1.9k | [github](https://github.com/ai-boost/awesome-harness-engineering) |
+| **continuous-claude** | Runs Claude Code in a loop: opens PRs, waits for CI, merges, next task — context via a markdown handoff file. | AnandChowdhary | ~1.4k | [github](https://github.com/AnandChowdhary/continuous-claude) |
+| **loki-mode** | Multi-agent autonomous SDLC: Reason-Act-Reflect-Verify cycles + quality gates, from PRD to deployed app. | asklokesh | ~982 | [github](https://github.com/asklokesh/loki-mode) |
+| **ralph-loop-agent** | Wraps the Vercel AI SDK in a Ralph outer loop: run → verifyCompletion → feedback → repeat until done/cap. | vercel-labs | ~800 | [github](https://github.com/vercel-labs/ralph-loop-agent) |
+| **helixent** | Minimal TypeScript/Bun library for ReAct-style think→act→observe loops with parallel tool calls. | MagicCube | ~582 | [github](https://github.com/MagicCube/helixent) |
+| **self_improving_coding_agent** | Evaluate on benchmarks → archive → let the agent improve its OWN codebase → repeat, stacking gains. | MaximeRobeyns | ~353 | [github](https://github.com/MaximeRobeyns/self_improving_coding_agent) |
+| **foreman** | Boris-style TUI supervising headless Claude Code agents: plan → ADR/PRD → issues → TDD → e2e, human gates + budget caps. | VisionForge-OU | ~56 | [github](https://github.com/VisionForge-OU/foreman) |
+| **millrace** | Governed agentic-loop runtime: stage gates, durable queues, recovery rules that persist state across context windows. | tim-osterhus | ~48 | [github](https://github.com/tim-osterhus/millrace) |
+| **llm-loop** | Plugin for the `llm` CLI: turn-based autonomous loop (`--max-turns`, default 25) with optional tool-call approval. | nibzard | ~17 | [github](https://github.com/nibzard/llm-loop) |
 
 ---
 

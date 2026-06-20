@@ -2,10 +2,9 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**85 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**98 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
-
 
 ---
 
@@ -29,7 +28,7 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
 - [Patterns & theory](#patterns--theory) (6)
-
+- [Loop frameworks (GitHub)](#loop-frameworks-github) (13)
 
 
 ## Foundational
@@ -785,7 +784,112 @@ Reference for composing agent loops. Pick the simplest pattern that fits: PROMPT
 ```
 
 
----
+## Loop frameworks (GitHub)
 
-Credits to every original creator listed above. Curation + prompt wording: MIT. 
-Contribute or correct attribution: https://github.com/keysersoose/loop-library/issues
+### ralph-loop-agent
+*Wraps the AI SDK's generateText in an outer loop: run -> verifyCompletion -> inject feedback if not done -> repeat until success or a cost/iteration cap. ~800 stars.*  
+**Creator:** vercel-labs · **Source:** https://github.com/vercel-labs/ralph-loop-agent
+
+```text
+Use ralph-loop-agent (Vercel AI SDK) to wrap a model call in a Ralph-style outer loop: it runs the LLM, calls a verifyCompletion check, and if not done, injects the feedback and loops — stopping on success or a cost/iteration threshold. Good for adding 'keep going until verified' autonomy to an AI SDK app. (See the repo.)
+```
+
+### continuous-claude
+*Runs Claude Code in a continuous loop that autonomously opens PRs, waits for CI, merges, then starts the next task — context carried in a markdown handoff file. ~1.4k stars.*  
+**Creator:** AnandChowdhary · **Source:** https://github.com/AnandChowdhary/continuous-claude
+
+```text
+Use continuous-claude to run Claude Code in a continuous loop: it picks the next task, implements it, opens a PR, waits for CI, merges when green, and carries context forward via a shared markdown handoff file — then starts the next task. Set a task list and a stop condition. (See the repo.)
+```
+
+### loki-mode
+*Multi-agent autonomous SDLC orchestrator running Reason-Act-Reflect-Verify cycles with quality gates, from PRD or one-line brief to deployed app. ~982 stars.*  
+**Creator:** asklokesh · **Source:** https://github.com/asklokesh/loki-mode
+
+```text
+Use loki-mode to run a multi-agent autonomous SDLC: give it a PRD or one-line brief and it runs Reason -> Act -> Reflect -> Verify cycles across specialized agents, passing through quality gates toward a deployed app. (See the repo for setup.)
+```
+
+### ouroboros
+*Spec-first loop: a Socratic interview crystallizes an immutable spec, tasks are decomposed and executed, an evaluator scores outputs, and the loop runs until similarity to spec is high. ~4.6k stars.*  
+**Creator:** Q00 · **Source:** https://github.com/Q00/ouroboros
+
+```text
+Use ouroboros ('stop prompting, start specifying'): it runs a Socratic interview to crystallize an immutable spec, decomposes the work, executes tasks, and has an evaluator score outputs against the spec — looping until the spec is satisfied to a high similarity threshold. (See the repo.)
+```
+
+### claude-code-harness
+*Enforces a Plan -> Work -> Review -> Ship cycle for Claude Code: specs approved before implementation, review gated separately, evidence packaged before release. ~2.8k stars.*  
+**Creator:** Chachamaru127 · **Source:** https://github.com/Chachamaru127/claude-code-harness
+
+```text
+Use claude-code-harness to enforce a Plan -> Work -> Review -> Ship loop in Claude Code: the spec must be approved before implementation, review is a separate gate, and evidence is packaged before release — so quality gates can't be skipped. (See the repo.)
+```
+
+### EvoAgentX
+*Self-evolving agent framework: evaluators score agents, then TextGrad/AFlow/EvoPrompt optimization evolves both prompts and workflow structure across iterations. ~3.1k stars.*  
+**Creator:** EvoAgentX · **Source:** https://github.com/EvoAgentX/EvoAgentX
+
+```text
+Use EvoAgentX to build self-evolving agents: automated evaluators score your agents on benchmarks, then optimization algorithms (TextGrad / AFlow / EvoPrompt) evolve both the prompts and the workflow structure across iterations — improving the system automatically. (See the repo.)
+```
+
+### self_improving_coding_agent
+*Four-step self-referential loop: evaluate the agent on benchmarks -> archive -> let it improve its OWN codebase -> repeat, stacking measured gains. ~353 stars.*  
+**Creator:** MaximeRobeyns · **Source:** https://github.com/MaximeRobeyns/self_improving_coding_agent
+
+```text
+Use self_improving_coding_agent to run a self-referential loop: evaluate the agent on benchmarks, archive the results, then point the agent at its OWN codebase to improve it, and repeat — stacking only improvements that measurably raise benchmark performance. (See the repo.)
+```
+
+### helixent
+*Minimal TypeScript library for ReAct-style agent loops (think -> act -> observe) on Bun, with parallel tool calls and observation injection. ~582 stars.*  
+**Creator:** MagicCube · **Source:** https://github.com/MagicCube/helixent
+
+```text
+Use helixent (TypeScript/Bun) to build a ReAct-style loop: the agent thinks, acts (calls tools, in parallel where possible), observes the results, and feeds observations back into the next reasoning step — looping until done. A small library, not a full framework. (See the repo.)
+```
+
+### millrace
+*Configurable governed agentic-loop runtime: explicit stage gates, durable queues, compiled execution plans, and recovery rules that persist state across context windows. ~48 stars.*  
+**Creator:** tim-osterhus · **Source:** https://github.com/tim-osterhus/millrace
+
+```text
+Use millrace to run a governed agentic loop: define explicit stage gates, durable queues, and recovery rules so the loop's state persists across individual agent context windows and execution is reliable rather than ad-hoc. (See the repo for setup.)
+```
+
+### foreman
+*Boris-style TUI supervisor for headless Claude Code agents: plan -> ADR/PRD -> issues -> TDD build -> e2e, with human review gates and per-worktree budget caps. ~56 stars.*  
+**Creator:** VisionForge-OU · **Source:** https://github.com/VisionForge-OU/foreman
+
+```text
+Use foreman, a TUI supervisor for headless Claude Code agents: it drives plan -> ADR/PRD -> issues -> TDD build -> e2e with human review gates at the design stages and per-worktree budget caps, so multiple agents run under control. (See the repo.)
+```
+
+### llm-loop
+*Plugin for Simon Willison's `llm` CLI that runs a turn-based autonomous loop (configurable --max-turns, default 25) with optional manual tool-call approval. ~17 stars.*  
+**Creator:** nibzard · **Source:** https://github.com/nibzard/llm-loop
+
+```text
+Use the llm-loop plugin for the `llm` CLI to run a turn-based autonomous loop: the agent chains observations into the next turn, bounded by --max-turns (default 25), with optional manual approval of tool calls. (See the repo.)
+```
+
+### awesome-harness-engineering
+*Awesome-list of agent-loop design primitives: planning, context mgmt, MCP, permissions, memory, orchestration, verification, observability, HITL. ~1.9k stars.*  
+**Creator:** ai-boost · **Source:** https://github.com/ai-boost/awesome-harness-engineering
+
+```text
+Browse awesome-harness-engineering — the reference index for the whole agent-harness space: planning, context management, MCP integration, permissions, memory, orchestration, verification, observability, and human-in-the-loop patterns. Use it to design your own loops. (See the repo.)
+```
+
+### agent-skills (Addy Osmani)
+*Production Claude Code slash-command suite (/spec /plan /build /test /review /ship) implementing a verifiable multi-phase loop; `/build auto` removes human stepping. ~64k stars.*  
+**Creator:** addyosmani · **Source:** https://github.com/addyosmani/agent-skills
+
+```text
+Use Addy Osmani's agent-skills: a slash-command suite for Claude Code (/spec, /plan, /build, /test, /review, /ship) that implements a verifiable multi-phase development loop. Run them in order, or `/build auto` to remove human stepping between tasks. (See the repo.)
+```
+
+
+---
+Credits to every original creator listed. Curation + prompt wording: MIT. Contribute / fix attribution: https://github.com/keysersoose/loop-library/issues
