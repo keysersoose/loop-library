@@ -7,7 +7,7 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-60%2B-8957e5.svg)
+![Loops](https://img.shields.io/badge/loops-70%2B-8957e5.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
@@ -30,6 +30,16 @@ A good loop specifies five things *(framing credit: [Forward Future Loop Library
 | **Memory** | What carries state between passes (files, a TODO, git)? |
 | **Stopping condition** | When does it exit — and what's the safety cap so it can't spin forever? |
 
+```mermaid
+flowchart LR
+  T([Trigger]) --> A[Action]
+  A --> P{Proof?}
+  P -- not yet --> M[(Memory:<br/>files · TODO · git)]
+  M --> A
+  P -- passed --> X([Exit ✓])
+  A -. safety cap .-> S([Stop &amp; ask])
+```
+
 > This repo is a **credited index.** Every loop links to its **original source** and names its **original creator** — the loops belong to the people who made them. Wrong credit? [Open an issue](https://github.com/keysersoose/loop-library/issues) and we'll fix it immediately.
 
 ---
@@ -48,6 +58,7 @@ A good loop specifies five things *(framing credit: [Forward Future Loop Library
 - [Data & analytics](#data--analytics)
 - [Operations](#operations)
 - [DevOps & infrastructure](#devops--infrastructure)
+- [Autonomous coding agents (loop-based)](#autonomous-coding-agents-loop-based)
 - [🛠 Tools & harnesses (run-it-yourself loop repos)](#-tools--harnesses-run-it-yourself-loop-repos)
 - [📚 Patterns & theory (the research behind loops)](#-patterns--theory-the-research-behind-loops)
 - [Full loops included in this repo](#full-loops-included-in-this-repo)
@@ -102,6 +113,9 @@ The patterns that defined loop-driven development.
 | **The Devil's-Advocate Loop** | Argue against your own design — via a critic sub-agent — until it survives. | Anonymous | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **TDAD — Test-Driven Agentic Development** | Use a code dependency graph for blast-radius before each change; cut agent regressions. | (research) | [arXiv](https://arxiv.org/pdf/2603.17973) |
 | **Eval-Driven Development (LLM-as-Judge)** | Write evals first → change → run evals → integrate; route flagged production traces back into a golden dataset. | Eugene Yan (& community) | [eugeneyan.com](https://eugeneyan.com/writing/eval-process/) |
+| **Pre-Commit Guard** | A hook that runs the test suite before every commit and blocks the commit while the suite is red. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+| **Post-Edit Test Guard** | A hook that runs the related tests after each file edit to catch regressions immediately. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+| **Independent Verifier Pass** | When the implementer claims done, a separate verifier runs build + lint + tests with no access to the implementer's rationale. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
 
 ---
 
@@ -145,6 +159,7 @@ Loops that improve the *prompt or model itself* against a metric.
 | **Self-Refine** | One LLM drafts, critiques its own draft, then revises — looping until a stopping criterion. ~20% avg gains across tasks. | Madaan et al. | [learnprompting](https://learnprompting.org/docs/advanced/self_criticism/self_refine) |
 | **Draft → Critique → Finalize** | Force deliberation: generate an idea, critique it against criteria, regenerate from the critique. | (community) | [learnwithparam](https://learnwithparam.com/blog/prompt-engineering-self-critique-refinement) |
 | **LLM Peer Review** | Multiple agents review each other's drafts, then privately revise — distributed critique for creative writing. | (research) | [arXiv](https://arxiv.org/pdf/2601.08003) |
+| **Chain of Density** | Iteratively rewrite a summary, fusing in missing entities each pass *without* growing the length — denser every loop. | Adams et al. | [arXiv](https://arxiv.org/pdf/2309.04269) · [learnprompting](https://learnprompting.org/docs/advanced/self_criticism/chain-of-density) |
 | **The SEO/GEO Visibility Loop** | Audit crawlability, indexation, and structured data. | Matthew Berman | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Product Update Podcast Loop** | Generate a short 3–5 minute podcast episode about new features. | Pierson Marks | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 
@@ -194,6 +209,23 @@ Loops that improve the *prompt or model itself* against a metric.
 | Loop | What it does | Creator | Source |
 |------|--------------|---------|--------|
 | **The Terraform Fix Loop** | `validate → plan → apply → verify` — read the error, fix, re-run until the infra is correct. (Constrain scope: fix mode loves to refactor adjacent code.) | (community) | [guide](https://computingforgeeks.com/ai-coding-agents-devops-terraform-ansible-kubernetes/) |
+| **Ship PR Until Green** | Implement on a branch, run tests, push, open a PR, wait for CI, and loop until checks pass and it's merge-ready. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+| **CI Failure Watcher** | Poll CI on an interval; when checks go red, investigate and push fixes until green. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+| **Deploy Verification Loop** | After a deploy, hit health + smoke endpoints on an interval until everything returns healthy. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+
+---
+
+## Autonomous coding agents (loop-based)
+
+The agent frameworks whose whole architecture *is* a loop.
+
+| Agent | The loop it runs | Creator | Source |
+|-------|------------------|---------|--------|
+| **Aider** | Pair-programming loop with an **architect → editor** two-model mode; edits via diffs, runs against a tree-sitter repo map. | Paul Gauthier | [github](https://github.com/Aider-AI/aider) |
+| **SWE-agent** | Agent-computer-interface loop that reads an issue, edits the repo, runs tests, and iterates to a patch. | Princeton NLP | [github](https://github.com/princeton-nlp/SWE-agent) |
+| **OpenHands** (ex-OpenDevin) | Multi-agent delegation loop: plan → act → observe across a dev environment. | All-Hands-AI | [github](https://github.com/All-Hands-AI/OpenHands) |
+| **AutoGPT** | The original autonomous goal loop: decompose a goal into tasks and execute them until the objective is met. | Significant-Gravitas | [github](https://github.com/Significant-Gravitas/AutoGPT) |
+| **BabyAGI** | Task-creation/prioritization/execution loop backed by a vector store of prior results. | Yohei Nakajima | [github](https://github.com/yoheinakajima/babyagi) |
 
 ---
 
@@ -245,6 +277,7 @@ This library stands on the shoulders of the people who invented and shared these
 
 - **[Forward Future Loop Library](https://signals.forwardfuture.ai/loop-library/)** — source for many loops here and the *trigger / action / proof / memory / stopping-condition* framing. Contributors there include Matthew Berman, Peter Steinberger, Hiten Shah, Pierson Marks, Lukas Kucinski, Istasha, 0xUmbra, Jose C. Munoz, AgentLed.ai, @victormustar, Swayam, and @Alex_FF.
 - **[Geoffrey Huntley](https://ghuntley.com/loop/)** — the Ralph loop & loop-driven development.
+- **[elorm](https://loops.elorm.xyz/)** — the loops! library (CI / testing / deploy loops).
 - **[Andrej Karpathy](https://github.com/yibie/awesome-autoresearch)** — autoresearch.
 - The researchers behind **ReAct, Reflexion, Self-Refine, OPRO, TextGrad, DSPy, and PromptBreeder**, and the maintainers of every tool linked above.
 
