@@ -1274,6 +1274,69 @@
       "url": "https://github.com/c-d-cc/reap",
       "description": "Five phases (learning -> planning -> implement<->validate -> completion) that evolve a project 'Genome' across generations; the Genome is read-only mid-generation; stops at human fitness approval. ~43 stars.",
       "prompt": "Start a new REAP generation. Work the five phases in order: LEARNING (read .reap/genome/ + current state), PLANNING (write 02-planning.md), IMPLEMENTATION, VALIDATION (loop back to implementation if checks fail), COMPLETION (write 05-completion.md with fitness notes + proposed Genome changes). Do NOT modify .reap/genome/ during the generation -- log issues to the backlog. Stop and present the completion document for my approval before any Genome change."
+    },
+    {
+      "id": "spec-first-lock",
+      "name": "Spec-First Lock",
+      "category": "Engineering",
+      "creator": "dannwaneri (freeCodeCamp)",
+      "url": "https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/",
+      "description": "Before any execution, the agent writes an IMMUTABLE spec (what it does, what it won't do, what done looks like); execution is blocked until committed and no mid-run revisions allowed; stop on spec violation.",
+      "prompt": "Before writing any code or taking any action, produce a FROZEN spec with three fields: (1) what this task does, (2) what it explicitly will NOT do, (3) the exact observable condition that means 'done'. Record it as an immutable artifact for this session. Do not proceed until it's committed. If a later step would require changing the spec, STOP and surface it as a new task -- never silently revise the spec."
+    },
+    {
+      "id": "circuit-breaker",
+      "name": "Production Circuit Breaker",
+      "category": "Engineering",
+      "creator": "dannwaneri (freeCodeCamp)",
+      "url": "https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/",
+      "description": "A dual-ceiling pre-flight guard (max turns AND max cumulative tokens) checked before every LLM call; trips immediately when either is hit, halts the loop, and logs the breach reason; stop on turn_limit OR token_limit.",
+      "prompt": "You operate inside a strict circuit breaker. Before EACH step, check: have you exceeded N turns or T total tokens? If either ceiling is hit, STOP immediately -- do not attempt the step, do not retry or self-heal past it. Report turns used, tokens used, which ceiling tripped, and the last completed action, then log the breach as your final output so a human can decide whether to reopen the budget and resume."
+    },
+    {
+      "id": "human-attestation",
+      "name": "Human Attestation Gate",
+      "category": "DevOps & infrastructure",
+      "creator": "dannwaneri (freeCodeCamp)",
+      "url": "https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/",
+      "description": "After the loop completes, assemble a five-part review frame (promise, acceptance criteria, input-vs-output diff, full evidence ledger, unresolved assumptions) and freeze it; nothing goes downstream until a human signs off.",
+      "prompt": "You've finished the task loop. Before ANY downstream action (merge, deploy, send, write), assemble a review frame: (1) your original promise/spec, (2) the acceptance criteria, (3) a diff of first input vs final output with turn + token totals, (4) a row-by-row evidence log of every step, (5) any unresolved assumptions or breaches. Present it and HALT. No downstream action happens until a human explicitly signs off; record that attestation as an audit receipt."
+    },
+    {
+      "id": "codex-manager-worker",
+      "name": "Codex Manager/Worker Loop",
+      "category": "Operations",
+      "creator": "albertgao",
+      "url": "https://x.com/albertgao/status/2068361449072648479",
+      "description": "A persistent 'manager' session monitors a separate 'worker' session, detects stalls, reviews output, prompts fixes, and advances through ordered tasks; stop when every task passes manager review.",
+      "prompt": "You are the MANAGER agent over a list of N tasks (some must run in a fixed order). Monitor a separate WORKER session per task. After each worker session: (a) review its output against the task spec; (b) if unsatisfactory, send a targeted fix prompt and wait for the worker to re-run; (c) if satisfactory, commit it and advance to the next task. Repeat until all tasks pass review. Stop when every task has a passing review; report a per-task commit summary for human sign-off."
+    },
+    {
+      "id": "apm",
+      "name": "APM (Agentic Project Management)",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "sdi2200262",
+      "url": "https://github.com/sdi2200262/agentic-project-management",
+      "description": "Tripartite Planner -> Manager -> Worker loop with human checkpoints and context-overflow Handoff docs; stops when the Manager verifies all plan tasks complete. ~2.3k stars.",
+      "prompt": "Run an APM session. (1) As PLANNER: decompose the project into a structured plan.md with numbered tasks + acceptance criteria. (2) A MANAGER conversation takes plan.md and assigns ONE task at a time to a WORKER conversation, then reviews the returned output. (3) Each WORKER runs its task in isolation and writes a structured completion report. When a Worker's context nears capacity, produce a HANDOFF doc summarizing accumulated knowledge so a fresh Worker continues without loss. Loop ends when the Manager confirms all plan tasks are verified complete."
+    },
+    {
+      "id": "code-orchestrated-workflow",
+      "name": "Code-Orchestrated Workflow",
+      "category": "Patterns & theory",
+      "creator": "r/ClaudeAI (alphastar777, willwashburn)",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1tkjy4u/",
+      "description": "A workflow.js defines phases with structured output schemas; sub-agent outputs flow phase-to-phase WITHOUT re-entering the main context; control flow lives in code, not the model; stops when all phases reach a terminal state.",
+      "prompt": "Define a workflow in code (workflow.js), not in the model. Each phase specifies: a model-invocation step (the judgment call), a structured JSON output schema, and a next-phase routing rule. Sub-agents run each phase in their OWN isolated context; outputs pass forward as structured data, never raw text. Put conditionals, retries, and parallelism in the JS -- never ask the model to decide control flow. Stop when the final phase's completion condition is met and all structured outputs are written to disk."
+    },
+    {
+      "id": "posttooluse-analyzer",
+      "name": "PostToolUse Meta-Analyzer",
+      "category": "Testing & evaluation",
+      "creator": "JokeGold5455 (r/ClaudeAI)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1oivjvm/",
+      "description": "After every Write/Edit, a sub-agent semantically reviews the change against project conventions/anti-patterns and injects findings before the next turn; stops when it returns CLEAN with no outstanding violations.",
+      "prompt": "Wire a PostToolUse hook that fires after every Write/Edit. It spawns a lightweight reviewer sub-agent: 'You are a semantic code reviewer. Here is the file just modified: [DIFF]. Check it against the conventions/anti-patterns in CLAUDE.md. List any violations, inconsistencies, or regressions; if none, respond CLEAN.' Inject the report as a system reminder into the next turn. The main agent must resolve every flagged issue before starting new work. The loop settles when the reviewer returns CLEAN with nothing outstanding."
     }
   ]
 }

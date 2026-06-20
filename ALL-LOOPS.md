@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**141 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**148 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -12,8 +12,8 @@ _Prompts are original implementations of each loop's technique, written for this
 ## Categories
 
 - [Foundational](#foundational) (3)
-- [Engineering](#engineering) (23)
-- [Testing & evaluation](#testing--evaluation) (17)
+- [Engineering](#engineering) (25)
+- [Testing & evaluation](#testing--evaluation) (18)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
 - [Research & data science](#research--data-science) (5)
 - [Security & red-teaming](#security--red-teaming) (2)
@@ -23,12 +23,12 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Data & analytics](#data--analytics) (2)
 - [Marketing & growth](#marketing--growth) (1)
 - [Support & sales](#support--sales) (1)
-- [Operations](#operations) (5)
-- [DevOps & infrastructure](#devops--infrastructure) (5)
+- [Operations](#operations) (6)
+- [DevOps & infrastructure](#devops--infrastructure) (6)
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
-- [Patterns & theory](#patterns--theory) (11)
-- [Loop frameworks (GitHub)](#loop-frameworks-github) (29)
+- [Patterns & theory](#patterns--theory) (12)
+- [Loop frameworks (GitHub)](#loop-frameworks-github) (30)
 - [International (translated)](#international-translated) (5)
 
 
@@ -267,6 +267,22 @@ Before ANY change, query the codebase graph via MCP: call who_calls(<symbol>) an
 You have a `run_and_observe` tool that starts the process and returns its real output (HTTP response, logs, test result). Implement <feature>. After each change, call the tool and read the ACTUAL behavior. If it doesn't match the expected behavior below, diagnose the discrepancy, fix the code, and observe again. Stop only when the observation confirms the expected behavior. Expected: <description>. Don't claim done from reading the code -- prove it by observing.
 ```
 
+### Spec-First Lock
+*Before any execution, the agent writes an IMMUTABLE spec (what it does, what it won't do, what done looks like); execution is blocked until committed and no mid-run revisions allowed; stop on spec violation.*  
+**Creator:** dannwaneri (freeCodeCamp) · **Source:** https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/
+
+```text
+Before writing any code or taking any action, produce a FROZEN spec with three fields: (1) what this task does, (2) what it explicitly will NOT do, (3) the exact observable condition that means 'done'. Record it as an immutable artifact for this session. Do not proceed until it's committed. If a later step would require changing the spec, STOP and surface it as a new task -- never silently revise the spec.
+```
+
+### Production Circuit Breaker
+*A dual-ceiling pre-flight guard (max turns AND max cumulative tokens) checked before every LLM call; trips immediately when either is hit, halts the loop, and logs the breach reason; stop on turn_limit OR token_limit.*  
+**Creator:** dannwaneri (freeCodeCamp) · **Source:** https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/
+
+```text
+You operate inside a strict circuit breaker. Before EACH step, check: have you exceeded N turns or T total tokens? If either ceiling is hit, STOP immediately -- do not attempt the step, do not retry or self-heal past it. Report turns used, tokens used, which ceiling tripped, and the last completed action, then log the breach as your final output so a human can decide whether to reopen the budget and resume.
+```
+
 
 ## Testing & evaluation
 
@@ -404,6 +420,14 @@ Run a four-agent quality pipeline. A: define explicit acceptance criteria. B: im
 
 ```text
 Run the pipeline for this feature. (1) Elicit requirements -> PRD. (2) Break the PRD into ordered tasks. (3) Implement each task. (4) VERIFY every task against its success criteria with evidence -- if any criterion fails, fix it and re-verify before marking done; never advance on an unverified task (Iron Law: issues found = issues fixed + re-verified). (5) Archive outputs. Stop only when the verify phase exits clean.
+```
+
+### PostToolUse Meta-Analyzer
+*After every Write/Edit, a sub-agent semantically reviews the change against project conventions/anti-patterns and injects findings before the next turn; stops when it returns CLEAN with no outstanding violations.*  
+**Creator:** JokeGold5455 (r/ClaudeAI) · **Source:** https://www.reddit.com/r/ClaudeAI/comments/1oivjvm/
+
+```text
+Wire a PostToolUse hook that fires after every Write/Edit. It spawns a lightweight reviewer sub-agent: 'You are a semantic code reviewer. Here is the file just modified: [DIFF]. Check it against the conventions/anti-patterns in CLAUDE.md. List any violations, inconsistencies, or regressions; if none, respond CLEAN.' Inject the report as a system reminder into the next turn. The main agent must resolve every flagged issue before starting new work. The loop settles when the reviewer returns CLEAN with nothing outstanding.
 ```
 
 
@@ -708,6 +732,14 @@ Drive one customer AI deployment from intake to production. Loop through: clarif
 Run a nightly meditation loop. Each night: (1) open meditations.md for active reflection topics; (2) append a dated entry to each reflections/<topic>.md; (3) check whether any reflection has recurred 5+ consecutive nights AND would change your actual operating behavior; (4) if yes, distill it to 1-2 sharp sentences, append to SOUL.md under 'Core Truths', mark the topic archived, and log the breakthrough. Promote ONLY behavioral rules -- never mere sentiment.
 ```
 
+### Codex Manager/Worker Loop
+*A persistent 'manager' session monitors a separate 'worker' session, detects stalls, reviews output, prompts fixes, and advances through ordered tasks; stop when every task passes manager review.*  
+**Creator:** albertgao · **Source:** https://x.com/albertgao/status/2068361449072648479
+
+```text
+You are the MANAGER agent over a list of N tasks (some must run in a fixed order). Monitor a separate WORKER session per task. After each worker session: (a) review its output against the task spec; (b) if unsatisfactory, send a targeted fix prompt and wait for the worker to re-run; (c) if satisfactory, commit it and advance to the next task. Repeat until all tasks pass review. Stop when every task has a passing review; report a per-task commit summary for human sign-off.
+```
+
 
 ## DevOps & infrastructure
 
@@ -749,6 +781,14 @@ After a deploy, poll the health and smoke-test endpoints on an interval. Treat t
 
 ```text
 You are an automated code reviewer running in CI on PR #<number>. Fetch the diff (`gh pr diff`). For each changed file check correctness bugs, security issues, broken contracts, and missing tests; post inline comments on blocking issues. Then re-read the diff + latest commit: if all blocking issues are resolved, output REVIEW_PASSED; otherwise output REVIEW_FAILED: <summary> and the job re-triggers on the next push. A human is assigned only after REVIEW_PASSED.
+```
+
+### Human Attestation Gate
+*After the loop completes, assemble a five-part review frame (promise, acceptance criteria, input-vs-output diff, full evidence ledger, unresolved assumptions) and freeze it; nothing goes downstream until a human signs off.*  
+**Creator:** dannwaneri (freeCodeCamp) · **Source:** https://www.freecodecamp.org/news/how-to-build-a-production-safe-agent-loop-from-exit-conditions-to-audit-trails/
+
+```text
+You've finished the task loop. Before ANY downstream action (merge, deploy, send, write), assemble a review frame: (1) your original promise/spec, (2) the acceptance criteria, (3) a diff of first input vs final output with turn + token totals, (4) a row-by-row evidence log of every step, (5) any unresolved assumptions or breaches. Present it and HALT. No downstream action happens until a human explicitly signs off; record that attestation as an audit receipt.
 ```
 
 
@@ -958,6 +998,14 @@ Don't reach for a framework. Hand-roll the loop: (1) send the messages to the mo
 
 ```text
 You are an orchestrator for goal: <goal>. (1) Use a strong reasoning model to produce a plan of TYPED subtasks (planning / implementation / review). (2) Route each subtask to a model tier: planning->strong, implementation->cheap/fast, review->mid. (3) Run each subtask in its assigned tier. (4) Run a deterministic validator for that type (lint, tests, diff check). On failure, retry; after 2 failures escalate to the next model tier. Stop when all validators pass or max-retries are exhausted. Report status per subtask. Routing the right model per task type is the point -- don't use one model for everything.
+```
+
+### Code-Orchestrated Workflow
+*A workflow.js defines phases with structured output schemas; sub-agent outputs flow phase-to-phase WITHOUT re-entering the main context; control flow lives in code, not the model; stops when all phases reach a terminal state.*  
+**Creator:** r/ClaudeAI (alphastar777, willwashburn) · **Source:** https://www.reddit.com/r/ClaudeCode/comments/1tkjy4u/
+
+```text
+Define a workflow in code (workflow.js), not in the model. Each phase specifies: a model-invocation step (the judgment call), a structured JSON output schema, and a next-phase routing rule. Sub-agents run each phase in their OWN isolated context; outputs pass forward as structured data, never raw text. Put conditionals, retries, and parallelism in the JS -- never ask the model to decide control flow. Stop when the final phase's completion condition is met and all structured outputs are written to disk.
 ```
 
 
@@ -1193,6 +1241,14 @@ Initialize with `/sp-pulse <feature>`, then `/sp-spec` for requirements and `/sp
 
 ```text
 Start a new REAP generation. Work the five phases in order: LEARNING (read .reap/genome/ + current state), PLANNING (write 02-planning.md), IMPLEMENTATION, VALIDATION (loop back to implementation if checks fail), COMPLETION (write 05-completion.md with fitness notes + proposed Genome changes). Do NOT modify .reap/genome/ during the generation -- log issues to the backlog. Stop and present the completion document for my approval before any Genome change.
+```
+
+### APM (Agentic Project Management)
+*Tripartite Planner -> Manager -> Worker loop with human checkpoints and context-overflow Handoff docs; stops when the Manager verifies all plan tasks complete. ~2.3k stars.*  
+**Creator:** sdi2200262 · **Source:** https://github.com/sdi2200262/agentic-project-management
+
+```text
+Run an APM session. (1) As PLANNER: decompose the project into a structured plan.md with numbered tasks + acceptance criteria. (2) A MANAGER conversation takes plan.md and assigns ONE task at a time to a WORKER conversation, then reviews the returned output. (3) Each WORKER runs its task in isolation and writes a structured completion report. When a Worker's context nears capacity, produce a HANDOFF doc summarizing accumulated knowledge so a fresh Worker continues without loss. Loop ends when the Manager confirms all plan tasks are verified complete.
 ```
 
 
