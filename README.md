@@ -7,7 +7,7 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-125-8957e5.svg)
+![Loops](https://img.shields.io/badge/loops-133-8957e5.svg)
 ![Domains](https://img.shields.io/badge/domains-19-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
@@ -15,7 +15,7 @@
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
 *Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
-**⬇ [Download all 125 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
+**⬇ [Download all 133 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
@@ -291,6 +291,9 @@ Battle-tested open-source repos whose whole job is to run a loop for you — ver
 | **ccg-workflow** | Classify → parallel Codex+Gemini analysis → plan → hard-stop user approval → parallel impl → dual-model cross-review → gates. | fengshao1227 | ~5.6k | [github](https://github.com/fengshao1227/ccg-workflow) |
 | **ouroboros** | Socratic interview → immutable spec → decompose → execute → evaluator scores → loop until spec satisfied. | Q00 | ~4.6k | [github](https://github.com/Q00/ouroboros) |
 | **EvoAgentX** | Self-evolving agents: evaluators score, then TextGrad/AFlow/EvoPrompt evolve prompts + workflow across iterations. | EvoAgentX | ~3.1k | [github](https://github.com/EvoAgentX/EvoAgentX) |
+| **agentic-context-engine (ACE)** | Run → Reflector analyzes the trace → SkillManager updates a persistent Skillbook → restart with it injected; stops when tests pass or after N epochs. | kayba-ai | ~2.5k | [github](https://github.com/kayba-ai/agentic-context-engine) |
+| **autoharness** | An outer agent improves your *harness* (prompts, params, context), benchmarks each change on a fixed eval, keeps only wins — overnight. | kayba-ai | ~295 | [github](https://github.com/kayba-ai/autoharness) |
+| **lauren** | Drains a *mutable* task queue; each task runs implement→review→fix in its own git worktree and auto-merges; edit the queue mid-run. | ofux | ~9 | [github](https://github.com/ofux/lauren) |
 | **claude-code-harness** | Enforces Plan → Work → Review → Ship; spec approved before code, review gated, evidence packaged before release. | Chachamaru127 | ~2.8k | [github](https://github.com/Chachamaru127/claude-code-harness) |
 | **awesome-harness-engineering** | Reference index of agent-loop primitives: planning, context, MCP, memory, orchestration, verification, HITL. | ai-boost | ~1.9k | [github](https://github.com/ai-boost/awesome-harness-engineering) |
 | **continuous-claude** | Runs Claude Code in a loop: opens PRs, waits for CI, merges, next task — context via a markdown handoff file. | AnandChowdhary | ~1.4k | [github](https://github.com/AnandChowdhary/continuous-claude) |

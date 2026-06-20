@@ -1130,6 +1130,78 @@
       "url": "https://x.com/i/status/2068008938440663411",
       "description": "A coding loop that refuses to trust 'the tests pass' — it proves it by mutating/breaking the test; if the test still passes, the test is worthless and gets fixed.",
       "prompt": "Don't trust 'the tests pass.' After they're green, prove the tests are real: mutate the code under test (break it on purpose) and confirm a test now FAILS. If everything still passes after you broke the behavior, the test is worthless — strengthen it. Only trust a green suite that you've shown can go red. Loop this mutation check on the critical paths."
+    },
+    {
+      "id": "autoharness",
+      "name": "Autoharness Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Lucky_Historian742 / kayba-ai",
+      "url": "https://github.com/kayba-ai/autoharness",
+      "description": "An outer agent proposes changes to your agent HARNESS (prompts, params, context), benchmarks each on a fixed eval, keeps only wins; stops when gains stall or N candidates run. ~295 stars.",
+      "prompt": "You are a harness optimizer improving the agent system described in GUIDE.md. Loop: (1) propose ONE targeted change to a harness parameter -- a prompt section, a value, a context injection, or a scoring rule; (2) apply it to a staging copy; (3) run the benchmark suite and record the score; (4) if it improved, promote it as the new baseline, else revert. Continue until three consecutive proposals fail to improve or you hit N candidates. Report the change log with before/after scores."
+    },
+    {
+      "id": "lauren-queue",
+      "name": "Mutable-Queue Worktree Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "AmandEnt / ofux",
+      "url": "https://github.com/ofux/lauren",
+      "description": "Drains a LIVE task queue; each task runs implement->review->fix in its own git worktree and auto-merges; the queue can be edited mid-run; stops when the queue is empty. ~9 stars.",
+      "prompt": "Run a mutable task queue. For each task at the head: (1) create an isolated git worktree; (2) implement it; (3) review the result with a separate review agent; (4) fix any blocking issues; (5) merge the worktree back and delete it; (6) mark it complete. After each task, RE-READ the queue file -- the operator may have appended or reordered tasks mid-run. Never merge while the reviewer has outstanding blockers; loop back to step 4. Stop when the queue is empty."
+    },
+    {
+      "id": "artifact-gated-review",
+      "name": "Artifact-Gated Review Cap",
+      "category": "Testing & evaluation",
+      "creator": "r/ClaudeAI (Perfect_Tangerine432, Dependent_Policy1307)",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1to6hen/",
+      "description": "Multi-model review loop capped at N rounds where each review must produce a concrete diff, a new failing test, or an explicit LGTM -- prose-only counts as LGTM; stops at first LGTM or round N.",
+      "prompt": "You are the reviewer in a capped review loop (round {round} of {max}). Review the diff and output EXACTLY ONE of: (a) a concrete unified diff fixing the most important issue, (b) a new failing test that proves a real bug, or (c) the single word LGTM. No prose, no style nits, no lists. If this is round {max}, output LGTM unless there's a security/correctness blocker. The implementer fixes your output and calls you again. Stop at the first LGTM or round {max} -- this prevents an LLM reviewer from inventing findings forever."
+    },
+    {
+      "id": "abcd-review",
+      "name": "ABCD Adversarial Criteria Loop",
+      "category": "Testing & evaluation",
+      "creator": "cc_apt107 (r/ClaudeAI)",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1to6hen/",
+      "description": "Four agents: A defines criteria, B implements, C reviews in a sub-loop until clear, then D (non-implementing) independently verifies against A's ORIGINAL criteria; stops when D approves + A signs off.",
+      "prompt": "Run a four-agent quality pipeline. A: define explicit acceptance criteria. B: implement against them. C: review B's work in a loop until no findings remain. D (adversarial, did NOT implement): independently verify the output against A's ORIGINAL criteria, ignoring C's verdict -- list any criterion not provably met; output APPROVED or FAIL+reason, no fixes. Final gate: D APPROVED and A signs off. The separation (D never saw the implementation reasoning) is the point."
+    },
+    {
+      "id": "explore-fix-blind-audit",
+      "name": "Explore-Fix + Blind Audit Loop",
+      "category": "Engineering",
+      "creator": "dern_throw_away (r/ClaudeAI)",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1to6hen/",
+      "description": "Loop explore->fix until two consecutive 'all clear' passes, then a FRESH-context blind audit; if it finds issues, re-enter the loop; stop only when the blind audit is also clear.",
+      "prompt": "Harden this codebase in two phases. PHASE 1 (Explore-Fix): hunt bugs, security issues, and logic errors; fix every finding; record a 'pass' when you find nothing. Repeat until you get TWO consecutive passes. PHASE 2 (Blind Audit): in a FRESH context with no memory of Phase 1, audit the same code independently. If it finds anything, return to Phase 1. Stop only when the blind audit also returns zero findings. Report total rounds and all fixes."
+    },
+    {
+      "id": "ace-skillbook",
+      "name": "ACE: Skill-Injection Reflection Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "cheetguy / kayba-ai",
+      "url": "https://github.com/kayba-ai/agentic-context-engine",
+      "description": "Run task -> a Reflector analyzes the trace -> a SkillManager updates a persistent 'Skillbook' of heuristics -> restart with them injected; stops when tests pass clean or after N epochs. ~2.5k stars.",
+      "prompt": "Run a multi-epoch learning loop. Each epoch: (1) run the task using the current Skillbook heuristics injected into your system prompt; (2) hand the full execution trace to a Reflector that extracts what worked and what failed; (3) pass those findings to a SkillManager that adds/refines/removes entries in a persistent Skillbook file; (4) start the next epoch with the updated Skillbook. Stop when the build is error-free and all tests pass, or after N epochs. Only the SkillManager may write the Skillbook -- never edit it yourself."
+    },
+    {
+      "id": "reverse-prd-mcp",
+      "name": "Reverse-PRD + MCP Blast-Radius Loop",
+      "category": "Engineering",
+      "creator": "KeyUnderstanding9124 (r/ClaudeCode)",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1ngxlqg/",
+      "description": "Parse the repo into framework-aware graphs, generate reverse-PRDs, expose via MCP (who_calls/impact_of/diff_spec_vs_code); query blast radius before every change; stop when spec-vs-code drift is zero.",
+      "prompt": "Before ANY change, query the codebase graph via MCP: call who_calls(<symbol>) and impact_of(<change>) to get the full blast radius with citations. Then propose the change. After implementing, call diff_spec_vs_code(<feature_id>) to confirm the code matches its reverse-PRD spec. If drift is detected, fix and re-check. Only open a PR when diff_spec_vs_code returns zero drift. Never change code without first querying the graph."
+    },
+    {
+      "id": "nightly-meditation",
+      "name": "Nightly Meditation -> Soul Promotion Loop",
+      "category": "Operations",
+      "creator": "SIGH_I_CALL (r/OpenClaw)",
+      "url": "https://www.reddit.com/r/OpenClaw/comments/1rs7yns/",
+      "description": "A nightly cron meditation: append dated reflections per topic -> if one recurs 5+ nights AND changes behavior, distill to 1-2 sentences into SOUL.md and archive it; stops promoting when resolved.",
+      "prompt": "Run a nightly meditation loop. Each night: (1) open meditations.md for active reflection topics; (2) append a dated entry to each reflections/<topic>.md; (3) check whether any reflection has recurred 5+ consecutive nights AND would change your actual operating behavior; (4) if yes, distill it to 1-2 sharp sentences, append to SOUL.md under 'Core Truths', mark the topic archived, and log the breakthrough. Promote ONLY behavioral rules -- never mere sentiment."
     }
   ]
 }

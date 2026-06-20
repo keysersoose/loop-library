@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**125 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**133 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -12,8 +12,8 @@ _Prompts are original implementations of each loop's technique, written for this
 ## Categories
 
 - [Foundational](#foundational) (3)
-- [Engineering](#engineering) (20)
-- [Testing & evaluation](#testing--evaluation) (14)
+- [Engineering](#engineering) (22)
+- [Testing & evaluation](#testing--evaluation) (16)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
 - [Research & data science](#research--data-science) (5)
 - [Security & red-teaming](#security--red-teaming) (2)
@@ -23,12 +23,12 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Data & analytics](#data--analytics) (2)
 - [Marketing & growth](#marketing--growth) (1)
 - [Support & sales](#support--sales) (1)
-- [Operations](#operations) (4)
+- [Operations](#operations) (5)
 - [DevOps & infrastructure](#devops--infrastructure) (4)
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
 - [Patterns & theory](#patterns--theory) (10)
-- [Loop frameworks (GitHub)](#loop-frameworks-github) (22)
+- [Loop frameworks (GitHub)](#loop-frameworks-github) (25)
 - [International (translated)](#international-translated) (5)
 
 
@@ -243,6 +243,22 @@ Timebox the assistant. Give its suggestion a hard time/effort budget. If it does
 Wrap generation in validators. Generate the output, then run it through your guardrails (schema, safety, format, factuality checks). If any check fails, either filter the bad part or regenerate with the failure noted. Loop until the output passes all validators or you hit a max-retry cap, then return the best passing result.
 ```
 
+### Explore-Fix + Blind Audit Loop
+*Loop explore->fix until two consecutive 'all clear' passes, then a FRESH-context blind audit; if it finds issues, re-enter the loop; stop only when the blind audit is also clear.*  
+**Creator:** dern_throw_away (r/ClaudeAI) · **Source:** https://www.reddit.com/r/ClaudeCode/comments/1to6hen/
+
+```text
+Harden this codebase in two phases. PHASE 1 (Explore-Fix): hunt bugs, security issues, and logic errors; fix every finding; record a 'pass' when you find nothing. Repeat until you get TWO consecutive passes. PHASE 2 (Blind Audit): in a FRESH context with no memory of Phase 1, audit the same code independently. If it finds anything, return to Phase 1. Stop only when the blind audit also returns zero findings. Report total rounds and all fixes.
+```
+
+### Reverse-PRD + MCP Blast-Radius Loop
+*Parse the repo into framework-aware graphs, generate reverse-PRDs, expose via MCP (who_calls/impact_of/diff_spec_vs_code); query blast radius before every change; stop when spec-vs-code drift is zero.*  
+**Creator:** KeyUnderstanding9124 (r/ClaudeCode) · **Source:** https://www.reddit.com/r/ClaudeCode/comments/1ngxlqg/
+
+```text
+Before ANY change, query the codebase graph via MCP: call who_calls(<symbol>) and impact_of(<change>) to get the full blast radius with citations. Then propose the change. After implementing, call diff_spec_vs_code(<feature_id>) to confirm the code matches its reverse-PRD spec. If drift is detected, fix and re-check. Only open a PR when diff_spec_vs_code returns zero drift. Never change code without first querying the graph.
+```
+
 
 ## Testing & evaluation
 
@@ -356,6 +372,22 @@ Drive AI-assisted coding with TDD. RED: only advance once you have a correctly f
 
 ```text
 Don't trust 'the tests pass.' After they're green, prove the tests are real: mutate the code under test (break it on purpose) and confirm a test now FAILS. If everything still passes after you broke the behavior, the test is worthless — strengthen it. Only trust a green suite that you've shown can go red. Loop this mutation check on the critical paths.
+```
+
+### Artifact-Gated Review Cap
+*Multi-model review loop capped at N rounds where each review must produce a concrete diff, a new failing test, or an explicit LGTM -- prose-only counts as LGTM; stops at first LGTM or round N.*  
+**Creator:** r/ClaudeAI (Perfect_Tangerine432, Dependent_Policy1307) · **Source:** https://www.reddit.com/r/ClaudeCode/comments/1to6hen/
+
+```text
+You are the reviewer in a capped review loop (round {round} of {max}). Review the diff and output EXACTLY ONE of: (a) a concrete unified diff fixing the most important issue, (b) a new failing test that proves a real bug, or (c) the single word LGTM. No prose, no style nits, no lists. If this is round {max}, output LGTM unless there's a security/correctness blocker. The implementer fixes your output and calls you again. Stop at the first LGTM or round {max} -- this prevents an LLM reviewer from inventing findings forever.
+```
+
+### ABCD Adversarial Criteria Loop
+*Four agents: A defines criteria, B implements, C reviews in a sub-loop until clear, then D (non-implementing) independently verifies against A's ORIGINAL criteria; stops when D approves + A signs off.*  
+**Creator:** cc_apt107 (r/ClaudeAI) · **Source:** https://www.reddit.com/r/ClaudeCode/comments/1to6hen/
+
+```text
+Run a four-agent quality pipeline. A: define explicit acceptance criteria. B: implement against them. C: review B's work in a loop until no findings remain. D (adversarial, did NOT implement): independently verify the output against A's ORIGINAL criteria, ignoring C's verdict -- list any criterion not provably met; output APPROVED or FAIL+reason, no fixes. Final gate: D APPROVED and A signs off. The separation (D never saw the implementation reasoning) is the point.
 ```
 
 
@@ -650,6 +682,14 @@ After each release, run the standard benchmark suite (latency, throughput, error
 
 ```text
 Drive one customer AI deployment from intake to production. Loop through: clarify the priority use case + success criteria, configure/integrate, test against the customer's real scenarios, fix gaps, and get sign-off. Don't advance a stage until its criteria are met. Track blockers explicitly and surface them. Stop when it's live and meeting the agreed success criteria.
+```
+
+### Nightly Meditation -> Soul Promotion Loop
+*A nightly cron meditation: append dated reflections per topic -> if one recurs 5+ nights AND changes behavior, distill to 1-2 sentences into SOUL.md and archive it; stops promoting when resolved.*  
+**Creator:** SIGH_I_CALL (r/OpenClaw) · **Source:** https://www.reddit.com/r/OpenClaw/comments/1rs7yns/
+
+```text
+Run a nightly meditation loop. Each night: (1) open meditations.md for active reflection topics; (2) append a dated entry to each reflections/<topic>.md; (3) check whether any reflection has recurred 5+ consecutive nights AND would change your actual operating behavior; (4) if yes, distill it to 1-2 sharp sentences, append to SOUL.md under 'Core Truths', mark the topic archived, and log the breakthrough. Promote ONLY behavioral rules -- never mere sentiment.
 ```
 
 
@@ -1065,6 +1105,30 @@ Use CCG: /ccg:go classifies the task, runs parallel Codex + Gemini analysis, pro
 
 ```text
 Use Claude Engineer v3's self-expanding loop: when the agent hits a capability gap, it designs and generates a NEW tool via its toolcreator, validates it, hot-reloads it dynamically, and chains tools automatically to finish the task. It stops when it judges the task complete; MAX_CONVERSATION_TOKENS is the hard bound. (See the repo.)
+```
+
+### Autoharness Loop
+*An outer agent proposes changes to your agent HARNESS (prompts, params, context), benchmarks each on a fixed eval, keeps only wins; stops when gains stall or N candidates run. ~295 stars.*  
+**Creator:** Lucky_Historian742 / kayba-ai · **Source:** https://github.com/kayba-ai/autoharness
+
+```text
+You are a harness optimizer improving the agent system described in GUIDE.md. Loop: (1) propose ONE targeted change to a harness parameter -- a prompt section, a value, a context injection, or a scoring rule; (2) apply it to a staging copy; (3) run the benchmark suite and record the score; (4) if it improved, promote it as the new baseline, else revert. Continue until three consecutive proposals fail to improve or you hit N candidates. Report the change log with before/after scores.
+```
+
+### Mutable-Queue Worktree Loop
+*Drains a LIVE task queue; each task runs implement->review->fix in its own git worktree and auto-merges; the queue can be edited mid-run; stops when the queue is empty. ~9 stars.*  
+**Creator:** AmandEnt / ofux · **Source:** https://github.com/ofux/lauren
+
+```text
+Run a mutable task queue. For each task at the head: (1) create an isolated git worktree; (2) implement it; (3) review the result with a separate review agent; (4) fix any blocking issues; (5) merge the worktree back and delete it; (6) mark it complete. After each task, RE-READ the queue file -- the operator may have appended or reordered tasks mid-run. Never merge while the reviewer has outstanding blockers; loop back to step 4. Stop when the queue is empty.
+```
+
+### ACE: Skill-Injection Reflection Loop
+*Run task -> a Reflector analyzes the trace -> a SkillManager updates a persistent 'Skillbook' of heuristics -> restart with them injected; stops when tests pass clean or after N epochs. ~2.5k stars.*  
+**Creator:** cheetguy / kayba-ai · **Source:** https://github.com/kayba-ai/agentic-context-engine
+
+```text
+Run a multi-epoch learning loop. Each epoch: (1) run the task using the current Skillbook heuristics injected into your system prompt; (2) hand the full execution trace to a Reflector that extracts what worked and what failed; (3) pass those findings to a SkillManager that adds/refines/removes entries in a persistent Skillbook file; (4) start the next epoch with the updated Skillbook. Stop when the build is error-free and all tests pass, or after N epochs. Only the SkillManager may write the Skillbook -- never edit it yourself.
 ```
 
 
