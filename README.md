@@ -7,7 +7,7 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-50%2B-8957e5.svg)
+![Loops](https://img.shields.io/badge/loops-60%2B-8957e5.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
@@ -44,6 +44,8 @@ A good loop specifies five things *(framing credit: [Forward Future Loop Library
 - [Security & red-teaming](#security--red-teaming)
 - [Writing & content](#writing--content)
 - [Design](#design)
+- [Accessibility](#accessibility)
+- [Data & analytics](#data--analytics)
 - [Operations](#operations)
 - [DevOps & infrastructure](#devops--infrastructure)
 - [🛠 Tools & harnesses (run-it-yourself loop repos)](#-tools--harnesses-run-it-yourself-loop-repos)
@@ -84,6 +86,9 @@ The patterns that defined loop-driven development.
 | **The Clodex Adversarial-Review Loop** | Run a Codex code review and fix every finding above a set threshold. | Lukas Kucinski | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Loop Harness Verification Loop** | Have a *second* agent session verify the staged work against the criteria. | Istasha | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Fresh-Clone Loop** | Clone into a clean, empty environment and follow the README — to catch setup gaps. | 0xUmbra | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
+| **The LLM Codegen Workflow** | Brainstorm a spec (LLM asks one question at a time) → generate a `prompt_plan.md` + `todo.md` → feed prompts to the agent in order. | Harper Reed (popularized by Simon Willison) | [harper.blog](https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/) |
+| **The Multi-File Refactor Loop** | Plan the change, apply rule-based transforms across call sites, run tests after each, repeat until behavior is preserved and clean. | (community) | [Augment Code](https://www.augmentcode.com/learn/automate-multi-file-code-refactoring-with-ai-agents-a-step-by-step-guide) |
+| **The Code Migration Loop** | "Environment-in-the-loop": plan → set up env → migrate → run tests → refine, iterating until the port passes. | (research) | [arXiv](https://arxiv.org/pdf/2602.09944) |
 
 ---
 
@@ -96,6 +101,7 @@ The patterns that defined loop-driven development.
 | **The Self-Improving Champion Loop** | Iterative optimization with a budget, scoring, and gate checks. | Jose C. Munoz | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Devil's-Advocate Loop** | Argue against your own design — via a critic sub-agent — until it survives. | Anonymous | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **TDAD — Test-Driven Agentic Development** | Use a code dependency graph for blast-radius before each change; cut agent regressions. | (research) | [arXiv](https://arxiv.org/pdf/2603.17973) |
+| **Eval-Driven Development (LLM-as-Judge)** | Write evals first → change → run evals → integrate; route flagged production traces back into a golden dataset. | Eugene Yan (& community) | [eugeneyan.com](https://eugeneyan.com/writing/eval-process/) |
 
 ---
 
@@ -151,6 +157,24 @@ Loops that improve the *prompt or model itself* against a metric.
 | **War Loops: Autonomous Frontend Designer** | Point it at a URL or image and produce iterative design builds. | Swayam | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Boeing 747 Benchmark** | Build the most realistic Boeing 747 you can in Three.js — a model-capability benchmark. | @victormustar | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
 | **The Infinite Clickbait Loop** | Generate ten thumbnail concepts and score each against a rubric. | @Alex_FF | [Forward Future](https://signals.forwardfuture.ai/loop-library/) |
+| **The Three.js Game Loop** | Build a playable loop first, then iterate (playtest → tweak → re-test) until it passes gameplay, visual, perf & release checks. | majidmanzarpour | [github](https://github.com/majidmanzarpour/threejs-game-skills) |
+
+---
+
+## Accessibility
+
+| Loop | What it does | Creator | Source |
+|------|--------------|---------|--------|
+| **The a11y Audit Loop** | Scan for WCAG violations, apply remediation hints, re-scan until compliant. (Automated tools catch ~30–40% — pair with manual testing.) | snapsynapse | [skill-a11y-audit](https://github.com/snapsynapse/skill-a11y-audit) |
+| **Accessibility Review Agents** | Specialist agents that enforce WCAG 2.2 AA so coding agents stop generating inaccessible code. | Community-Access | [github](https://github.com/Community-Access/accessibility-agents) |
+
+---
+
+## Data & analytics
+
+| Loop | What it does | Creator | Source |
+|------|--------------|---------|--------|
+| **The Text-to-SQL Self-Correction Loop** | Creator generates SQL → Runner executes → Enhancer critiques → regenerate, until the query is executable and semantically correct. | Rudder Analytics | [writeup](https://medium.com/@rudderanalytics/ai-agent-for-sql-queries-and-visualization-using-multi-agent-framework-7f9f3d639108) |
 
 ---
 
