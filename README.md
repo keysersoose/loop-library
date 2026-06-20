@@ -7,15 +7,15 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-98-8957e5.svg)
-![Domains](https://img.shields.io/badge/domains-18-1f6feb.svg)
+![Loops](https://img.shields.io/badge/loops-122-8957e5.svg)
+![Domains](https://img.shields.io/badge/domains-19-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
 *You bring the vision — the loop brings the senior engineer.*
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
 *Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
-**⬇ [Download all 98 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
+**⬇ [Download all 122 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
@@ -61,6 +61,7 @@ flowchart LR
 - [Design](#design)
 - [Accessibility](#accessibility)
 - [Data & analytics](#data--analytics)
+- [International (translated)](#international-translated)
 - [Marketing & growth](#marketing--growth)
 - [Support & sales](#support--sales)
 - [Operations](#operations)
@@ -110,6 +111,8 @@ The patterns that defined loop-driven development.
 | **The Code Migration Loop** | "Environment-in-the-loop": plan → set up env → migrate → run tests → refine, iterating until the port passes. | (research) | [arXiv](https://arxiv.org/pdf/2602.09944) |
 | **The Self-Correcting Agent Loop** | A state-machine loop (LangGraph/CrewAI) with conditional edges: act → check → retry, bounded by iteration limits. | (community) | [guide](https://www.matterai.so/guides/agentic-workflows-building-self-correcting-loops-with-langgraph-and-crewai-state-machines) |
 | **The Mobile Closed-Loop Build** | Install on a virtual device, tap through every screen, verify layouts across sizes, fix crashes, repeat until store-ready. | Alexander Zanfir | [writeup](https://medium.com/@alexzanfir/closed-loop-development-how-ai-agents-build-software-while-you-sleep-6df42cd05a85) |
+| **Timebox / Ultimatum Loop** | Give an assistant's suggestion a hard time budget; if it doesn't yield value with minimal extra effort, abandon and code manually. | Birgitta Böckeler (Thoughtworks) | [martinfowler.com](https://martinfowler.com/articles/exploring-gen-ai/08-how-to-tackle-unreliability.html) |
+| **Guardrails Correction Loop** | Generate → validate; if a check fails, filter or regenerate; stop when output passes all validators or a max-retry cap. | Eugene Yan | [eugeneyan.com](https://eugeneyan.com/writing/llm-patterns/) |
 
 ---
 
@@ -126,6 +129,10 @@ The patterns that defined loop-driven development.
 | **Pre-Commit Guard** | A hook that runs the test suite before every commit and blocks the commit while the suite is red. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
 | **Post-Edit Test Guard** | A hook that runs the related tests after each file edit to catch regressions immediately. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
 | **Independent Verifier Pass** | When the implementer claims done, a separate verifier runs build + lint + tests with no access to the implementer's rationale. | elorm | [loops.elorm.xyz](https://loops.elorm.xyz/) |
+| **Plan-Execute-Validate (PEV)** | Planner → executor → LLM-scorer; route to retry / replan / complete by quality score; stop on pass or budget. | Manjunath G | [dev.to](https://dev.to/manjunathgovindaraju/building-a-reliable-langgraph-workflow-plan-execute-validate-pev-automated-retries-and-mcp-1pik) |
+| **The Iteration Flywheel** | Evaluate quality → debug → change behaviour; tighten the eval step to speed every other step. | Hamel Husain | [hamel.dev](https://hamel.dev/blog/posts/evals/) |
+| **Model–Human Alignment Loop** | Iterate the LLM-judge critique prompt until model grades agree with human grades on 25–50 examples. | Hamel Husain | [hamel.dev](https://hamel.dev/blog/posts/evals/) |
+| **TDD Red-Green-Refactor (AI-assisted)** | Red→Green→Refactor for AI coding; each phase gates on a hard condition; fall back to manual if regen fails twice. | Paul Sobocinski (Thoughtworks) | [martinfowler.com](https://martinfowler.com/articles/exploring-gen-ai/06-tdd-with-coding-assistance.html) |
 
 ---
 
@@ -151,6 +158,7 @@ Loops that improve the *prompt or model itself* against a metric.
 | **Agentomics-ML** | Autonomous ML experimentation loop for genomic/transcriptomic data. | (research) | [arXiv](https://arxiv.org/pdf/2506.05542) |
 | **Deep Research Loop** | Planner → search sub-agents → synthesize → "need more?" → loop until coverage is sufficient, then cite. | LangChain (Open Deep Research) | [blog](https://www.langchain.com/blog/open-deep-research) |
 | **The MLOps Retraining Loop** | Monitor for drift → when it exceeds threshold, retrain → compare vs current → ship only if better → keep monitoring. | (community) | [guide](https://www.auxiliobits.com/blog/mlops-for-agentic-ai-continuous-learning-and-model-drift-detection/) |
+| **DeepSearch Loop** | Iterative search → read → reason over vector/FTS/ripgrep tools; loop until the optimal answer is found. | Han Xiao (Jina AI) | [via Simon Willison](https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/) |
 
 ---
 
@@ -203,6 +211,20 @@ Loops that improve the *prompt or model itself* against a metric.
 |------|--------------|---------|--------|
 | **The Text-to-SQL Self-Correction Loop** | Creator generates SQL → Runner executes → Enhancer critiques → regenerate, until the query is executable and semantically correct. | Rudder Analytics | [writeup](https://medium.com/@rudderanalytics/ai-agent-for-sql-queries-and-visualization-using-multi-agent-framework-7f9f3d639108) |
 | **The Active-Learning Labeling Loop** | Auto-label high-confidence items, route low-confidence ones to humans, retrain, repeat until a quality/budget stop rule is hit. | (community) | [guide](https://dev.co/ai/ai-assisted-data-labeling-using-active-learning-loops) |
+
+---
+
+## International (translated)
+
+Loops sourced from Chinese-language communities (53AI, Tencent Cloud), translated to English with credit to the original authors.
+
+| Loop | What it does | Creator | Source |
+|------|--------------|---------|--------|
+| **Loop Engineering (循环工程)** | Write the program that *drives* the agent: goal → execute → judge → re-prompt with errors → repeat; stop on budget or judge pass. | Omar (omarsar0); ThinkInAI | [53AI](https://www.53ai.com/news/tishicijiqiao/2026062001243.html) |
+| **MetaSkills Self-Bootstrap Loop (元技能自举)** | Agent generates new reusable workflow templates for itself: match → fill → DAG check → quality gate → sandbox → human approval. | geffzhang; via 53AI | [53AI](https://www.53ai.com/news/Assistant/2026061894560.html) |
+| **Judge-Model Termination Loop (法官模型)** | Pursue a persistent goal across turns with a *separate* judge model deciding completion (not self-declaration). | Youming Zhang, Tencent Cloud | [Tencent Cloud](https://cloud.tencent.com/developer/article/2669097) |
+| **Self-Repair Loop (pass@t)** | Generator → executor (tests) → *separate* feedback model → repair model; stop when a sample passes all tests. | Gao & Wang, Microsoft Research | [writeup](https://cloud.tencent.com/developer/article/2308702) |
+| **Prefix-Caching Agent Loop (前缀缓存)** | Tool-call loop where the old prompt stays an exact prefix of the new one, making per-token cost linear via KV-cache reuse. | OpenAI Eng; via Synced | [writeup](https://cloud.tencent.com/developer/article/2624854) |
 
 ---
 
@@ -265,18 +287,26 @@ Battle-tested open-source repos whose whole job is to run a loop for you — ver
 | Repo | The loop it runs | Creator | Stars | Source |
 |------|------------------|---------|-------|--------|
 | **agent-skills** | Slash-command suite (`/spec /plan /build /test /review /ship`) — a verifiable multi-phase loop; `/build auto` removes human stepping. | Addy Osmani | ~64k | [github](https://github.com/addyosmani/agent-skills) |
+| **claude-engineer** | v3 self-expanding loop: detect a capability gap → generate a new tool → validate → hot-reload → chain tools; bounded by a token cap. | Doriandarko | ~11k | [github](https://github.com/Doriandarko/claude-engineer) |
+| **ccg-workflow** | Classify → parallel Codex+Gemini analysis → plan → hard-stop user approval → parallel impl → dual-model cross-review → gates. | fengshao1227 | ~5.6k | [github](https://github.com/fengshao1227/ccg-workflow) |
 | **ouroboros** | Socratic interview → immutable spec → decompose → execute → evaluator scores → loop until spec satisfied. | Q00 | ~4.6k | [github](https://github.com/Q00/ouroboros) |
 | **EvoAgentX** | Self-evolving agents: evaluators score, then TextGrad/AFlow/EvoPrompt evolve prompts + workflow across iterations. | EvoAgentX | ~3.1k | [github](https://github.com/EvoAgentX/EvoAgentX) |
 | **claude-code-harness** | Enforces Plan → Work → Review → Ship; spec approved before code, review gated, evidence packaged before release. | Chachamaru127 | ~2.8k | [github](https://github.com/Chachamaru127/claude-code-harness) |
 | **awesome-harness-engineering** | Reference index of agent-loop primitives: planning, context, MCP, memory, orchestration, verification, HITL. | ai-boost | ~1.9k | [github](https://github.com/ai-boost/awesome-harness-engineering) |
 | **continuous-claude** | Runs Claude Code in a loop: opens PRs, waits for CI, merges, next task — context via a markdown handoff file. | AnandChowdhary | ~1.4k | [github](https://github.com/AnandChowdhary/continuous-claude) |
+| **cavekit** | grill → spec → research → review → build over a durable SPEC.md; test failures back-propagate into spec invariants. | JuliusBrussee | ~1k | [github](https://github.com/JuliusBrussee/cavekit) |
 | **loki-mode** | Multi-agent autonomous SDLC: Reason-Act-Reflect-Verify cycles + quality gates, from PRD to deployed app. | asklokesh | ~982 | [github](https://github.com/asklokesh/loki-mode) |
 | **ralph-loop-agent** | Wraps the Vercel AI SDK in a Ralph outer loop: run → verifyCompletion → feedback → repeat until done/cap. | vercel-labs | ~800 | [github](https://github.com/vercel-labs/ralph-loop-agent) |
 | **helixent** | Minimal TypeScript/Bun library for ReAct-style think→act→observe loops with parallel tool calls. | MagicCube | ~582 | [github](https://github.com/MagicCube/helixent) |
+| **bernstein** | Manager decomposes goal → agents in isolated worktrees → janitor verifies (tests/lint/types) → merge; loop until a predicate passes. | Alex Chernysh | ~574 | [github](https://github.com/chernistry/bernstein) |
 | **self_improving_coding_agent** | Evaluate on benchmarks → archive → let the agent improve its OWN codebase → repeat, stacking gains. | MaximeRobeyns | ~353 | [github](https://github.com/MaximeRobeyns/self_improving_coding_agent) |
+| **orch** | CTO agent splits goal into tasks; parallel engineering agents in isolated worktrees; QA verifies; state machine to done. | oxgeneral | ~83 | [github](https://github.com/oxgeneral/orch) |
 | **foreman** | Boris-style TUI supervising headless Claude Code agents: plan → ADR/PRD → issues → TDD → e2e, human gates + budget caps. | VisionForge-OU | ~56 | [github](https://github.com/VisionForge-OU/foreman) |
 | **millrace** | Governed agentic-loop runtime: stage gates, durable queues, recovery rules that persist state across context windows. | tim-osterhus | ~48 | [github](https://github.com/tim-osterhus/millrace) |
+| **great_cto** | Spec synthesis → single human approval gate → scaffold/backend/frontend/test/deploy; risk-tiered gates; stop when a live URL ships. | avelikiy | ~41 | [github](https://github.com/avelikiy/great_cto) |
+| **forge** | Idea → R-numbered spec → task DAG → TDD per worktree → reviewer + 4-level verifier; stop on FORGE_COMPLETE or budget. | LucasDuys | ~29 | [github](https://github.com/LucasDuys/forge) |
 | **llm-loop** | Plugin for the `llm` CLI: turn-based autonomous loop (`--max-turns`, default 25) with optional tool-call approval. | nibzard | ~17 | [github](https://github.com/nibzard/llm-loop) |
+| **pi-ralph** | Agent cycles through named "hats" (roles) triggered by emitted events; stop on a completion-promise string or guard rails. | samfoy | ~13 | [github](https://github.com/samfoy/pi-ralph) |
 
 ---
 
@@ -311,6 +341,9 @@ The academic patterns every loop is built on.
 | **Self-Consistency / Tree of Thoughts** | Sample many reasoning paths / search a tree of thoughts, then select the best. | Wang et al. / Yao et al. | [pattern catalogue](https://arxiv.org/pdf/2405.10467) |
 | **Agent Design Pattern Catalogue** | A catalogue of architectural patterns for foundation-model agents. | Liu et al. | [arXiv](https://arxiv.org/pdf/2405.10467) |
 | **Anthropic's Agent Workflow Patterns** | The five canonical patterns: prompt chaining, routing, parallelization, orchestrator-worker, and evaluator-optimizer. | Anthropic | [anthropic.com](https://www.anthropic.com/research/building-effective-agents) |
+| **Basic Reflection** | Generator LLM paired with a reflector LLM playing "teacher"; generate → reflect → revise; stop at an iteration cap. | Ankush Gola / LangChain | [langchain](https://www.langchain.com/blog/reflection-agents) |
+| **Language Agent Tree Search (LATS)** | Reflection + Monte-Carlo tree search: Select → Expand → Reflect/Evaluate → Backpropagate; stop when solved or depth cap. | Zhou et al. / LangChain | [langchain](https://www.langchain.com/blog/reflection-agents) |
+| **On-the-Loop (Harness Loop)** | Humans improve the *harness* that produces artifacts rather than fixing artifacts directly; agents run the inner loop. | Kief Morris (Thoughtworks) | [martinfowler.com](https://martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html) |
 
 ---
 

@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**98 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**122 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -12,10 +12,10 @@ _Prompts are original implementations of each loop's technique, written for this
 ## Categories
 
 - [Foundational](#foundational) (3)
-- [Engineering](#engineering) (18)
-- [Testing & evaluation](#testing--evaluation) (9)
+- [Engineering](#engineering) (20)
+- [Testing & evaluation](#testing--evaluation) (13)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
-- [Research & data science](#research--data-science) (4)
+- [Research & data science](#research--data-science) (5)
 - [Security & red-teaming](#security--red-teaming) (2)
 - [Writing & content](#writing--content) (6)
 - [Design](#design) (5)
@@ -27,8 +27,9 @@ _Prompts are original implementations of each loop's technique, written for this
 - [DevOps & infrastructure](#devops--infrastructure) (4)
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
-- [Patterns & theory](#patterns--theory) (6)
-- [Loop frameworks (GitHub)](#loop-frameworks-github) (13)
+- [Patterns & theory](#patterns--theory) (9)
+- [Loop frameworks (GitHub)](#loop-frameworks-github) (22)
+- [International (translated)](#international-translated) (5)
 
 
 ## Foundational
@@ -226,6 +227,22 @@ Run as a state machine: ACT (attempt the task) -> CHECK (validate the result aga
 Build and install the app on a virtual device. Programmatically tap through every screen and flow; verify layouts across screen sizes; watch for crashes, broken navigation, and slow frames. When you hit a defect, reproduce it, fix it, rebuild, and re-run the full walkthrough. Repeat until a complete walkthrough passes clean on all target device sizes.
 ```
 
+### Timebox / Ultimatum Loop
+*Give an assistant's suggestion a hard time budget; if it does not yield value with minimal extra effort, abandon and code manually.*  
+**Creator:** Birgitta Bockeler (Thoughtworks) · **Source:** https://martinfowler.com/articles/exploring-gen-ai/08-how-to-tackle-unreliability.html
+
+```text
+Timebox the assistant. Give its suggestion a hard time/effort budget. If it does not produce real value within that budget with only minimal extra effort from you, abandon it and write the code manually. Do not sink more time into coaxing a bad suggestion -- the stop condition is the first clear sign of non-value.
+```
+
+### Guardrails Correction Loop
+*Generate -> validate via guardrails; if a check fails, filter or regenerate; stop when output passes all validators or a max-retry cap.*  
+**Creator:** Eugene Yan · **Source:** https://eugeneyan.com/writing/llm-patterns/
+
+```text
+Wrap generation in validators. Generate the output, then run it through your guardrails (schema, safety, format, factuality checks). If any check fails, either filter the bad part or regenerate with the failure noted. Loop until the output passes all validators or you hit a max-retry cap, then return the best passing result.
+```
+
 
 ## Testing & evaluation
 
@@ -301,6 +318,38 @@ After every file edit, automatically run the tests related to the changed file (
 When the implementer claims the task is done, hand a SEPARATE verifier agent only the diff and the acceptance criteria — not the implementer's reasoning or chat. The verifier independently runs build, lint, and tests and checks each criterion. It returns PASS or a list of concrete failures. The work is done only when an independent verifier returns PASS.
 ```
 
+### Plan-Execute-Validate (PEV)
+*Planner -> executor -> LLM-scorer loop; route to retry, replan, or complete based on a quality score; stop on pass or budget.*  
+**Creator:** Manjunath G · **Source:** https://dev.to/manjunathgovindaraju/building-a-reliable-langgraph-workflow-plan-execute-validate-pev-automated-retries-and-mcp-1pik
+
+```text
+Run a Plan-Execute-Validate loop. PLAN the steps. EXECUTE the current step. VALIDATE the result with an LLM scorer against criteria. Based on the score, route to: RETRY (same step), REPLAN (rethink the approach), or COMPLETE. Stop when the final step passes the quality bar (e.g. score >= 0.80) or retries/replans are exhausted.
+```
+
+### The Iteration Flywheel
+*Three-activity cycle -- evaluate quality -> debug issues -> change behaviour; tightening the eval step speeds every other step.*  
+**Creator:** Hamel Husain · **Source:** https://hamel.dev/blog/posts/evals/
+
+```text
+Spin the eval flywheel: (1) EVALUATE output quality on real examples, (2) DEBUG the issues you find, (3) CHANGE the system to fix them -- then repeat. The leverage point is making the EVALUATE step fast and cheap, because it accelerates every other turn. Keep going until quality is consistently acceptable on your eval set.
+```
+
+### Model-Human Alignment Loop
+*Iterate the LLM-judge critique prompt until model grades agree with human grades on 25-50 examples.*  
+**Creator:** Hamel Husain · **Source:** https://hamel.dev/blog/posts/evals/
+
+```text
+Calibrate your LLM-as-judge. Grade 25-50 examples with both the model and a human; compare. Iterate the judge's critique prompt to close the gaps. Repeat until model/human agreement stabilizes at an acceptable correlation. Only then trust the judge to scale. Re-check periodically as data drifts.
+```
+
+### TDD Red-Green-Refactor (AI-assisted)
+*Red-Green-Refactor wheel for AI coding; each phase gates on a hard condition; fall back to manual if regeneration fails twice.*  
+**Creator:** Paul Sobocinski (Thoughtworks) · **Source:** https://martinfowler.com/articles/exploring-gen-ai/06-tdd-with-coding-assistance.html
+
+```text
+Drive AI-assisted coding with TDD. RED: only advance once you have a correctly failing test. GREEN: have the assistant write minimal code to pass it -- if regeneration fails twice, fall back to coding it by hand. REFACTOR: clean up while green. Loop per behavior. The hard gates keep the assistant honest.
+```
+
 
 ## Prompt & model optimization
 
@@ -369,6 +418,14 @@ Research this question thoroughly. (1) Plan: break it into sub-questions. (2) Fo
 
 ```text
 Continuously monitor the deployed model for data/prediction drift. When drift exceeds the threshold for the agreed window, trigger retraining on fresh labeled data. Evaluate the new model against the current one on a holdout; promote it only if it's meaningfully better and passes gates. Then resume monitoring. Log every drift event, retrain, and promotion decision.
+```
+
+### DeepSearch Loop
+*Iterative search -> read -> reason cycle over vector/FTS/ripgrep tools; stop when the optimal answer is found.*  
+**Creator:** Han Xiao (Jina AI) · **Source:** https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/
+
+```text
+Answer hard questions by looping search -> read -> reason. Each pass: run the best search (vector, full-text, or ripgrep), read the top results, reason about what is still missing, and issue a sharper next query. Keep going until you have found the optimal, well-supported answer -- not just the first plausible one.
 ```
 
 
@@ -783,6 +840,30 @@ Reference: a catalogue of architectural patterns for foundation-model agents (pa
 Reference for composing agent loops. Pick the simplest pattern that fits: PROMPT CHAINING (sequential steps), ROUTING (classify then dispatch), PARALLELIZATION (run subtasks concurrently then aggregate), ORCHESTRATOR-WORKER (a lead delegates dynamic subtasks), or EVALUATOR-OPTIMIZER (generate + critique loop). Prefer workflows (control flow in code) over fully autonomous agents unless you need the flexibility.
 ```
 
+### Basic Reflection (generator + reflector)
+*Generator LLM paired with a reflector LLM playing 'teacher'; generate -> reflect -> revise; stop at an iteration cap.*  
+**Creator:** Ankush Gola / LangChain · **Source:** https://www.langchain.com/blog/reflection-agents
+
+```text
+Pair two roles. GENERATOR produces the output. REFLECTOR acts as a critical teacher, giving specific feedback on what is weak or wrong. Feed the reflection back to the generator to revise. Loop generate -> reflect -> revise, capping at ~6 iterations so it terminates. Return the final revised output.
+```
+
+### Language Agent Tree Search (LATS)
+*Reflection + Monte-Carlo tree search: Select -> Expand -> Reflect/Evaluate -> Backpropagate; stop when solved or depth cap.*  
+**Creator:** Zhou et al. / LangChain · **Source:** https://www.langchain.com/blog/reflection-agents
+
+```text
+For hard multi-step problems, search instead of guessing. Run MCTS over actions: SELECT a promising node, EXPAND candidate next steps, REFLECT/EVALUATE each, and BACKPROPAGATE the value up the tree. Expand the best branches, prune dead ones. Stop when the root is solved or you hit a depth cap (e.g. 5).
+```
+
+### On-the-Loop (Harness Loop)
+*Humans improve the HARNESS that produces artifacts rather than fixing artifacts directly; agents run the inner loop.*  
+**Creator:** Kief Morris (Thoughtworks) · **Source:** https://martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html
+
+```text
+Work ON the loop, not just IN it. Instead of hand-fixing each artifact the agent produces, improve the HARNESS (prompts, checks, scaffolding) that generates them, so the whole class of outputs gets better. Let agents run the inner code loop; you steer the middle loop. Stop investing in the harness when improvements hit diminishing returns.
+```
+
 
 ## Loop frameworks (GitHub)
 
@@ -888,6 +969,121 @@ Browse awesome-harness-engineering — the reference index for the whole agent-h
 
 ```text
 Use Addy Osmani's agent-skills: a slash-command suite for Claude Code (/spec, /plan, /build, /test, /review, /ship) that implements a verifiable multi-phase development loop. Run them in order, or `/build auto` to remove human stepping between tasks. (See the repo.)
+```
+
+### Boomerang Tasks (Roo Code)
+*Parent task delegates subtasks to specialist modes; each runs in isolated context and signals attempt_completion; ends when all return.*  
+**Creator:** RooCodeInc · **Source:** https://roocodeinc.github.io/Roo-Code/features/boomerang-tasks
+
+```text
+Use an orchestrator that delegates. The parent task breaks the goal into subtasks and hands each to a specialist mode (Code, Debug, Architect), each running in its OWN isolated context. Each subtask signals attempt_completion when done and 'boomerangs' back. The orchestrator synthesizes the results once all subtasks return. (Roo Code feature.)
+```
+
+### Forge
+*Idea -> R-numbered spec -> dependency-ordered task DAG -> TDD per git worktree -> reviewer + 4-level verifier; stop on FORGE_COMPLETE or budget. ~29 stars.*  
+**Creator:** LucasDuys · **Source:** https://github.com/LucasDuys/forge
+
+```text
+Use Forge: it turns an idea into an R-numbered spec, builds a dependency-ordered task DAG, then executes each task TDD-style in its own git worktree, with a reviewer plus a 4-level verifier. It stops on a FORGE_COMPLETE promise signal or when the budget is exhausted (writing .forge/resume.md to continue later). (See the repo.)
+```
+
+### Cavekit
+*grill -> spec -> research -> review -> build over a durable SPEC.md; test failures back-propagate into spec invariants. ~1k stars.*  
+**Creator:** JuliusBrussee · **Source:** https://github.com/JuliusBrussee/cavekit
+
+```text
+Use Cavekit's spec-driven loop: grill -> spec -> research -> review -> build, all centered on a single durable SPEC.md. When tests fail, the failures back-propagate into the spec's invariants (a 'backprop reflex'), so the spec tightens over time. Stop when tests satisfy all invariants in the spec. (See the repo.)
+```
+
+### ORCH
+*CTO agent splits goal into tasks; parallel engineering agents in isolated worktrees; QA verifies; state machine todo->in_progress->review->done. ~83 stars.*  
+**Creator:** oxgeneral · **Source:** https://github.com/oxgeneral/orch
+
+```text
+Use ORCH: a CTO agent breaks the goal into tasks, parallel engineering agents work in isolated git worktrees, and QA agents verify. Tasks move through a state machine (todo -> in_progress -> review -> done). Run with --once to exit when all tasks reach a terminal status. (See the repo.)
+```
+
+### Bernstein
+*Manager decomposes goal -> agents in isolated worktrees -> janitor verifies (tests/lint/types) -> verified work merges; loop nodes re-fire until a bash predicate exits 0. ~574 stars.*  
+**Creator:** Alex Chernysh · **Source:** https://github.com/chernistry/bernstein
+
+```text
+Use Bernstein for audit-grade multi-agent work: a manager decomposes the goal, agents run in isolated worktrees, and a 'janitor' verifies each (tests, lint, types) before verified work merges. Workflow loop nodes re-fire until a bash predicate exits 0. Stop with `bernstein stop` or when all agents exit clean. (See the repo.)
+```
+
+### GreatCTO
+*Spec synthesis -> single human approval gate -> scaffold/backend/frontend/test/deploy; risk-tiered gates; stop when a live URL ships. ~41 stars.*  
+**Creator:** avelikiy · **Source:** https://github.com/avelikiy/great_cto
+
+```text
+Use GreatCTO: it synthesizes a spec, pauses at a single human 'CTO' approval gate, then runs scaffold -> backend -> frontend -> test -> deploy automatically. Gates are risk-tiered (maintenance = no gate; irreversible changes = full gate + frontier model). Stops when a live URL ships. (See the repo.)
+```
+
+### pi-ralph
+*Agent cycles through named 'hats' (roles) triggered by emitted events; stop on a completion_promise string or max_iterations/runtime. ~13 stars.*  
+**Creator:** samfoy · **Source:** https://github.com/samfoy/pi-ralph
+
+```text
+Use pi-ralph: the agent cycles through named 'hats' (roles), each triggered by emitted events. It stops on a configurable completion_promise string (e.g. LOOP_COMPLETE) or on the max_iterations / max_runtime_seconds guard rails. A role-cycling take on the Ralph loop. (See the repo.)
+```
+
+### CCG Workflow
+*Classify -> parallel Codex+Gemini analysis -> plan -> hard-stop user approval -> parallel impl -> dual-model cross-review -> quality gates. ~5.6k stars.*  
+**Creator:** fengshao1227 · **Source:** https://github.com/fengshao1227/ccg-workflow
+
+```text
+Use CCG: /ccg:go classifies the task, runs parallel Codex + Gemini analysis, produces a plan, then HARD-STOPS at a user approval gate. On approval, parallel implementation agents build it, followed by dual-model cross-review and quality gates. Stops when all phase gates pass or the user rejects the plan. (See the repo.)
+```
+
+### Claude Engineer v3 (tool-creation loop)
+*Agent detects a capability gap, generates a new tool, validates, hot-reloads it, and chains tools; bounded by MAX_CONVERSATION_TOKENS. ~11k stars.*  
+**Creator:** Doriandarko · **Source:** https://github.com/Doriandarko/claude-engineer
+
+```text
+Use Claude Engineer v3's self-expanding loop: when the agent hits a capability gap, it designs and generates a NEW tool via its toolcreator, validates it, hot-reloads it dynamically, and chains tools automatically to finish the task. It stops when it judges the task complete; MAX_CONVERSATION_TOKENS is the hard bound. (See the repo.)
+```
+
+
+## International (translated)
+
+### Loop Engineering (循环工程)
+*Write the program that drives the agent: goal -> execute -> judge -> re-prompt with errors -> repeat; stop on budget or judge pass. [translated from Chinese]*  
+**Creator:** Omar (omarsar0); ThinkInAI community · **Source:** https://www.53ai.com/news/tishicijiqiao/2026062001243.html
+
+```text
+Stop hand-writing prompts; engineer the loop. Define the goal and a JUDGE that decides done. Each pass: execute the step, have the judge score the result, and if not done, re-prompt the agent with the specific errors. Set a hard budget (max attempts, time, files changed, or spend) as the safety stop. Exit when the judge passes or the budget is exhausted.
+```
+
+### MetaSkills Self-Bootstrap Loop (元技能自举)
+*Agent generates new reusable workflow templates for itself: match -> fill -> DAG conflict check -> quality gate -> sandbox dry-run -> human approval. [translated from Chinese]*  
+**Creator:** geffzhang; via 53AI · **Source:** https://www.53ai.com/news/Assistant/2026061894560.html
+
+```text
+Let the agent build its own reusable skills. Loop: match the task to an existing template (or none), have the LLM fill in the steps, run a DAG conflict check, pass a quality gate, then a sandbox dry-run. Gate on human Accept / Dismiss / Revise before saving the new template. Over time the agent bootstraps new MetaSkills using its existing ones.
+```
+
+### Judge-Model Termination Loop (法官模型)
+*Pursue a persistent goal across turns with a SEPARATE judge model deciding completion (not self-declaration); parallel tool calls. [translated from Chinese]*  
+**Creator:** Youming Zhang, Tencent Cloud · **Source:** https://cloud.tencent.com/developer/article/2669097
+
+```text
+Pursue the goal across multiple turns. Crucially, do NOT let the acting agent declare itself done -- use a SEPARATE judge model to decide completion each turn. Execute tool calls in parallel where safe. Stop only when the judge declares the goal met (or a human pauses). This removes the self-grading bias that makes agents quit early or loop forever.
+```
+
+### Self-Repair Loop (pass@t)
+*Four roles: generator -> executor (unit tests) -> feedback model -> repair model; separate feedback model from actor; stop when a sample passes all tests. [translated from Chinese]*  
+**Creator:** Jianfeng Gao & Chenglong Wang, Microsoft Research · **Source:** https://cloud.tencent.com/developer/article/2308702
+
+```text
+Repair code with four distinct roles: GENERATOR writes a candidate, EXECUTOR runs the unit tests, a separate FEEDBACK model explains why it failed, and a REPAIR model fixes it using that feedback. Keep the feedback model DIFFERENT from the actor (a stronger feedback model repairs weaker code far better). Loop until a sample passes all tests.
+```
+
+### Prefix-Caching Agent Loop (前缀缓存)
+*Tool-call loop with the invariant that the old prompt is always an exact prefix of the new one, making per-token cost linear via KV-cache reuse. [translated from Chinese]*  
+**Creator:** OpenAI Eng; via Synced (机器之心) · **Source:** https://cloud.tencent.com/developer/article/2624854
+
+```text
+Run the tool-call loop (input -> infer -> decode -> decide -> execute) but enforce one structural invariant: the previous prompt must always be an exact PREFIX of the next prompt, so the KV-cache is reused and per-token cost stays linear instead of quadratic. Compact context past a threshold rather than rewriting earlier turns. Stop when the model returns an assistant message with no tool calls.
 ```
 
 

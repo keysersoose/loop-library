@@ -6,120 +6,1103 @@
   "license": "Curation + the prompt text in this file are MIT (original wording implementing each technique). Credit goes to each loop's original creator; linked sources belong to their authors.",
   "note": "Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share.",
   "loops": [
-    { "id": "ralph", "name": "The Ralph (Ralph Wiggum) Loop", "category": "Foundational", "creator": "Geoffrey Huntley", "url": "https://ghuntley.com/loop/", "description": "Feed the same prompt to an agent in an infinite shell loop; fresh context each pass, state lives in files + git.", "prompt": "You are running inside an infinite shell loop and get a FRESH context every pass. Do not rely on memory of previous runs — all state lives in the repo, in TODO.md, and in git history.\n\nEach pass:\n1. Read TODO.md and pick the single most important unchecked item.\n2. Implement only that item.\n3. Run the full test suite. If green, commit with a clear message and check the item off in TODO.md. If red, fix before committing.\n4. Append a one-line note of what you did to PROGRESS.md.\n\nStop only when every item in TODO.md is checked and the suite is green." },
-    { "id": "autoresearch", "name": "autoresearch", "category": "Foundational", "creator": "Andrej Karpathy", "url": "https://github.com/yibie/awesome-autoresearch", "description": "Propose a change to a measurable script, run a time-boxed experiment, keep it if the metric improves, revert if not.", "prompt": "You are optimizing a measurable script against a single metric (e.g. validation loss). Work in a loop:\n1. Read the current code and the best metric so far (in BEST.md).\n2. Propose ONE concrete change with a hypothesis for why it should improve the metric.\n3. Apply it and run the time-boxed experiment (same fixed budget every time).\n4. If the metric improves, commit and update BEST.md. If not, revert the change.\n5. Log the result (change, hypothesis, metric, kept/reverted) to RESULTS.md.\nRepeat. Never change the experiment budget or the metric definition." },
-    { "id": "senior-loops", "name": "The Senior Loops", "category": "Foundational", "creator": "keysersoose", "url": "https://github.com/keysersoose/loop-library/blob/main/loops/senior-loops.md", "description": "Five build loops (spec -> plan -> test -> security -> critic) that force AI output to senior-engineer quality.", "prompt": "For any build request, run these gates in order; a gate can't start until the previous one passes.\n1. SPEC: restate the idea as testable acceptance criteria; answer who-can-access, whose-data, what-on-bad-input, what-breaks-at-100x. No code until unambiguous.\n2. PLAN: read existing code, state the smallest reversible change + its blast radius.\n3. TEST-FIRST: write a failing test (fails for the right reason) -> minimal code -> full suite green.\n4. SECURITY: check auth, data isolation, secrets, input validation, safe defaults, real dependencies, least privilege. Fix every finding.\n5. CRITIC: a FRESH reviewer (separate session) gets only the diff + spec and tries to break it. Fix real findings. Max 3 rounds.\nOnly then is it done. Full version: loops/senior-loops.md." },
-
-    { "id": "docs-sweep", "name": "The Docs Sweep", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Review the codebase and bring every doc back in sync with the real implementation.", "prompt": "Sweep the entire repo's documentation against the current implementation. For each doc (README, comments, API docs, examples): verify every claim, command, and signature actually matches the code. Fix each mismatch in the doc to reflect reality. Repeat full passes until a complete pass finds zero discrepancies, then report what changed." },
-    { "id": "architecture-satisfaction", "name": "The Architecture Satisfaction Loop", "category": "Engineering", "creator": "Peter Steinberger", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Refactor with live tests and commits each step until the architecture is genuinely clean.", "prompt": "Refactor this codebase toward a clean architecture, one small step at a time. Each step: make a single focused improvement (extract a unit, clarify a boundary, remove duplication), run the full test suite, and commit only if green. After each step, ask: 'Am I satisfied with the architecture?' If no, continue. Stop when you genuinely are, and summarize the before/after structure. Never break a passing test." },
-    { "id": "sub-50ms", "name": "The Sub-50ms Page-Load Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Optimize until every page loads in under 50 ms.", "prompt": "Measure the load time of every page. For the slowest one, find the biggest bottleneck (query, payload, render, blocking asset), fix it, and re-measure. Repeat, always attacking the current slowest page, until every page loads in under 50 ms (or you've hit a documented hard floor). Report the measured before/after for each page." },
-    { "id": "prod-error-sweep", "name": "The Production Error Sweep", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Read production logs, trace each error to root cause, and fix it.", "prompt": "Pull the recent production error logs. Group them by signature and order by frequency/impact. For the top one: reproduce it, trace it to its root cause (not the symptom), write a failing test, fix it, and confirm the test passes. Repeat down the list until the top errors are resolved. Report each root cause and fix." },
-    { "id": "100-coverage", "name": "The 100% Test Coverage Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Add tests until coverage reaches 100%.", "prompt": "Run the coverage report. Find the file with the lowest coverage, write meaningful tests (real behavior, edge + error cases — not assertion-free filler) for its uncovered lines, and re-run coverage. Repeat until coverage is 100% and the whole suite passes. Skip nothing silently — if a line is genuinely untestable, mark it with an explicit ignore + reason." },
-    { "id": "logging-coverage", "name": "The Logging Coverage Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Add logging until every important path emits useful, tested logs.", "prompt": "Walk the important code paths (entry points, external calls, error branches, state changes). For each that lacks useful logging, add a structured log line (timestamp, operation, key ids, outcome) and a test asserting it fires. Repeat until every important path produces useful, tested logs. Avoid noise — log decisions and failures, not every line." },
-    { "id": "nightly-changelog", "name": "The Nightly Changelog Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Each night, review the previous day's changes and update the changelog.", "prompt": "Review all commits/merged PRs from the last 24 hours. Summarize the meaningful user-facing and developer-facing changes into clear changelog entries grouped by Added / Changed / Fixed / Removed. Prepend a dated section to CHANGELOG.md. Skip noise (formatting, typo-only). Run nightly." },
-    { "id": "test-suite-speed", "name": "The Test-Suite Speed Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Make the test suite run as fast as possible.", "prompt": "Profile the test suite and find the slowest tests/setup. Speed up the biggest offender (parallelize, share fixtures, mock slow I/O, remove redundant work) WITHOUT weakening coverage, then re-time the suite. Repeat, always attacking the current bottleneck, until the suite is as fast as it reasonably can be. Report total time before/after each step." },
-    { "id": "repo-cleanup", "name": "The Repository Cleanup Loop", "category": "Engineering", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Audit branches, PRs, commits, and worktrees, then tidy up.", "prompt": "Inspect local and remote branches, open PRs, stale worktrees, and dangling commits. For each: decide keep / merge / close / delete with a one-line reason, and act on the safe ones (delete merged branches, flag stale PRs). Never delete unmerged work without surfacing it first. Repeat until the repo is tidy; report what you removed and what needs a human decision." },
-    { "id": "ticket-to-pr", "name": "The Ticket-to-PR-Ready Loop", "category": "Engineering", "creator": "Hiten Shah", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Turn a ticket into a review-ready patch with the failure defined up front.", "prompt": "Take this ticket and turn it into a review-ready PR. First, define the failure precisely: write a test that reproduces the bug/encodes the feature and currently fails. Then implement the minimal fix, make the test pass, run the full suite, and write a clear PR description (problem, fix, test, risk). Iterate until the PR would pass review with no obvious gaps." },
-    { "id": "clodex-review", "name": "The Clodex Adversarial-Review Loop", "category": "Engineering", "creator": "Lukas Kucinski", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Run a Codex code review and fix every finding above a set threshold.", "prompt": "Hand your current diff to a separate code-review agent (e.g. Codex) and ask it to find problems adversarially. Triage findings by severity. Fix every finding at or above your chosen threshold (e.g. medium+), re-run the review on the new diff, and repeat until no findings remain above threshold. Log deferred low-severity items with reasons." },
-    { "id": "loop-harness-verify", "name": "The Loop Harness Verification Loop", "category": "Engineering", "creator": "Istasha", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Have a second agent session verify the staged work against the criteria.", "prompt": "After staging your work, spin up a SECOND, independent agent session that did not write the code. Give it only the acceptance criteria and the staged diff. Its job: build, lint, run tests, and verify each criterion is actually met. If it finds gaps, return them to the implementer to fix, then re-verify. Only mark done when the independent session passes it." },
-    { "id": "fresh-clone", "name": "The Fresh-Clone Loop", "category": "Engineering", "creator": "0xUmbra", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Clone into a clean, empty environment and follow the README to catch setup gaps.", "prompt": "Clone this repo into a clean, empty environment with nothing preinstalled. Follow the README's setup steps EXACTLY as written, top to bottom. Every time a step fails or a hidden prerequisite surfaces, fix the README (or setup script) so the next person doesn't hit it. Repeat from a fresh clone until setup works end-to-end with zero manual guesswork." },
-    { "id": "llm-codegen-workflow", "name": "The LLM Codegen Workflow", "category": "Engineering", "creator": "Harper Reed (popularized by Simon Willison)", "url": "https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/", "description": "Brainstorm a spec one question at a time, generate a plan, then execute prompts in order.", "prompt": "Phase 1 (spec): Ask me ONE question at a time to build a thorough, step-by-step spec for this idea; each question builds on my last answer. When complete, write spec.md.\nPhase 2 (plan): From spec.md, produce prompt_plan.md — a sequence of small, safe implementation prompts — plus todo.md of granular steps.\nPhase 3 (build): Execute the prompts from prompt_plan.md in order, running tests after each, checking off todo.md as you go." },
-    { "id": "multi-file-refactor", "name": "The Multi-File Refactor Loop", "category": "Engineering", "creator": "community", "url": "https://www.augmentcode.com/learn/automate-multi-file-code-refactoring-with-ai-agents-a-step-by-step-guide", "description": "Plan the change, apply transforms across call sites, run tests after each, until behavior is preserved.", "prompt": "Plan a refactor that spans multiple files. First map every call site / dependency affected. Apply the change in small, behavior-preserving steps; after EACH step run the full test suite and commit only if green. If a step changes behavior, revert and rethink. Repeat until the refactor is complete, all references are updated, and the suite is green." },
-    { "id": "code-migration", "name": "The Code Migration Loop", "category": "Engineering", "creator": "research", "url": "https://arxiv.org/pdf/2602.09944", "description": "Environment-in-the-loop: plan, set up env, migrate, run tests, refine until the port passes.", "prompt": "Migrate this code to the target language/framework with the environment in the loop. Steps: (1) plan the migration and set up a runnable target environment; (2) port a slice; (3) run the target's tests against it; (4) read failures and refine. Repeat slice by slice until the migrated code passes the same behavioral tests as the original. Keep a mapping of old->new for traceability." },
-    { "id": "self-correcting-agent", "name": "The Self-Correcting Agent Loop", "category": "Engineering", "creator": "community", "url": "https://www.matterai.so/guides/agentic-workflows-building-self-correcting-loops-with-langgraph-and-crewai-state-machines", "description": "A state-machine loop with conditional edges: act -> check -> retry, bounded by iteration limits.", "prompt": "Run as a state machine: ACT (attempt the task) -> CHECK (validate the result against explicit success criteria) -> if it fails, RETRY with the failure reason fed back in. Cap retries at N (e.g. 3). On success, exit and return the result; on hitting the cap, stop and report the last failure plus what you tried. Never loop unbounded." },
-    { "id": "mobile-closed-loop", "name": "The Mobile Closed-Loop Build", "category": "Engineering", "creator": "Alexander Zanfir", "url": "https://medium.com/@alexzanfir/closed-loop-development-how-ai-agents-build-software-while-you-sleep-6df42cd05a85", "description": "Install on a virtual device, tap through every screen, fix crashes, repeat until store-ready.", "prompt": "Build and install the app on a virtual device. Programmatically tap through every screen and flow; verify layouts across screen sizes; watch for crashes, broken navigation, and slow frames. When you hit a defect, reproduce it, fix it, rebuild, and re-run the full walkthrough. Repeat until a complete walkthrough passes clean on all target device sizes." },
-
-    { "id": "quality-streak", "name": "The Quality Streak Loop", "category": "Testing & evaluation", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Test realistic scenarios; when one fails, document it and fix it.", "prompt": "Run realistic end-to-end scenarios against the product, one after another. The moment one fails: document it (steps, expected, actual), find the root cause, fix it, add a regression test, and only then continue the streak. Keep going until you can run a long streak of realistic scenarios with zero failures. Report the streak length and every issue found." },
-    { "id": "full-product-eval", "name": "The Full Product Evaluation Loop", "category": "Testing & evaluation", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Generate N realistic scenarios, each with explicit success criteria.", "prompt": "Create N realistic user scenarios that exercise the product's real use cases, each with explicit, checkable success criteria. Run every scenario, score pass/fail against its criteria, and collect failures. Fix the failures (root cause, not symptom), then re-run the whole set. Repeat until all N pass. Keep the scenario set as a living eval suite." },
-    { "id": "self-improving-champion", "name": "The Self-Improving Champion Loop", "category": "Testing & evaluation", "creator": "Jose C. Munoz", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Iterative optimization with a budget, scoring, and gate checks.", "prompt": "Hold a 'champion' solution and its score. Within a fixed budget, repeatedly: generate a challenger variation, score it on the same rubric, and run gate checks (correctness, constraints). If the challenger beats the champion AND passes all gates, it becomes the new champion. Otherwise discard it. Stop when the budget is spent or improvements stall; return the champion." },
-    { "id": "devils-advocate", "name": "The Devil's-Advocate Loop", "category": "Testing & evaluation", "creator": "Anonymous", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Argue against your own design via a critic sub-agent until it survives.", "prompt": "Take your current design/plan. Spawn a critic persona whose only job is to argue AGAINST it — find the strongest objections, failure modes, and cheaper alternatives. For each serious objection, either fix the design or write a clear rebuttal. Repeat the attack with fresh eyes until the design survives a round with no new serious objections. Summarize the objections raised and how each was resolved." },
-    { "id": "tdad", "name": "TDAD — Test-Driven Agentic Development", "category": "Testing & evaluation", "creator": "research", "url": "https://arxiv.org/pdf/2603.17973", "description": "Use a code dependency graph for blast-radius before each change to cut regressions.", "prompt": "Before changing any code, build/consult a dependency graph to identify exactly which modules and tests your change can affect (its blast radius). Write/identify the tests covering that radius. Make the change, then run that targeted set first and the full suite second. If a previously-passing test in the radius breaks, treat it as a regression and revert. Repeat per change." },
-    { "id": "eval-driven-dev", "name": "Eval-Driven Development (LLM-as-Judge)", "category": "Testing & evaluation", "creator": "Eugene Yan (& community)", "url": "https://eugeneyan.com/writing/eval-process/", "description": "Write evals first, change, run evals, integrate; route flagged traces into a golden dataset.", "prompt": "Treat evals like tests. (1) Before building an AI feature, define success criteria as evals with a clear rubric and a golden dataset. (2) Make a change. (3) Run the evals (use an LLM-as-judge validated to ~75-90% agreement with human labels). (4) Integrate only if scores hold/improve. When production surfaces a bad case, add it to the golden dataset and re-test. Loop." },
-    { "id": "pre-commit-guard", "name": "Pre-Commit Guard", "category": "Testing & evaluation", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "A hook that runs tests before each commit and blocks commits while the suite is red.", "prompt": "Set up a pre-commit hook that runs the test suite (or the fast, relevant subset) before every commit. If anything fails, block the commit and surface the failures. Only allow the commit through when the suite is green. Keep the hook fast enough that it doesn't tempt anyone to bypass it." },
-    { "id": "post-edit-test-guard", "name": "Post-Edit Test Guard", "category": "Testing & evaluation", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "A hook that runs the related tests after each file edit to catch regressions immediately.", "prompt": "After every file edit, automatically run the tests related to the changed file (map source->tests). If a related test now fails, stop and surface it immediately so the regression is caught at the moment it's introduced, not at commit time. Keep running until edits leave related tests green." },
-    { "id": "independent-verifier", "name": "Independent Verifier Pass", "category": "Testing & evaluation", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "A separate verifier runs build + lint + tests with no access to the implementer's rationale.", "prompt": "When the implementer claims the task is done, hand a SEPARATE verifier agent only the diff and the acceptance criteria — not the implementer's reasoning or chat. The verifier independently runs build, lint, and tests and checks each criterion. It returns PASS or a list of concrete failures. The work is done only when an independent verifier returns PASS." },
-
-    { "id": "opro", "name": "OPRO (Optimization by PROmpting)", "category": "Prompt & model optimization", "creator": "Google DeepMind (Yang et al.)", "url": "https://billtcheng2013.medium.com/automated-prompt-engineering-part-2-c5745039cd81", "description": "Feed the LLM prompts paired with their scores; it generates better variants toward higher accuracy.", "prompt": "Optimize a prompt by treating the LLM as the optimizer. Maintain a history of (candidate prompt, score) pairs on a fixed eval set. Each step: show the LLM the top-scoring candidates with their scores and ask it to propose a NEW prompt likely to score higher. Evaluate the new prompt on the eval set, add it to the history, and repeat until scores plateau. Return the best prompt." },
-    { "id": "textgrad", "name": "TextGrad", "category": "Prompt & model optimization", "creator": "Stanford (Yuksekgonul et al.)", "url": "https://arxiv.org/pdf/2406.07496", "description": "Textual gradient descent — an LLM proposes edits that reduce a textual loss across your pipeline.", "prompt": "Improve this prompt/pipeline via textual gradients. (1) Run it and compute a textual 'loss' — an LLM critique of what went wrong vs the target. (2) Ask an LLM for the 'gradient': specific edits to the prompt that would reduce that loss. (3) Apply the edits, re-run, re-evaluate. Repeat for K steps or until the loss stops decreasing. Keep the best version." },
-    { "id": "dspy", "name": "DSPy", "category": "Prompt & model optimization", "creator": "Stanford NLP (Khattab et al.)", "url": "https://github.com/stanfordnlp/dspy", "description": "Program prompts as modules with signatures; a compiler optimizes them against a metric.", "prompt": "Instead of hand-tuning prompts, declare your task as modules with input/output signatures and a metric. Provide a small training/dev set. Let the optimizer (compiler) search prompts/demonstrations that maximize the metric on the dev set, iterating automatically. Evaluate the compiled program on held-out data; keep it if it beats the baseline. (Use the DSPy framework.)" },
-    { "id": "promptbreeder", "name": "PromptBreeder", "category": "Prompt & model optimization", "creator": "Google DeepMind (Fernando et al.)", "url": "https://futureagi.com/blog/top-10-prompt-optimization-tools-2025/", "description": "Evolutionary search that mutates and breeds prompts, selecting by fitness across generations.", "prompt": "Evolve prompts genetically. Start with a population of candidate prompts. Each generation: score every candidate on a fixed eval set (fitness), keep the top performers, then create the next generation by mutating and recombining them (also evolve the mutation instructions themselves). Repeat for G generations and return the highest-fitness prompt." },
-
-    { "id": "ai-scientist", "name": "The AI Scientist", "category": "Research & data science", "creator": "Sakana AI (Lu et al.)", "url": "https://arxiv.org/pdf/2503.24047", "description": "Autonomous loop: generate research ideas, run experiments, analyze results, write the paper.", "prompt": "Run an autonomous research loop on this problem. (1) Generate a novel, testable hypothesis. (2) Design and implement an experiment for it. (3) Run it and record results. (4) Analyze: did it support the hypothesis? (5) Write up the finding. Feed what you learned into the next hypothesis. Repeat, keeping a research log, until you have a result worth reporting." },
-    { "id": "agentomics-ml", "name": "Agentomics-ML", "category": "Research & data science", "creator": "research", "url": "https://arxiv.org/pdf/2506.05542", "description": "Autonomous ML experimentation loop that produces a suitable model for a dataset.", "prompt": "Given a dataset and a target metric, autonomously build a good model. Loop: inspect the data, propose a modeling approach (features, model, hyperparameters), train, evaluate on a held-out split, and record the metric. Keep changes that improve held-out performance, revert those that don't. Repeat until the metric plateaus; output the best model and a summary of what worked." },
-    { "id": "deep-research", "name": "Deep Research Loop", "category": "Research & data science", "creator": "LangChain (Open Deep Research)", "url": "https://www.langchain.com/blog/open-deep-research", "description": "Planner -> search sub-agents -> synthesize -> 'need more?' -> loop until coverage is sufficient, then cite.", "prompt": "Research this question thoroughly. (1) Plan: break it into sub-questions. (2) For each, search, fetch sources, and extract findings with citations. (3) Synthesize what you have and identify gaps or contradictions. (4) If coverage is insufficient, generate sharper follow-up queries and loop. Stop when the plan is well covered, then write a cited, structured report. Verify load-bearing claims against primary sources." },
-    { "id": "mlops-retraining", "name": "The MLOps Retraining Loop", "category": "Research & data science", "creator": "community", "url": "https://www.auxiliobits.com/blog/mlops-for-agentic-ai-continuous-learning-and-model-drift-detection/", "description": "Monitor for drift, retrain past threshold, compare, ship only if better, keep monitoring.", "prompt": "Continuously monitor the deployed model for data/prediction drift. When drift exceeds the threshold for the agreed window, trigger retraining on fresh labeled data. Evaluate the new model against the current one on a holdout; promote it only if it's meaningfully better and passes gates. Then resume monitoring. Log every drift event, retrain, and promotion decision." },
-
-    { "id": "ai-red-teaming", "name": "The AI Red-Teaming Loop", "category": "Security & red-teaming", "creator": "community", "url": "https://github.com/requie/AI-Red-Teaming-Guide", "description": "Adversarially attack the system, feed results back, re-test on a schedule.", "prompt": "Adversarially attack this AI system. Run a battery of attacks: prompt injection (direct + indirect), jailbreaks, data/secret exfiltration, tool misuse, and cross-user access. For each successful attack, document the exploit and the fix (input handling, isolation, guardrail). Apply fixes, then re-run the full battery. Repeat until the battery passes, and schedule it to re-run as new attack techniques appear." },
-    { "id": "rvb", "name": "RvB — Iterative Red-Blue Games", "category": "Security & red-teaming", "creator": "research", "url": "https://arxiv.org/pdf/2601.19726", "description": "Automate hardening through repeated red-team-attacks / blue-team-defends rounds.", "prompt": "Harden the system through rounds. RED: find and exploit a weakness; document the attack. BLUE: patch that weakness and add a detection/test for it. Re-run RED against the patched system. Repeat round after round; each round RED must find something new or the system is considered hardened for the current threat model. Keep a log of every attack and defense." },
-
-    { "id": "self-refine", "name": "Self-Refine", "category": "Writing & content", "creator": "Madaan et al.", "url": "https://learnprompting.org/docs/advanced/self_criticism/self_refine", "description": "One LLM drafts, critiques its own draft, then revises, looping until a stopping criterion.", "prompt": "Produce a first draft. Then, against an explicit rubric, write specific, actionable critique of YOUR OWN draft (what's weak, unclear, missing). Revise the draft using that critique. Keep a memory of past feedback so you don't repeat mistakes. Repeat draft->critique->revise until the critique finds nothing material to fix or you hit a set number of rounds." },
-    { "id": "draft-critique-finalize", "name": "Draft -> Critique -> Finalize", "category": "Writing & content", "creator": "community", "url": "https://learnwithparam.com/blog/prompt-engineering-self-critique-refinement", "description": "Force deliberation: generate an idea, critique it against criteria, regenerate from the critique.", "prompt": "Step 1 DRAFT: generate your first answer. Step 2 CRITIQUE: evaluate that draft against the stated criteria, listing concrete weaknesses. Step 3 FINALIZE: write a NEW version that addresses every critique point. Don't just lightly edit — regenerate from the critique. Output only the finalized version plus a one-line note on what improved." },
-    { "id": "llm-peer-review", "name": "LLM Peer Review", "category": "Writing & content", "creator": "research", "url": "https://arxiv.org/pdf/2601.08003", "description": "Multiple agents review each other's drafts, then privately revise — distributed critique.", "prompt": "Create K independent drafts (different personas/angles). Have each draft reviewed by the OTHER agents, who give blind, constructive feedback against a rubric — no agent sees others' revisions. Each author then privately revises using the feedback received. Select or merge the strongest revised draft. Report the feedback themes that drove the improvements." },
-    { "id": "chain-of-density", "name": "Chain of Density", "category": "Writing & content", "creator": "Adams et al.", "url": "https://arxiv.org/pdf/2309.04269", "description": "Iteratively rewrite a summary, fusing in missing entities each pass without growing length.", "prompt": "Summarize the text in a fixed length. Then repeat N times: identify 1-3 salient entities/details MISSING from your current summary and rewrite a new summary of the SAME length that includes them — making room via fusion, abstraction, and compression, never by dropping prior content or adding length. Output the final, densest summary." },
-    { "id": "seo-geo", "name": "The SEO/GEO Visibility Loop", "category": "Writing & content", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Audit crawlability, indexation, and structured data, and fix gaps.", "prompt": "Audit the site for search + generative-engine visibility: crawlability, indexation, metadata, structured data, internal links, and content gaps. List issues by impact. Fix the highest-impact issue, re-audit, and repeat. Continue until a full audit surfaces no high-impact issues, then report the before/after on each checked dimension." },
-    { "id": "product-podcast", "name": "The Product Update Podcast Loop", "category": "Writing & content", "creator": "Pierson Marks", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Generate a short 3-5 minute podcast episode about new features.", "prompt": "Review the latest shipped features (from the changelog/PRs). Write a tight 3-5 minute podcast script that explains what's new, why it matters, and how to use it, in a natural spoken voice. Generate the audio. Run this on each release so every update gets its own short episode." },
-
-    { "id": "war-loops", "name": "War Loops: Autonomous Frontend Designer", "category": "Design", "creator": "Swayam", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Point it at a URL or image and produce iterative design builds.", "prompt": "Given a target URL or reference image, capture it, derive a design spec (layout, type, color, spacing), then build the UI to match. Render your build, screenshot it, and compare it against the target. For each visual gap, make a surgical fix and re-render. Repeat until the build matches the reference to a high fidelity. Report the remaining intentional differences." },
-    { "id": "boeing-747", "name": "The Boeing 747 Benchmark", "category": "Design", "creator": "@victormustar", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Build the most realistic Boeing 747 you can in Three.js — a model-capability benchmark.", "prompt": "Build the most realistic Boeing 747 you can in Three.js. Render it, screenshot from multiple angles, and critique the result against real reference photos (proportions, livery, lighting, detail). Fix the biggest realism gap, re-render, and compare again. Repeat until it's as photorealistic as you can get. (A fun benchmark for a model's spatial + graphics ability.)" },
-    { "id": "infinite-clickbait", "name": "The Infinite Clickbait Loop", "category": "Design", "creator": "@Alex_FF", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Generate ten thumbnail concepts and score each against a rubric.", "prompt": "Generate 10 distinct thumbnail concepts for the topic. Score each against a rubric (clarity at small size, curiosity, contrast, focal point, emotional hook). Keep the top scorers, then generate 10 new variations that push on what made them work. Repeat until a concept clearly tops the rubric. Output the winner plus the runner-ups and their scores." },
-    { "id": "threejs-game", "name": "The Three.js Game Loop", "category": "Design", "creator": "majidmanzarpour", "url": "https://github.com/majidmanzarpour/threejs-game-skills", "description": "Build a playable loop first, then iterate until it passes gameplay, visual, perf & release checks.", "prompt": "Build the smallest PLAYABLE core loop first (move, interact, win/lose). Then iterate: playtest it, pick the weakest aspect (fun, feel, visuals, performance), improve it, and playtest again. After each pass, run the checklist: plays on desktop + mobile, no visual glitches, stable frame rate, clear UI. Repeat until every check passes." },
-    { "id": "videoagent", "name": "VideoAgent", "category": "Design", "creator": "HKUDS", "url": "https://github.com/HKUDS/VideoAgent", "description": "Agentic video editing with reflection rounds + adaptive feedback loops that refine the plan.", "prompt": "Plan the video edit (shots, cuts, captions, pacing). Produce a draft, then REFLECT: watch it back and evaluate against the goal (clarity, pacing, hook). Use that self-evaluation to refine the plan and re-render the affected parts. Repeat the reflect->refine loop until the cut meets the goal. (Or use the VideoAgent framework.)" },
-
-    { "id": "a11y-audit", "name": "The a11y Audit Loop", "category": "Accessibility", "creator": "snapsynapse", "url": "https://github.com/snapsynapse/skill-a11y-audit", "description": "Scan for WCAG violations, apply remediation hints, re-scan until compliant.", "prompt": "Audit the site against WCAG 2.x AA. For each violation, apply the remediation (labels, contrast, focus order, alt text, ARIA) and re-scan. Repeat until automated scans are clean. NOTE: automated tools catch only ~30-40% of issues — finish with keyboard-only navigation, a real screen-reader pass, and flag anything needing human/user testing." },
-    { "id": "a11y-review-agents", "name": "Accessibility Review Agents", "category": "Accessibility", "creator": "Community-Access", "url": "https://github.com/Community-Access/accessibility-agents", "description": "Specialist agents that enforce WCAG 2.2 AA so coding agents stop generating inaccessible code.", "prompt": "Before accepting any generated UI, run it past accessibility specialist checks for WCAG 2.2 AA: semantic structure, keyboard operability, focus management, color contrast, names/roles/values, and motion safety. Block code that fails; return specific fixes. Re-check after fixes. Make this a standing gate so inaccessible UI never lands." },
-
-    { "id": "text-to-sql", "name": "The Text-to-SQL Self-Correction Loop", "category": "Data & analytics", "creator": "Rudder Analytics", "url": "https://medium.com/@rudderanalytics/ai-agent-for-sql-queries-and-visualization-using-multi-agent-framework-7f9f3d639108", "description": "Generate SQL, execute, critique, regenerate until executable and semantically correct.", "prompt": "Turn the question into SQL. Then: EXECUTE it against the database (read-only). If it errors, read the error and rewrite. If it runs, CRITIQUE the result — does it actually answer the question, with the right grain, filters, and joins? If not, revise and re-run. Repeat until the query is both executable and semantically correct, then return the SQL + a one-line explanation." },
-    { "id": "active-learning-labeling", "name": "The Active-Learning Labeling Loop", "category": "Data & analytics", "creator": "community", "url": "https://dev.co/ai/ai-assisted-data-labeling-using-active-learning-loops", "description": "Auto-label high-confidence items, route low-confidence to humans, retrain, until a stop rule.", "prompt": "Label a dataset efficiently. (1) Auto-label items where model confidence exceeds the quality threshold. (2) Route the lowest-confidence items to a human. (3) Retrain on the new labels and update uncertainty estimates. (4) Repeat. Stop when one of: the model hits the production KPI, marginal accuracy gain per round falls below threshold, or the labeling budget is exhausted." },
-
-    { "id": "loop-marketing", "name": "Loop Marketing / Growth Loop", "category": "Marketing & growth", "creator": "HubSpot", "url": "https://www.hubspot.com/loop-marketing", "description": "Run small fast A/B tests on hooks/offers/audiences; roll each learning back in, compounding.", "prompt": "Run growth as a compounding loop. Each cycle: pick one lever (hook, offer, audience, or channel), ship a small fast A/B test with a clear metric, measure, and roll the winning learning back into your creative, targeting, and spend. Kill losers quickly. Keep cycles small and frequent so each one sharpens the next. Track the metric trend across cycles." },
-
-    { "id": "support-attd", "name": "The Support Resolution Loop (ATTD)", "category": "Support & sales", "creator": "Fin AI (Intercom)", "url": "https://fin.ai/learn/ai-agents-resolve-tickets-faster", "description": "Analyze -> Train -> Test -> Deploy: resolve tickets and improve from human-corrected escalations.", "prompt": "Improve support resolution in a loop. ANALYZE recent tickets to find common, automatable intents and where the agent fails. TRAIN/update the agent's answers and actions for those. TEST against held-out tickets and edge cases. DEPLOY, routing low-confidence/high-risk/emotional cases to humans. Feed human corrections back into the next ANALYZE. Repeat." },
-
-    { "id": "batch-release", "name": "The Stale-Safe Batch Release Loop", "category": "Operations", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Exclude stale/unfinished work, combine valid changes, and release.", "prompt": "Prepare a batch release. Inventory all candidate changes; for each, decide if it's complete and safe or stale/unfinished. Exclude anything stale or risky (with a reason). Combine the valid changes, run the full test + smoke suite, and only cut the release if green. Repeat the inclusion check until the batch is clean. Report what was included and what was held back." },
-    { "id": "prod-data-cleanup", "name": "The Production Data Cleanup Loop", "category": "Operations", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Remove anything that doesn't meet the allowed definition.", "prompt": "Define precisely what 'valid' data looks like. Scan production data against that definition; for each record that doesn't meet it, decide fix vs remove. Act on a SMALL reversible batch first (with a backup), verify nothing legitimate was lost, then continue. Repeat until all data meets the definition. Never bulk-delete without a backup and a verified sample." },
-    { "id": "post-release-baseline", "name": "The Post-Release Baseline Loop", "category": "Operations", "creator": "Matthew Berman", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Run the standard benchmarks and record the results after each release.", "prompt": "After each release, run the standard benchmark suite (latency, throughput, error rate, key business metrics) and record the results as the new baseline, tagged to the release. Compare against the previous baseline; flag any regression beyond the agreed tolerance and open an issue. Keep the history so trends are visible across releases." },
-    { "id": "customer-ai-deploy", "name": "The Customer AI Deployment Loop", "category": "Operations", "creator": "AgentLed.ai", "url": "https://signals.forwardfuture.ai/loop-library/", "description": "Manage one customer AI deployment from priority to production.", "prompt": "Drive one customer AI deployment from intake to production. Loop through: clarify the priority use case + success criteria, configure/integrate, test against the customer's real scenarios, fix gaps, and get sign-off. Don't advance a stage until its criteria are met. Track blockers explicitly and surface them. Stop when it's live and meeting the agreed success criteria." },
-
-    { "id": "terraform-fix", "name": "The Terraform Fix Loop", "category": "DevOps & infrastructure", "creator": "community", "url": "https://computingforgeeks.com/ai-coding-agents-devops-terraform-ansible-kubernetes/", "description": "validate -> plan -> apply -> verify, reading the error and fixing until the infra is correct.", "prompt": "Iterate on infrastructure code: run `terraform validate`, then `plan`, read any error or unexpected diff, fix the code, and repeat until the plan is clean and matches intent. Then `apply` and verify the real resources (via CLI/API) are healthy. IMPORTANT: keep scope tight — only change what the task needs; do not refactor adjacent infra. Revert if apply misbehaves." },
-    { "id": "ship-pr-green", "name": "Ship PR Until Green", "category": "DevOps & infrastructure", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "Implement on a branch, push, open a PR, wait for CI, loop until checks pass and it's merge-ready.", "prompt": "Implement the change on a feature branch. Run tests locally, push, and open a PR. Wait for CI; when checks go red, read the logs, push a fix, and wait again. Repeat until every check is green and the PR is genuinely merge-ready (description, tests, no unresolved review comments). Then report it's ready to merge." },
-    { "id": "ci-failure-watcher", "name": "CI Failure Watcher", "category": "DevOps & infrastructure", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "Poll CI on an interval; when checks go red, investigate and push fixes until green.", "prompt": "Poll CI on a fixed interval. When a run goes red, fetch the logs, identify the failing job and root cause, push a targeted fix, and keep watching. Repeat until the pipeline is green again. Summarize each failure and the fix. Don't sit idle — re-check on the interval until resolved." },
-    { "id": "deploy-verification", "name": "Deploy Verification Loop", "category": "DevOps & infrastructure", "creator": "elorm", "url": "https://loops.elorm.xyz/", "description": "After a deploy, hit health + smoke endpoints on an interval until everything returns healthy.", "prompt": "After a deploy, poll the health and smoke-test endpoints on an interval. Treat the deploy as unverified until all checks return healthy responses within the timeout. If checks fail past the threshold, surface it (and trigger rollback if configured). Only mark the deploy verified once a full pass is healthy. Log each check." },
-
-    { "id": "aider", "name": "Aider", "category": "Autonomous coding agents", "creator": "Paul Gauthier", "url": "https://github.com/Aider-AI/aider", "description": "Pair-programming loop with architect -> editor mode; edits via diffs against a repo map.", "prompt": "Use Aider's loop: it builds a tree-sitter repo map for context, proposes edits as diffs, applies them, and can run tests/lint and auto-fix. For complex work use architect mode (one model plans the change, another writes the edits). Iterate edit->test until the task passes. (This is the Aider CLI; `pip install aider-install`.)" },
-    { "id": "swe-agent", "name": "SWE-agent", "category": "Autonomous coding agents", "creator": "Princeton NLP", "url": "https://github.com/princeton-nlp/SWE-agent", "description": "Agent-computer-interface loop that reads an issue, edits the repo, runs tests, iterates to a patch.", "prompt": "Use SWE-agent's loop on a GitHub issue: it reads the issue, navigates the repo through a constrained agent-computer interface, edits files, runs the tests, observes failures, and iterates until it produces a passing patch. Best for turning an issue into a PR-ready diff. (See the SWE-agent repo for setup.)" },
-    { "id": "openhands", "name": "OpenHands (ex-OpenDevin)", "category": "Autonomous coding agents", "creator": "All-Hands-AI", "url": "https://github.com/All-Hands-AI/OpenHands", "description": "Multi-agent delegation loop: plan -> act -> observe across a dev environment.", "prompt": "Use OpenHands to run a full plan->act->observe loop in a sandboxed dev environment: it writes code, runs commands, browses, and delegates subtasks between agents, observing results and iterating toward the goal. Good for end-to-end tasks that span editing, running, and testing. (See the OpenHands repo for setup.)" },
-    { "id": "autogpt", "name": "AutoGPT", "category": "Autonomous coding agents", "creator": "Significant-Gravitas", "url": "https://github.com/Significant-Gravitas/AutoGPT", "description": "The original autonomous goal loop: decompose a goal into tasks and execute until met.", "prompt": "Give AutoGPT a high-level goal. It will decompose the goal into tasks, execute them using its tools, observe the results, and create follow-up tasks — looping autonomously toward the objective. Add a max-iteration cap and clear success criteria so it terminates. (See the AutoGPT repo for setup.)" },
-    { "id": "babyagi", "name": "BabyAGI", "category": "Autonomous coding agents", "creator": "Yohei Nakajima", "url": "https://github.com/yoheinakajima/babyagi", "description": "Task-creation/prioritization/execution loop backed by a vector store of prior results.", "prompt": "Run BabyAGI's loop on an objective: it pulls the top task, executes it, stores the result in a vector store, then creates and reprioritizes new tasks based on the objective and what it has learned — repeating until the objective is met or you cap iterations. (See the BabyAGI repo for setup.)" },
-
-    { "id": "loop-engineering", "name": "loop-engineering", "category": "Tools & harnesses", "creator": "Cobus Greyling", "url": "https://github.com/cobusgreyling/loop-engineering", "description": "Patterns, starters & CLI tools (loop-audit, loop-init, loop-cost) for loop engineering.", "prompt": "Use the loop-engineering toolkit to scaffold and run agent loops: `loop-init` to start a loop project, `loop-audit` to check loop design/quality, and `loop-cost` to track spend. A practical starter for building your own recursive agent loops. (See the repo.)" },
-    { "id": "autoloop", "name": "autoloop", "category": "Tools & harnesses", "creator": "Arm Gabrielyan", "url": "https://github.com/armgabrielyan/autoloop", "description": "Agent-agnostic iterative-optimization loops for Claude Code, Codex, Cursor, Gemini CLI.", "prompt": "Use autoloop to run iterative-optimization loops with any agent (Claude Code, Codex, Cursor, OpenCode, Gemini CLI). Point it at a task with a measurable goal; it drives the propose->try->measure->keep/revert loop for you. Inspired by Karpathy's autoresearch. (See the repo.)" },
-    { "id": "agentic-loop", "name": "agentic-loop", "category": "Tools & harnesses", "creator": "allierays", "url": "https://github.com/allierays/agentic-loop", "description": "Autonomous Claude Code toolkit based on RALPH + PRD-driven development.", "prompt": "Use agentic-loop with Claude Code: write a PRD, and the toolkit runs RALPH-style — executing each story through code->test->commit automatically until the PRD is complete. Good for mostly-autonomous builds. (See the repo.)" },
-    { "id": "agent-loop", "name": "agent-loop", "category": "Tools & harnesses", "creator": "Saik0s", "url": "https://github.com/Saik0s/agent-loop", "description": "A guide + workflows for orchestrating specialized AI personas to build, test, and deploy in a loop.", "prompt": "Use agent-loop's guide to orchestrate specialized AI personas (e.g. planner, builder, tester, reviewer) where a human directs the personas through a build->test->deploy loop collaboratively. A blueprint for structuring multi-persona agentic engineering. (See the repo.)" },
-    { "id": "ralph-prd", "name": "ralph", "category": "Tools & harnesses", "creator": "snarktank", "url": "https://github.com/snarktank/ralph", "description": "An autonomous loop that runs until every item in a PRD is complete.", "prompt": "Use the ralph harness: give it a PRD and it runs an autonomous loop, completing each requirement item by item (implement->test->commit) until the whole PRD is done. (See the repo for setup.)" },
-    { "id": "ralph-claude-code", "name": "ralph-claude-code", "category": "Tools & harnesses", "creator": "Frank Bria", "url": "https://github.com/frankbria/ralph-claude-code", "description": "A Ralph loop for Claude Code with intelligent exit detection.", "prompt": "Use ralph-claude-code to run the Ralph loop with Claude Code, with smart exit detection so it stops when the work is genuinely done rather than looping forever. (See the repo for setup.)" },
-    { "id": "codex-autoresearch-harness", "name": "codex-autoresearch-harness", "category": "Tools & harnesses", "creator": "SarahXC", "url": "https://github.com/SarahXC/codex-autoresearch-harness", "description": "Bash harness to run Karpathy's autoresearch with Codex CLI + an A/B framework.", "prompt": "Use this bash harness to run Karpathy's autoresearch loop with the Codex CLI, including an A/B framework to compare models/approaches across runs. (See the repo for setup.)" },
-    { "id": "autoresearch-guide", "name": "autoresearch-guide", "category": "Tools & harnesses", "creator": "Rkcr7", "url": "https://github.com/Rkcr7/autoresearch-guide", "description": "3,000+ line guide teaching agents to autonomously optimize anything measurable.", "prompt": "Read the autoresearch-guide and apply its pattern: give an agent a file, a metric, and the guide, then let it autonomously optimize the metric overnight (propose->experiment->measure->keep/revert). A deep how-to for the autoresearch loop. (See the repo.)" },
-    { "id": "awesome-autoresearch", "name": "awesome-autoresearch", "category": "Tools & harnesses", "creator": "yibie", "url": "https://github.com/yibie/awesome-autoresearch", "description": "A curated list of autoresearch resources.", "prompt": "Browse awesome-autoresearch for a curated set of autoresearch implementations, harnesses, and write-ups to learn or extend the autoresearch loop. (See the repo.)" },
-
-    { "id": "react", "name": "ReAct", "category": "Patterns & theory", "creator": "Yao et al.", "url": "https://www.mindstudio.ai/blog/what-is-react-loop-ai-agent-reasoning", "description": "Interleave Thought -> Action -> Observation so reasoning guides tool use and vice versa.", "prompt": "Solve the task by interleaving reasoning and acting. Each step output: Thought (what you're reasoning and why), Action (the tool call to make), then read the Observation (the result). Use the observation to update your next Thought. Loop Thought->Action->Observation until you can give a final answer; then output Answer." },
-    { "id": "reflexion", "name": "Reflexion", "category": "Patterns & theory", "creator": "Shinn et al.", "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/1b44b878bb782e6954cd888628510e90-Paper-Conference.pdf", "description": "Actor + Evaluator + Self-Reflection; verbal self-feedback stored in memory across trials.", "prompt": "Attempt the task (Actor). Evaluate the outcome against the goal (Evaluator) — pass or fail with a reason. If it failed, write a short verbal SELF-REFLECTION on WHY it failed and what to do differently, and store it in memory. Retry the task, with all prior reflections in context. Repeat until you pass or hit the trial limit." },
-    { "id": "evaluator-optimizer", "name": "Evaluator-Optimizer", "category": "Patterns & theory", "creator": "Anthropic, Building Effective Agents", "url": "https://www.anthropic.com/research/building-effective-agents", "description": "Generator proposes, evaluator scores, loop until a quality threshold — the generic critic loop.", "prompt": "Use two roles. GENERATOR produces a candidate answer. EVALUATOR scores it against explicit criteria and returns specific feedback. Feed the feedback back to the GENERATOR to produce an improved candidate. Loop until the EVALUATOR's score clears the threshold or improvement stalls. Keep generator and evaluator as distinct roles." },
-    { "id": "self-consistency-tot", "name": "Self-Consistency / Tree of Thoughts", "category": "Patterns & theory", "creator": "Wang et al. / Yao et al.", "url": "https://arxiv.org/pdf/2405.10467", "description": "Sample many reasoning paths / search a tree of thoughts, then select the best.", "prompt": "For a hard reasoning problem: (Self-Consistency) sample multiple independent reasoning paths and take the majority/most-consistent answer. Or (Tree of Thoughts) branch into several candidate intermediate 'thoughts', evaluate each branch's promise, expand the best, and prune dead ends — searching the tree until you reach a well-supported answer." },
-    { "id": "agent-pattern-catalogue", "name": "Agent Design Pattern Catalogue", "category": "Patterns & theory", "creator": "Liu et al.", "url": "https://arxiv.org/pdf/2405.10467", "description": "A catalogue of architectural patterns for foundation-model agents.", "prompt": "Reference: a catalogue of architectural patterns for foundation-model agents (passive/active goal creation, reflection, tool use, voting, etc.). Use it to pick the right loop/pattern for your agent rather than reinventing one. (See the paper.)" },
-    { "id": "anthropic-workflows", "name": "Anthropic's Agent Workflow Patterns", "category": "Patterns & theory", "creator": "Anthropic", "url": "https://www.anthropic.com/research/building-effective-agents", "description": "The five canonical patterns: prompt chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer.", "prompt": "Reference for composing agent loops. Pick the simplest pattern that fits: PROMPT CHAINING (sequential steps), ROUTING (classify then dispatch), PARALLELIZATION (run subtasks concurrently then aggregate), ORCHESTRATOR-WORKER (a lead delegates dynamic subtasks), or EVALUATOR-OPTIMIZER (generate + critique loop). Prefer workflows (control flow in code) over fully autonomous agents unless you need the flexibility." },
-
-    { "id": "ralph-loop-agent", "name": "ralph-loop-agent", "category": "Loop frameworks (GitHub)", "creator": "vercel-labs", "url": "https://github.com/vercel-labs/ralph-loop-agent", "description": "Wraps the AI SDK's generateText in an outer loop: run -> verifyCompletion -> inject feedback if not done -> repeat until success or a cost/iteration cap. ~800 stars.", "prompt": "Use ralph-loop-agent (Vercel AI SDK) to wrap a model call in a Ralph-style outer loop: it runs the LLM, calls a verifyCompletion check, and if not done, injects the feedback and loops — stopping on success or a cost/iteration threshold. Good for adding 'keep going until verified' autonomy to an AI SDK app. (See the repo.)" },
-    { "id": "continuous-claude", "name": "continuous-claude", "category": "Loop frameworks (GitHub)", "creator": "AnandChowdhary", "url": "https://github.com/AnandChowdhary/continuous-claude", "description": "Runs Claude Code in a continuous loop that autonomously opens PRs, waits for CI, merges, then starts the next task — context carried in a markdown handoff file. ~1.4k stars.", "prompt": "Use continuous-claude to run Claude Code in a continuous loop: it picks the next task, implements it, opens a PR, waits for CI, merges when green, and carries context forward via a shared markdown handoff file — then starts the next task. Set a task list and a stop condition. (See the repo.)" },
-    { "id": "loki-mode", "name": "loki-mode", "category": "Loop frameworks (GitHub)", "creator": "asklokesh", "url": "https://github.com/asklokesh/loki-mode", "description": "Multi-agent autonomous SDLC orchestrator running Reason-Act-Reflect-Verify cycles with quality gates, from PRD or one-line brief to deployed app. ~982 stars.", "prompt": "Use loki-mode to run a multi-agent autonomous SDLC: give it a PRD or one-line brief and it runs Reason -> Act -> Reflect -> Verify cycles across specialized agents, passing through quality gates toward a deployed app. (See the repo for setup.)" },
-    { "id": "ouroboros", "name": "ouroboros", "category": "Loop frameworks (GitHub)", "creator": "Q00", "url": "https://github.com/Q00/ouroboros", "description": "Spec-first loop: a Socratic interview crystallizes an immutable spec, tasks are decomposed and executed, an evaluator scores outputs, and the loop runs until similarity to spec is high. ~4.6k stars.", "prompt": "Use ouroboros ('stop prompting, start specifying'): it runs a Socratic interview to crystallize an immutable spec, decomposes the work, executes tasks, and has an evaluator score outputs against the spec — looping until the spec is satisfied to a high similarity threshold. (See the repo.)" },
-    { "id": "claude-code-harness", "name": "claude-code-harness", "category": "Loop frameworks (GitHub)", "creator": "Chachamaru127", "url": "https://github.com/Chachamaru127/claude-code-harness", "description": "Enforces a Plan -> Work -> Review -> Ship cycle for Claude Code: specs approved before implementation, review gated separately, evidence packaged before release. ~2.8k stars.", "prompt": "Use claude-code-harness to enforce a Plan -> Work -> Review -> Ship loop in Claude Code: the spec must be approved before implementation, review is a separate gate, and evidence is packaged before release — so quality gates can't be skipped. (See the repo.)" },
-    { "id": "evoagentx", "name": "EvoAgentX", "category": "Loop frameworks (GitHub)", "creator": "EvoAgentX", "url": "https://github.com/EvoAgentX/EvoAgentX", "description": "Self-evolving agent framework: evaluators score agents, then TextGrad/AFlow/EvoPrompt optimization evolves both prompts and workflow structure across iterations. ~3.1k stars.", "prompt": "Use EvoAgentX to build self-evolving agents: automated evaluators score your agents on benchmarks, then optimization algorithms (TextGrad / AFlow / EvoPrompt) evolve both the prompts and the workflow structure across iterations — improving the system automatically. (See the repo.)" },
-    { "id": "self-improving-coding-agent", "name": "self_improving_coding_agent", "category": "Loop frameworks (GitHub)", "creator": "MaximeRobeyns", "url": "https://github.com/MaximeRobeyns/self_improving_coding_agent", "description": "Four-step self-referential loop: evaluate the agent on benchmarks -> archive -> let it improve its OWN codebase -> repeat, stacking measured gains. ~353 stars.", "prompt": "Use self_improving_coding_agent to run a self-referential loop: evaluate the agent on benchmarks, archive the results, then point the agent at its OWN codebase to improve it, and repeat — stacking only improvements that measurably raise benchmark performance. (See the repo.)" },
-    { "id": "helixent", "name": "helixent", "category": "Loop frameworks (GitHub)", "creator": "MagicCube", "url": "https://github.com/MagicCube/helixent", "description": "Minimal TypeScript library for ReAct-style agent loops (think -> act -> observe) on Bun, with parallel tool calls and observation injection. ~582 stars.", "prompt": "Use helixent (TypeScript/Bun) to build a ReAct-style loop: the agent thinks, acts (calls tools, in parallel where possible), observes the results, and feeds observations back into the next reasoning step — looping until done. A small library, not a full framework. (See the repo.)" },
-    { "id": "millrace", "name": "millrace", "category": "Loop frameworks (GitHub)", "creator": "tim-osterhus", "url": "https://github.com/tim-osterhus/millrace", "description": "Configurable governed agentic-loop runtime: explicit stage gates, durable queues, compiled execution plans, and recovery rules that persist state across context windows. ~48 stars.", "prompt": "Use millrace to run a governed agentic loop: define explicit stage gates, durable queues, and recovery rules so the loop's state persists across individual agent context windows and execution is reliable rather than ad-hoc. (See the repo for setup.)" },
-    { "id": "foreman", "name": "foreman", "category": "Loop frameworks (GitHub)", "creator": "VisionForge-OU", "url": "https://github.com/VisionForge-OU/foreman", "description": "Boris-style TUI supervisor for headless Claude Code agents: plan -> ADR/PRD -> issues -> TDD build -> e2e, with human review gates and per-worktree budget caps. ~56 stars.", "prompt": "Use foreman, a TUI supervisor for headless Claude Code agents: it drives plan -> ADR/PRD -> issues -> TDD build -> e2e with human review gates at the design stages and per-worktree budget caps, so multiple agents run under control. (See the repo.)" },
-    { "id": "llm-loop", "name": "llm-loop", "category": "Loop frameworks (GitHub)", "creator": "nibzard", "url": "https://github.com/nibzard/llm-loop", "description": "Plugin for Simon Willison's `llm` CLI that runs a turn-based autonomous loop (configurable --max-turns, default 25) with optional manual tool-call approval. ~17 stars.", "prompt": "Use the llm-loop plugin for the `llm` CLI to run a turn-based autonomous loop: the agent chains observations into the next turn, bounded by --max-turns (default 25), with optional manual approval of tool calls. (See the repo.)" },
-    { "id": "awesome-harness-engineering", "name": "awesome-harness-engineering", "category": "Loop frameworks (GitHub)", "creator": "ai-boost", "url": "https://github.com/ai-boost/awesome-harness-engineering", "description": "Awesome-list of agent-loop design primitives: planning, context mgmt, MCP, permissions, memory, orchestration, verification, observability, HITL. ~1.9k stars.", "prompt": "Browse awesome-harness-engineering — the reference index for the whole agent-harness space: planning, context management, MCP integration, permissions, memory, orchestration, verification, observability, and human-in-the-loop patterns. Use it to design your own loops. (See the repo.)" },
-    { "id": "addyosmani-agent-skills", "name": "agent-skills (Addy Osmani)", "category": "Loop frameworks (GitHub)", "creator": "addyosmani", "url": "https://github.com/addyosmani/agent-skills", "description": "Production Claude Code slash-command suite (/spec /plan /build /test /review /ship) implementing a verifiable multi-phase loop; `/build auto` removes human stepping. ~64k stars.", "prompt": "Use Addy Osmani's agent-skills: a slash-command suite for Claude Code (/spec, /plan, /build, /test, /review, /ship) that implements a verifiable multi-phase development loop. Run them in order, or `/build auto` to remove human stepping between tasks. (See the repo.)" }
+    {
+      "id": "ralph",
+      "name": "The Ralph (Ralph Wiggum) Loop",
+      "category": "Foundational",
+      "creator": "Geoffrey Huntley",
+      "url": "https://ghuntley.com/loop/",
+      "description": "Feed the same prompt to an agent in an infinite shell loop; fresh context each pass, state lives in files + git.",
+      "prompt": "You are running inside an infinite shell loop and get a FRESH context every pass. Do not rely on memory of previous runs — all state lives in the repo, in TODO.md, and in git history.\n\nEach pass:\n1. Read TODO.md and pick the single most important unchecked item.\n2. Implement only that item.\n3. Run the full test suite. If green, commit with a clear message and check the item off in TODO.md. If red, fix before committing.\n4. Append a one-line note of what you did to PROGRESS.md.\n\nStop only when every item in TODO.md is checked and the suite is green."
+    },
+    {
+      "id": "autoresearch",
+      "name": "autoresearch",
+      "category": "Foundational",
+      "creator": "Andrej Karpathy",
+      "url": "https://github.com/yibie/awesome-autoresearch",
+      "description": "Propose a change to a measurable script, run a time-boxed experiment, keep it if the metric improves, revert if not.",
+      "prompt": "You are optimizing a measurable script against a single metric (e.g. validation loss). Work in a loop:\n1. Read the current code and the best metric so far (in BEST.md).\n2. Propose ONE concrete change with a hypothesis for why it should improve the metric.\n3. Apply it and run the time-boxed experiment (same fixed budget every time).\n4. If the metric improves, commit and update BEST.md. If not, revert the change.\n5. Log the result (change, hypothesis, metric, kept/reverted) to RESULTS.md.\nRepeat. Never change the experiment budget or the metric definition."
+    },
+    {
+      "id": "senior-loops",
+      "name": "The Senior Loops",
+      "category": "Foundational",
+      "creator": "keysersoose",
+      "url": "https://github.com/keysersoose/loop-library/blob/main/loops/senior-loops.md",
+      "description": "Five build loops (spec -> plan -> test -> security -> critic) that force AI output to senior-engineer quality.",
+      "prompt": "For any build request, run these gates in order; a gate can't start until the previous one passes.\n1. SPEC: restate the idea as testable acceptance criteria; answer who-can-access, whose-data, what-on-bad-input, what-breaks-at-100x. No code until unambiguous.\n2. PLAN: read existing code, state the smallest reversible change + its blast radius.\n3. TEST-FIRST: write a failing test (fails for the right reason) -> minimal code -> full suite green.\n4. SECURITY: check auth, data isolation, secrets, input validation, safe defaults, real dependencies, least privilege. Fix every finding.\n5. CRITIC: a FRESH reviewer (separate session) gets only the diff + spec and tries to break it. Fix real findings. Max 3 rounds.\nOnly then is it done. Full version: loops/senior-loops.md."
+    },
+    {
+      "id": "docs-sweep",
+      "name": "The Docs Sweep",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Review the codebase and bring every doc back in sync with the real implementation.",
+      "prompt": "Sweep the entire repo's documentation against the current implementation. For each doc (README, comments, API docs, examples): verify every claim, command, and signature actually matches the code. Fix each mismatch in the doc to reflect reality. Repeat full passes until a complete pass finds zero discrepancies, then report what changed."
+    },
+    {
+      "id": "architecture-satisfaction",
+      "name": "The Architecture Satisfaction Loop",
+      "category": "Engineering",
+      "creator": "Peter Steinberger",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Refactor with live tests and commits each step until the architecture is genuinely clean.",
+      "prompt": "Refactor this codebase toward a clean architecture, one small step at a time. Each step: make a single focused improvement (extract a unit, clarify a boundary, remove duplication), run the full test suite, and commit only if green. After each step, ask: 'Am I satisfied with the architecture?' If no, continue. Stop when you genuinely are, and summarize the before/after structure. Never break a passing test."
+    },
+    {
+      "id": "sub-50ms",
+      "name": "The Sub-50ms Page-Load Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Optimize until every page loads in under 50 ms.",
+      "prompt": "Measure the load time of every page. For the slowest one, find the biggest bottleneck (query, payload, render, blocking asset), fix it, and re-measure. Repeat, always attacking the current slowest page, until every page loads in under 50 ms (or you've hit a documented hard floor). Report the measured before/after for each page."
+    },
+    {
+      "id": "prod-error-sweep",
+      "name": "The Production Error Sweep",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Read production logs, trace each error to root cause, and fix it.",
+      "prompt": "Pull the recent production error logs. Group them by signature and order by frequency/impact. For the top one: reproduce it, trace it to its root cause (not the symptom), write a failing test, fix it, and confirm the test passes. Repeat down the list until the top errors are resolved. Report each root cause and fix."
+    },
+    {
+      "id": "100-coverage",
+      "name": "The 100% Test Coverage Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Add tests until coverage reaches 100%.",
+      "prompt": "Run the coverage report. Find the file with the lowest coverage, write meaningful tests (real behavior, edge + error cases — not assertion-free filler) for its uncovered lines, and re-run coverage. Repeat until coverage is 100% and the whole suite passes. Skip nothing silently — if a line is genuinely untestable, mark it with an explicit ignore + reason."
+    },
+    {
+      "id": "logging-coverage",
+      "name": "The Logging Coverage Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Add logging until every important path emits useful, tested logs.",
+      "prompt": "Walk the important code paths (entry points, external calls, error branches, state changes). For each that lacks useful logging, add a structured log line (timestamp, operation, key ids, outcome) and a test asserting it fires. Repeat until every important path produces useful, tested logs. Avoid noise — log decisions and failures, not every line."
+    },
+    {
+      "id": "nightly-changelog",
+      "name": "The Nightly Changelog Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Each night, review the previous day's changes and update the changelog.",
+      "prompt": "Review all commits/merged PRs from the last 24 hours. Summarize the meaningful user-facing and developer-facing changes into clear changelog entries grouped by Added / Changed / Fixed / Removed. Prepend a dated section to CHANGELOG.md. Skip noise (formatting, typo-only). Run nightly."
+    },
+    {
+      "id": "test-suite-speed",
+      "name": "The Test-Suite Speed Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Make the test suite run as fast as possible.",
+      "prompt": "Profile the test suite and find the slowest tests/setup. Speed up the biggest offender (parallelize, share fixtures, mock slow I/O, remove redundant work) WITHOUT weakening coverage, then re-time the suite. Repeat, always attacking the current bottleneck, until the suite is as fast as it reasonably can be. Report total time before/after each step."
+    },
+    {
+      "id": "repo-cleanup",
+      "name": "The Repository Cleanup Loop",
+      "category": "Engineering",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Audit branches, PRs, commits, and worktrees, then tidy up.",
+      "prompt": "Inspect local and remote branches, open PRs, stale worktrees, and dangling commits. For each: decide keep / merge / close / delete with a one-line reason, and act on the safe ones (delete merged branches, flag stale PRs). Never delete unmerged work without surfacing it first. Repeat until the repo is tidy; report what you removed and what needs a human decision."
+    },
+    {
+      "id": "ticket-to-pr",
+      "name": "The Ticket-to-PR-Ready Loop",
+      "category": "Engineering",
+      "creator": "Hiten Shah",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Turn a ticket into a review-ready patch with the failure defined up front.",
+      "prompt": "Take this ticket and turn it into a review-ready PR. First, define the failure precisely: write a test that reproduces the bug/encodes the feature and currently fails. Then implement the minimal fix, make the test pass, run the full suite, and write a clear PR description (problem, fix, test, risk). Iterate until the PR would pass review with no obvious gaps."
+    },
+    {
+      "id": "clodex-review",
+      "name": "The Clodex Adversarial-Review Loop",
+      "category": "Engineering",
+      "creator": "Lukas Kucinski",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Run a Codex code review and fix every finding above a set threshold.",
+      "prompt": "Hand your current diff to a separate code-review agent (e.g. Codex) and ask it to find problems adversarially. Triage findings by severity. Fix every finding at or above your chosen threshold (e.g. medium+), re-run the review on the new diff, and repeat until no findings remain above threshold. Log deferred low-severity items with reasons."
+    },
+    {
+      "id": "loop-harness-verify",
+      "name": "The Loop Harness Verification Loop",
+      "category": "Engineering",
+      "creator": "Istasha",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Have a second agent session verify the staged work against the criteria.",
+      "prompt": "After staging your work, spin up a SECOND, independent agent session that did not write the code. Give it only the acceptance criteria and the staged diff. Its job: build, lint, run tests, and verify each criterion is actually met. If it finds gaps, return them to the implementer to fix, then re-verify. Only mark done when the independent session passes it."
+    },
+    {
+      "id": "fresh-clone",
+      "name": "The Fresh-Clone Loop",
+      "category": "Engineering",
+      "creator": "0xUmbra",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Clone into a clean, empty environment and follow the README to catch setup gaps.",
+      "prompt": "Clone this repo into a clean, empty environment with nothing preinstalled. Follow the README's setup steps EXACTLY as written, top to bottom. Every time a step fails or a hidden prerequisite surfaces, fix the README (or setup script) so the next person doesn't hit it. Repeat from a fresh clone until setup works end-to-end with zero manual guesswork."
+    },
+    {
+      "id": "llm-codegen-workflow",
+      "name": "The LLM Codegen Workflow",
+      "category": "Engineering",
+      "creator": "Harper Reed (popularized by Simon Willison)",
+      "url": "https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/",
+      "description": "Brainstorm a spec one question at a time, generate a plan, then execute prompts in order.",
+      "prompt": "Phase 1 (spec): Ask me ONE question at a time to build a thorough, step-by-step spec for this idea; each question builds on my last answer. When complete, write spec.md.\nPhase 2 (plan): From spec.md, produce prompt_plan.md — a sequence of small, safe implementation prompts — plus todo.md of granular steps.\nPhase 3 (build): Execute the prompts from prompt_plan.md in order, running tests after each, checking off todo.md as you go."
+    },
+    {
+      "id": "multi-file-refactor",
+      "name": "The Multi-File Refactor Loop",
+      "category": "Engineering",
+      "creator": "community",
+      "url": "https://www.augmentcode.com/learn/automate-multi-file-code-refactoring-with-ai-agents-a-step-by-step-guide",
+      "description": "Plan the change, apply transforms across call sites, run tests after each, until behavior is preserved.",
+      "prompt": "Plan a refactor that spans multiple files. First map every call site / dependency affected. Apply the change in small, behavior-preserving steps; after EACH step run the full test suite and commit only if green. If a step changes behavior, revert and rethink. Repeat until the refactor is complete, all references are updated, and the suite is green."
+    },
+    {
+      "id": "code-migration",
+      "name": "The Code Migration Loop",
+      "category": "Engineering",
+      "creator": "research",
+      "url": "https://arxiv.org/pdf/2602.09944",
+      "description": "Environment-in-the-loop: plan, set up env, migrate, run tests, refine until the port passes.",
+      "prompt": "Migrate this code to the target language/framework with the environment in the loop. Steps: (1) plan the migration and set up a runnable target environment; (2) port a slice; (3) run the target's tests against it; (4) read failures and refine. Repeat slice by slice until the migrated code passes the same behavioral tests as the original. Keep a mapping of old->new for traceability."
+    },
+    {
+      "id": "self-correcting-agent",
+      "name": "The Self-Correcting Agent Loop",
+      "category": "Engineering",
+      "creator": "community",
+      "url": "https://www.matterai.so/guides/agentic-workflows-building-self-correcting-loops-with-langgraph-and-crewai-state-machines",
+      "description": "A state-machine loop with conditional edges: act -> check -> retry, bounded by iteration limits.",
+      "prompt": "Run as a state machine: ACT (attempt the task) -> CHECK (validate the result against explicit success criteria) -> if it fails, RETRY with the failure reason fed back in. Cap retries at N (e.g. 3). On success, exit and return the result; on hitting the cap, stop and report the last failure plus what you tried. Never loop unbounded."
+    },
+    {
+      "id": "mobile-closed-loop",
+      "name": "The Mobile Closed-Loop Build",
+      "category": "Engineering",
+      "creator": "Alexander Zanfir",
+      "url": "https://medium.com/@alexzanfir/closed-loop-development-how-ai-agents-build-software-while-you-sleep-6df42cd05a85",
+      "description": "Install on a virtual device, tap through every screen, fix crashes, repeat until store-ready.",
+      "prompt": "Build and install the app on a virtual device. Programmatically tap through every screen and flow; verify layouts across screen sizes; watch for crashes, broken navigation, and slow frames. When you hit a defect, reproduce it, fix it, rebuild, and re-run the full walkthrough. Repeat until a complete walkthrough passes clean on all target device sizes."
+    },
+    {
+      "id": "quality-streak",
+      "name": "The Quality Streak Loop",
+      "category": "Testing & evaluation",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Test realistic scenarios; when one fails, document it and fix it.",
+      "prompt": "Run realistic end-to-end scenarios against the product, one after another. The moment one fails: document it (steps, expected, actual), find the root cause, fix it, add a regression test, and only then continue the streak. Keep going until you can run a long streak of realistic scenarios with zero failures. Report the streak length and every issue found."
+    },
+    {
+      "id": "full-product-eval",
+      "name": "The Full Product Evaluation Loop",
+      "category": "Testing & evaluation",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Generate N realistic scenarios, each with explicit success criteria.",
+      "prompt": "Create N realistic user scenarios that exercise the product's real use cases, each with explicit, checkable success criteria. Run every scenario, score pass/fail against its criteria, and collect failures. Fix the failures (root cause, not symptom), then re-run the whole set. Repeat until all N pass. Keep the scenario set as a living eval suite."
+    },
+    {
+      "id": "self-improving-champion",
+      "name": "The Self-Improving Champion Loop",
+      "category": "Testing & evaluation",
+      "creator": "Jose C. Munoz",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Iterative optimization with a budget, scoring, and gate checks.",
+      "prompt": "Hold a 'champion' solution and its score. Within a fixed budget, repeatedly: generate a challenger variation, score it on the same rubric, and run gate checks (correctness, constraints). If the challenger beats the champion AND passes all gates, it becomes the new champion. Otherwise discard it. Stop when the budget is spent or improvements stall; return the champion."
+    },
+    {
+      "id": "devils-advocate",
+      "name": "The Devil's-Advocate Loop",
+      "category": "Testing & evaluation",
+      "creator": "Anonymous",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Argue against your own design via a critic sub-agent until it survives.",
+      "prompt": "Take your current design/plan. Spawn a critic persona whose only job is to argue AGAINST it — find the strongest objections, failure modes, and cheaper alternatives. For each serious objection, either fix the design or write a clear rebuttal. Repeat the attack with fresh eyes until the design survives a round with no new serious objections. Summarize the objections raised and how each was resolved."
+    },
+    {
+      "id": "tdad",
+      "name": "TDAD — Test-Driven Agentic Development",
+      "category": "Testing & evaluation",
+      "creator": "research",
+      "url": "https://arxiv.org/pdf/2603.17973",
+      "description": "Use a code dependency graph for blast-radius before each change to cut regressions.",
+      "prompt": "Before changing any code, build/consult a dependency graph to identify exactly which modules and tests your change can affect (its blast radius). Write/identify the tests covering that radius. Make the change, then run that targeted set first and the full suite second. If a previously-passing test in the radius breaks, treat it as a regression and revert. Repeat per change."
+    },
+    {
+      "id": "eval-driven-dev",
+      "name": "Eval-Driven Development (LLM-as-Judge)",
+      "category": "Testing & evaluation",
+      "creator": "Eugene Yan (& community)",
+      "url": "https://eugeneyan.com/writing/eval-process/",
+      "description": "Write evals first, change, run evals, integrate; route flagged traces into a golden dataset.",
+      "prompt": "Treat evals like tests. (1) Before building an AI feature, define success criteria as evals with a clear rubric and a golden dataset. (2) Make a change. (3) Run the evals (use an LLM-as-judge validated to ~75-90% agreement with human labels). (4) Integrate only if scores hold/improve. When production surfaces a bad case, add it to the golden dataset and re-test. Loop."
+    },
+    {
+      "id": "pre-commit-guard",
+      "name": "Pre-Commit Guard",
+      "category": "Testing & evaluation",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "A hook that runs tests before each commit and blocks commits while the suite is red.",
+      "prompt": "Set up a pre-commit hook that runs the test suite (or the fast, relevant subset) before every commit. If anything fails, block the commit and surface the failures. Only allow the commit through when the suite is green. Keep the hook fast enough that it doesn't tempt anyone to bypass it."
+    },
+    {
+      "id": "post-edit-test-guard",
+      "name": "Post-Edit Test Guard",
+      "category": "Testing & evaluation",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "A hook that runs the related tests after each file edit to catch regressions immediately.",
+      "prompt": "After every file edit, automatically run the tests related to the changed file (map source->tests). If a related test now fails, stop and surface it immediately so the regression is caught at the moment it's introduced, not at commit time. Keep running until edits leave related tests green."
+    },
+    {
+      "id": "independent-verifier",
+      "name": "Independent Verifier Pass",
+      "category": "Testing & evaluation",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "A separate verifier runs build + lint + tests with no access to the implementer's rationale.",
+      "prompt": "When the implementer claims the task is done, hand a SEPARATE verifier agent only the diff and the acceptance criteria — not the implementer's reasoning or chat. The verifier independently runs build, lint, and tests and checks each criterion. It returns PASS or a list of concrete failures. The work is done only when an independent verifier returns PASS."
+    },
+    {
+      "id": "opro",
+      "name": "OPRO (Optimization by PROmpting)",
+      "category": "Prompt & model optimization",
+      "creator": "Google DeepMind (Yang et al.)",
+      "url": "https://billtcheng2013.medium.com/automated-prompt-engineering-part-2-c5745039cd81",
+      "description": "Feed the LLM prompts paired with their scores; it generates better variants toward higher accuracy.",
+      "prompt": "Optimize a prompt by treating the LLM as the optimizer. Maintain a history of (candidate prompt, score) pairs on a fixed eval set. Each step: show the LLM the top-scoring candidates with their scores and ask it to propose a NEW prompt likely to score higher. Evaluate the new prompt on the eval set, add it to the history, and repeat until scores plateau. Return the best prompt."
+    },
+    {
+      "id": "textgrad",
+      "name": "TextGrad",
+      "category": "Prompt & model optimization",
+      "creator": "Stanford (Yuksekgonul et al.)",
+      "url": "https://arxiv.org/pdf/2406.07496",
+      "description": "Textual gradient descent — an LLM proposes edits that reduce a textual loss across your pipeline.",
+      "prompt": "Improve this prompt/pipeline via textual gradients. (1) Run it and compute a textual 'loss' — an LLM critique of what went wrong vs the target. (2) Ask an LLM for the 'gradient': specific edits to the prompt that would reduce that loss. (3) Apply the edits, re-run, re-evaluate. Repeat for K steps or until the loss stops decreasing. Keep the best version."
+    },
+    {
+      "id": "dspy",
+      "name": "DSPy",
+      "category": "Prompt & model optimization",
+      "creator": "Stanford NLP (Khattab et al.)",
+      "url": "https://github.com/stanfordnlp/dspy",
+      "description": "Program prompts as modules with signatures; a compiler optimizes them against a metric.",
+      "prompt": "Instead of hand-tuning prompts, declare your task as modules with input/output signatures and a metric. Provide a small training/dev set. Let the optimizer (compiler) search prompts/demonstrations that maximize the metric on the dev set, iterating automatically. Evaluate the compiled program on held-out data; keep it if it beats the baseline. (Use the DSPy framework.)"
+    },
+    {
+      "id": "promptbreeder",
+      "name": "PromptBreeder",
+      "category": "Prompt & model optimization",
+      "creator": "Google DeepMind (Fernando et al.)",
+      "url": "https://futureagi.com/blog/top-10-prompt-optimization-tools-2025/",
+      "description": "Evolutionary search that mutates and breeds prompts, selecting by fitness across generations.",
+      "prompt": "Evolve prompts genetically. Start with a population of candidate prompts. Each generation: score every candidate on a fixed eval set (fitness), keep the top performers, then create the next generation by mutating and recombining them (also evolve the mutation instructions themselves). Repeat for G generations and return the highest-fitness prompt."
+    },
+    {
+      "id": "ai-scientist",
+      "name": "The AI Scientist",
+      "category": "Research & data science",
+      "creator": "Sakana AI (Lu et al.)",
+      "url": "https://arxiv.org/pdf/2503.24047",
+      "description": "Autonomous loop: generate research ideas, run experiments, analyze results, write the paper.",
+      "prompt": "Run an autonomous research loop on this problem. (1) Generate a novel, testable hypothesis. (2) Design and implement an experiment for it. (3) Run it and record results. (4) Analyze: did it support the hypothesis? (5) Write up the finding. Feed what you learned into the next hypothesis. Repeat, keeping a research log, until you have a result worth reporting."
+    },
+    {
+      "id": "agentomics-ml",
+      "name": "Agentomics-ML",
+      "category": "Research & data science",
+      "creator": "research",
+      "url": "https://arxiv.org/pdf/2506.05542",
+      "description": "Autonomous ML experimentation loop that produces a suitable model for a dataset.",
+      "prompt": "Given a dataset and a target metric, autonomously build a good model. Loop: inspect the data, propose a modeling approach (features, model, hyperparameters), train, evaluate on a held-out split, and record the metric. Keep changes that improve held-out performance, revert those that don't. Repeat until the metric plateaus; output the best model and a summary of what worked."
+    },
+    {
+      "id": "deep-research",
+      "name": "Deep Research Loop",
+      "category": "Research & data science",
+      "creator": "LangChain (Open Deep Research)",
+      "url": "https://www.langchain.com/blog/open-deep-research",
+      "description": "Planner -> search sub-agents -> synthesize -> 'need more?' -> loop until coverage is sufficient, then cite.",
+      "prompt": "Research this question thoroughly. (1) Plan: break it into sub-questions. (2) For each, search, fetch sources, and extract findings with citations. (3) Synthesize what you have and identify gaps or contradictions. (4) If coverage is insufficient, generate sharper follow-up queries and loop. Stop when the plan is well covered, then write a cited, structured report. Verify load-bearing claims against primary sources."
+    },
+    {
+      "id": "mlops-retraining",
+      "name": "The MLOps Retraining Loop",
+      "category": "Research & data science",
+      "creator": "community",
+      "url": "https://www.auxiliobits.com/blog/mlops-for-agentic-ai-continuous-learning-and-model-drift-detection/",
+      "description": "Monitor for drift, retrain past threshold, compare, ship only if better, keep monitoring.",
+      "prompt": "Continuously monitor the deployed model for data/prediction drift. When drift exceeds the threshold for the agreed window, trigger retraining on fresh labeled data. Evaluate the new model against the current one on a holdout; promote it only if it's meaningfully better and passes gates. Then resume monitoring. Log every drift event, retrain, and promotion decision."
+    },
+    {
+      "id": "ai-red-teaming",
+      "name": "The AI Red-Teaming Loop",
+      "category": "Security & red-teaming",
+      "creator": "community",
+      "url": "https://github.com/requie/AI-Red-Teaming-Guide",
+      "description": "Adversarially attack the system, feed results back, re-test on a schedule.",
+      "prompt": "Adversarially attack this AI system. Run a battery of attacks: prompt injection (direct + indirect), jailbreaks, data/secret exfiltration, tool misuse, and cross-user access. For each successful attack, document the exploit and the fix (input handling, isolation, guardrail). Apply fixes, then re-run the full battery. Repeat until the battery passes, and schedule it to re-run as new attack techniques appear."
+    },
+    {
+      "id": "rvb",
+      "name": "RvB — Iterative Red-Blue Games",
+      "category": "Security & red-teaming",
+      "creator": "research",
+      "url": "https://arxiv.org/pdf/2601.19726",
+      "description": "Automate hardening through repeated red-team-attacks / blue-team-defends rounds.",
+      "prompt": "Harden the system through rounds. RED: find and exploit a weakness; document the attack. BLUE: patch that weakness and add a detection/test for it. Re-run RED against the patched system. Repeat round after round; each round RED must find something new or the system is considered hardened for the current threat model. Keep a log of every attack and defense."
+    },
+    {
+      "id": "self-refine",
+      "name": "Self-Refine",
+      "category": "Writing & content",
+      "creator": "Madaan et al.",
+      "url": "https://learnprompting.org/docs/advanced/self_criticism/self_refine",
+      "description": "One LLM drafts, critiques its own draft, then revises, looping until a stopping criterion.",
+      "prompt": "Produce a first draft. Then, against an explicit rubric, write specific, actionable critique of YOUR OWN draft (what's weak, unclear, missing). Revise the draft using that critique. Keep a memory of past feedback so you don't repeat mistakes. Repeat draft->critique->revise until the critique finds nothing material to fix or you hit a set number of rounds."
+    },
+    {
+      "id": "draft-critique-finalize",
+      "name": "Draft -> Critique -> Finalize",
+      "category": "Writing & content",
+      "creator": "community",
+      "url": "https://learnwithparam.com/blog/prompt-engineering-self-critique-refinement",
+      "description": "Force deliberation: generate an idea, critique it against criteria, regenerate from the critique.",
+      "prompt": "Step 1 DRAFT: generate your first answer. Step 2 CRITIQUE: evaluate that draft against the stated criteria, listing concrete weaknesses. Step 3 FINALIZE: write a NEW version that addresses every critique point. Don't just lightly edit — regenerate from the critique. Output only the finalized version plus a one-line note on what improved."
+    },
+    {
+      "id": "llm-peer-review",
+      "name": "LLM Peer Review",
+      "category": "Writing & content",
+      "creator": "research",
+      "url": "https://arxiv.org/pdf/2601.08003",
+      "description": "Multiple agents review each other's drafts, then privately revise — distributed critique.",
+      "prompt": "Create K independent drafts (different personas/angles). Have each draft reviewed by the OTHER agents, who give blind, constructive feedback against a rubric — no agent sees others' revisions. Each author then privately revises using the feedback received. Select or merge the strongest revised draft. Report the feedback themes that drove the improvements."
+    },
+    {
+      "id": "chain-of-density",
+      "name": "Chain of Density",
+      "category": "Writing & content",
+      "creator": "Adams et al.",
+      "url": "https://arxiv.org/pdf/2309.04269",
+      "description": "Iteratively rewrite a summary, fusing in missing entities each pass without growing length.",
+      "prompt": "Summarize the text in a fixed length. Then repeat N times: identify 1-3 salient entities/details MISSING from your current summary and rewrite a new summary of the SAME length that includes them — making room via fusion, abstraction, and compression, never by dropping prior content or adding length. Output the final, densest summary."
+    },
+    {
+      "id": "seo-geo",
+      "name": "The SEO/GEO Visibility Loop",
+      "category": "Writing & content",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Audit crawlability, indexation, and structured data, and fix gaps.",
+      "prompt": "Audit the site for search + generative-engine visibility: crawlability, indexation, metadata, structured data, internal links, and content gaps. List issues by impact. Fix the highest-impact issue, re-audit, and repeat. Continue until a full audit surfaces no high-impact issues, then report the before/after on each checked dimension."
+    },
+    {
+      "id": "product-podcast",
+      "name": "The Product Update Podcast Loop",
+      "category": "Writing & content",
+      "creator": "Pierson Marks",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Generate a short 3-5 minute podcast episode about new features.",
+      "prompt": "Review the latest shipped features (from the changelog/PRs). Write a tight 3-5 minute podcast script that explains what's new, why it matters, and how to use it, in a natural spoken voice. Generate the audio. Run this on each release so every update gets its own short episode."
+    },
+    {
+      "id": "war-loops",
+      "name": "War Loops: Autonomous Frontend Designer",
+      "category": "Design",
+      "creator": "Swayam",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Point it at a URL or image and produce iterative design builds.",
+      "prompt": "Given a target URL or reference image, capture it, derive a design spec (layout, type, color, spacing), then build the UI to match. Render your build, screenshot it, and compare it against the target. For each visual gap, make a surgical fix and re-render. Repeat until the build matches the reference to a high fidelity. Report the remaining intentional differences."
+    },
+    {
+      "id": "boeing-747",
+      "name": "The Boeing 747 Benchmark",
+      "category": "Design",
+      "creator": "@victormustar",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Build the most realistic Boeing 747 you can in Three.js — a model-capability benchmark.",
+      "prompt": "Build the most realistic Boeing 747 you can in Three.js. Render it, screenshot from multiple angles, and critique the result against real reference photos (proportions, livery, lighting, detail). Fix the biggest realism gap, re-render, and compare again. Repeat until it's as photorealistic as you can get. (A fun benchmark for a model's spatial + graphics ability.)"
+    },
+    {
+      "id": "infinite-clickbait",
+      "name": "The Infinite Clickbait Loop",
+      "category": "Design",
+      "creator": "@Alex_FF",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Generate ten thumbnail concepts and score each against a rubric.",
+      "prompt": "Generate 10 distinct thumbnail concepts for the topic. Score each against a rubric (clarity at small size, curiosity, contrast, focal point, emotional hook). Keep the top scorers, then generate 10 new variations that push on what made them work. Repeat until a concept clearly tops the rubric. Output the winner plus the runner-ups and their scores."
+    },
+    {
+      "id": "threejs-game",
+      "name": "The Three.js Game Loop",
+      "category": "Design",
+      "creator": "majidmanzarpour",
+      "url": "https://github.com/majidmanzarpour/threejs-game-skills",
+      "description": "Build a playable loop first, then iterate until it passes gameplay, visual, perf & release checks.",
+      "prompt": "Build the smallest PLAYABLE core loop first (move, interact, win/lose). Then iterate: playtest it, pick the weakest aspect (fun, feel, visuals, performance), improve it, and playtest again. After each pass, run the checklist: plays on desktop + mobile, no visual glitches, stable frame rate, clear UI. Repeat until every check passes."
+    },
+    {
+      "id": "videoagent",
+      "name": "VideoAgent",
+      "category": "Design",
+      "creator": "HKUDS",
+      "url": "https://github.com/HKUDS/VideoAgent",
+      "description": "Agentic video editing with reflection rounds + adaptive feedback loops that refine the plan.",
+      "prompt": "Plan the video edit (shots, cuts, captions, pacing). Produce a draft, then REFLECT: watch it back and evaluate against the goal (clarity, pacing, hook). Use that self-evaluation to refine the plan and re-render the affected parts. Repeat the reflect->refine loop until the cut meets the goal. (Or use the VideoAgent framework.)"
+    },
+    {
+      "id": "a11y-audit",
+      "name": "The a11y Audit Loop",
+      "category": "Accessibility",
+      "creator": "snapsynapse",
+      "url": "https://github.com/snapsynapse/skill-a11y-audit",
+      "description": "Scan for WCAG violations, apply remediation hints, re-scan until compliant.",
+      "prompt": "Audit the site against WCAG 2.x AA. For each violation, apply the remediation (labels, contrast, focus order, alt text, ARIA) and re-scan. Repeat until automated scans are clean. NOTE: automated tools catch only ~30-40% of issues — finish with keyboard-only navigation, a real screen-reader pass, and flag anything needing human/user testing."
+    },
+    {
+      "id": "a11y-review-agents",
+      "name": "Accessibility Review Agents",
+      "category": "Accessibility",
+      "creator": "Community-Access",
+      "url": "https://github.com/Community-Access/accessibility-agents",
+      "description": "Specialist agents that enforce WCAG 2.2 AA so coding agents stop generating inaccessible code.",
+      "prompt": "Before accepting any generated UI, run it past accessibility specialist checks for WCAG 2.2 AA: semantic structure, keyboard operability, focus management, color contrast, names/roles/values, and motion safety. Block code that fails; return specific fixes. Re-check after fixes. Make this a standing gate so inaccessible UI never lands."
+    },
+    {
+      "id": "text-to-sql",
+      "name": "The Text-to-SQL Self-Correction Loop",
+      "category": "Data & analytics",
+      "creator": "Rudder Analytics",
+      "url": "https://medium.com/@rudderanalytics/ai-agent-for-sql-queries-and-visualization-using-multi-agent-framework-7f9f3d639108",
+      "description": "Generate SQL, execute, critique, regenerate until executable and semantically correct.",
+      "prompt": "Turn the question into SQL. Then: EXECUTE it against the database (read-only). If it errors, read the error and rewrite. If it runs, CRITIQUE the result — does it actually answer the question, with the right grain, filters, and joins? If not, revise and re-run. Repeat until the query is both executable and semantically correct, then return the SQL + a one-line explanation."
+    },
+    {
+      "id": "active-learning-labeling",
+      "name": "The Active-Learning Labeling Loop",
+      "category": "Data & analytics",
+      "creator": "community",
+      "url": "https://dev.co/ai/ai-assisted-data-labeling-using-active-learning-loops",
+      "description": "Auto-label high-confidence items, route low-confidence to humans, retrain, until a stop rule.",
+      "prompt": "Label a dataset efficiently. (1) Auto-label items where model confidence exceeds the quality threshold. (2) Route the lowest-confidence items to a human. (3) Retrain on the new labels and update uncertainty estimates. (4) Repeat. Stop when one of: the model hits the production KPI, marginal accuracy gain per round falls below threshold, or the labeling budget is exhausted."
+    },
+    {
+      "id": "loop-marketing",
+      "name": "Loop Marketing / Growth Loop",
+      "category": "Marketing & growth",
+      "creator": "HubSpot",
+      "url": "https://www.hubspot.com/loop-marketing",
+      "description": "Run small fast A/B tests on hooks/offers/audiences; roll each learning back in, compounding.",
+      "prompt": "Run growth as a compounding loop. Each cycle: pick one lever (hook, offer, audience, or channel), ship a small fast A/B test with a clear metric, measure, and roll the winning learning back into your creative, targeting, and spend. Kill losers quickly. Keep cycles small and frequent so each one sharpens the next. Track the metric trend across cycles."
+    },
+    {
+      "id": "support-attd",
+      "name": "The Support Resolution Loop (ATTD)",
+      "category": "Support & sales",
+      "creator": "Fin AI (Intercom)",
+      "url": "https://fin.ai/learn/ai-agents-resolve-tickets-faster",
+      "description": "Analyze -> Train -> Test -> Deploy: resolve tickets and improve from human-corrected escalations.",
+      "prompt": "Improve support resolution in a loop. ANALYZE recent tickets to find common, automatable intents and where the agent fails. TRAIN/update the agent's answers and actions for those. TEST against held-out tickets and edge cases. DEPLOY, routing low-confidence/high-risk/emotional cases to humans. Feed human corrections back into the next ANALYZE. Repeat."
+    },
+    {
+      "id": "batch-release",
+      "name": "The Stale-Safe Batch Release Loop",
+      "category": "Operations",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Exclude stale/unfinished work, combine valid changes, and release.",
+      "prompt": "Prepare a batch release. Inventory all candidate changes; for each, decide if it's complete and safe or stale/unfinished. Exclude anything stale or risky (with a reason). Combine the valid changes, run the full test + smoke suite, and only cut the release if green. Repeat the inclusion check until the batch is clean. Report what was included and what was held back."
+    },
+    {
+      "id": "prod-data-cleanup",
+      "name": "The Production Data Cleanup Loop",
+      "category": "Operations",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Remove anything that doesn't meet the allowed definition.",
+      "prompt": "Define precisely what 'valid' data looks like. Scan production data against that definition; for each record that doesn't meet it, decide fix vs remove. Act on a SMALL reversible batch first (with a backup), verify nothing legitimate was lost, then continue. Repeat until all data meets the definition. Never bulk-delete without a backup and a verified sample."
+    },
+    {
+      "id": "post-release-baseline",
+      "name": "The Post-Release Baseline Loop",
+      "category": "Operations",
+      "creator": "Matthew Berman",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Run the standard benchmarks and record the results after each release.",
+      "prompt": "After each release, run the standard benchmark suite (latency, throughput, error rate, key business metrics) and record the results as the new baseline, tagged to the release. Compare against the previous baseline; flag any regression beyond the agreed tolerance and open an issue. Keep the history so trends are visible across releases."
+    },
+    {
+      "id": "customer-ai-deploy",
+      "name": "The Customer AI Deployment Loop",
+      "category": "Operations",
+      "creator": "AgentLed.ai",
+      "url": "https://signals.forwardfuture.ai/loop-library/",
+      "description": "Manage one customer AI deployment from priority to production.",
+      "prompt": "Drive one customer AI deployment from intake to production. Loop through: clarify the priority use case + success criteria, configure/integrate, test against the customer's real scenarios, fix gaps, and get sign-off. Don't advance a stage until its criteria are met. Track blockers explicitly and surface them. Stop when it's live and meeting the agreed success criteria."
+    },
+    {
+      "id": "terraform-fix",
+      "name": "The Terraform Fix Loop",
+      "category": "DevOps & infrastructure",
+      "creator": "community",
+      "url": "https://computingforgeeks.com/ai-coding-agents-devops-terraform-ansible-kubernetes/",
+      "description": "validate -> plan -> apply -> verify, reading the error and fixing until the infra is correct.",
+      "prompt": "Iterate on infrastructure code: run `terraform validate`, then `plan`, read any error or unexpected diff, fix the code, and repeat until the plan is clean and matches intent. Then `apply` and verify the real resources (via CLI/API) are healthy. IMPORTANT: keep scope tight — only change what the task needs; do not refactor adjacent infra. Revert if apply misbehaves."
+    },
+    {
+      "id": "ship-pr-green",
+      "name": "Ship PR Until Green",
+      "category": "DevOps & infrastructure",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "Implement on a branch, push, open a PR, wait for CI, loop until checks pass and it's merge-ready.",
+      "prompt": "Implement the change on a feature branch. Run tests locally, push, and open a PR. Wait for CI; when checks go red, read the logs, push a fix, and wait again. Repeat until every check is green and the PR is genuinely merge-ready (description, tests, no unresolved review comments). Then report it's ready to merge."
+    },
+    {
+      "id": "ci-failure-watcher",
+      "name": "CI Failure Watcher",
+      "category": "DevOps & infrastructure",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "Poll CI on an interval; when checks go red, investigate and push fixes until green.",
+      "prompt": "Poll CI on a fixed interval. When a run goes red, fetch the logs, identify the failing job and root cause, push a targeted fix, and keep watching. Repeat until the pipeline is green again. Summarize each failure and the fix. Don't sit idle — re-check on the interval until resolved."
+    },
+    {
+      "id": "deploy-verification",
+      "name": "Deploy Verification Loop",
+      "category": "DevOps & infrastructure",
+      "creator": "elorm",
+      "url": "https://loops.elorm.xyz/",
+      "description": "After a deploy, hit health + smoke endpoints on an interval until everything returns healthy.",
+      "prompt": "After a deploy, poll the health and smoke-test endpoints on an interval. Treat the deploy as unverified until all checks return healthy responses within the timeout. If checks fail past the threshold, surface it (and trigger rollback if configured). Only mark the deploy verified once a full pass is healthy. Log each check."
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "category": "Autonomous coding agents",
+      "creator": "Paul Gauthier",
+      "url": "https://github.com/Aider-AI/aider",
+      "description": "Pair-programming loop with architect -> editor mode; edits via diffs against a repo map.",
+      "prompt": "Use Aider's loop: it builds a tree-sitter repo map for context, proposes edits as diffs, applies them, and can run tests/lint and auto-fix. For complex work use architect mode (one model plans the change, another writes the edits). Iterate edit->test until the task passes. (This is the Aider CLI; `pip install aider-install`.)"
+    },
+    {
+      "id": "swe-agent",
+      "name": "SWE-agent",
+      "category": "Autonomous coding agents",
+      "creator": "Princeton NLP",
+      "url": "https://github.com/princeton-nlp/SWE-agent",
+      "description": "Agent-computer-interface loop that reads an issue, edits the repo, runs tests, iterates to a patch.",
+      "prompt": "Use SWE-agent's loop on a GitHub issue: it reads the issue, navigates the repo through a constrained agent-computer interface, edits files, runs the tests, observes failures, and iterates until it produces a passing patch. Best for turning an issue into a PR-ready diff. (See the SWE-agent repo for setup.)"
+    },
+    {
+      "id": "openhands",
+      "name": "OpenHands (ex-OpenDevin)",
+      "category": "Autonomous coding agents",
+      "creator": "All-Hands-AI",
+      "url": "https://github.com/All-Hands-AI/OpenHands",
+      "description": "Multi-agent delegation loop: plan -> act -> observe across a dev environment.",
+      "prompt": "Use OpenHands to run a full plan->act->observe loop in a sandboxed dev environment: it writes code, runs commands, browses, and delegates subtasks between agents, observing results and iterating toward the goal. Good for end-to-end tasks that span editing, running, and testing. (See the OpenHands repo for setup.)"
+    },
+    {
+      "id": "autogpt",
+      "name": "AutoGPT",
+      "category": "Autonomous coding agents",
+      "creator": "Significant-Gravitas",
+      "url": "https://github.com/Significant-Gravitas/AutoGPT",
+      "description": "The original autonomous goal loop: decompose a goal into tasks and execute until met.",
+      "prompt": "Give AutoGPT a high-level goal. It will decompose the goal into tasks, execute them using its tools, observe the results, and create follow-up tasks — looping autonomously toward the objective. Add a max-iteration cap and clear success criteria so it terminates. (See the AutoGPT repo for setup.)"
+    },
+    {
+      "id": "babyagi",
+      "name": "BabyAGI",
+      "category": "Autonomous coding agents",
+      "creator": "Yohei Nakajima",
+      "url": "https://github.com/yoheinakajima/babyagi",
+      "description": "Task-creation/prioritization/execution loop backed by a vector store of prior results.",
+      "prompt": "Run BabyAGI's loop on an objective: it pulls the top task, executes it, stores the result in a vector store, then creates and reprioritizes new tasks based on the objective and what it has learned — repeating until the objective is met or you cap iterations. (See the BabyAGI repo for setup.)"
+    },
+    {
+      "id": "loop-engineering",
+      "name": "loop-engineering",
+      "category": "Tools & harnesses",
+      "creator": "Cobus Greyling",
+      "url": "https://github.com/cobusgreyling/loop-engineering",
+      "description": "Patterns, starters & CLI tools (loop-audit, loop-init, loop-cost) for loop engineering.",
+      "prompt": "Use the loop-engineering toolkit to scaffold and run agent loops: `loop-init` to start a loop project, `loop-audit` to check loop design/quality, and `loop-cost` to track spend. A practical starter for building your own recursive agent loops. (See the repo.)"
+    },
+    {
+      "id": "autoloop",
+      "name": "autoloop",
+      "category": "Tools & harnesses",
+      "creator": "Arm Gabrielyan",
+      "url": "https://github.com/armgabrielyan/autoloop",
+      "description": "Agent-agnostic iterative-optimization loops for Claude Code, Codex, Cursor, Gemini CLI.",
+      "prompt": "Use autoloop to run iterative-optimization loops with any agent (Claude Code, Codex, Cursor, OpenCode, Gemini CLI). Point it at a task with a measurable goal; it drives the propose->try->measure->keep/revert loop for you. Inspired by Karpathy's autoresearch. (See the repo.)"
+    },
+    {
+      "id": "agentic-loop",
+      "name": "agentic-loop",
+      "category": "Tools & harnesses",
+      "creator": "allierays",
+      "url": "https://github.com/allierays/agentic-loop",
+      "description": "Autonomous Claude Code toolkit based on RALPH + PRD-driven development.",
+      "prompt": "Use agentic-loop with Claude Code: write a PRD, and the toolkit runs RALPH-style — executing each story through code->test->commit automatically until the PRD is complete. Good for mostly-autonomous builds. (See the repo.)"
+    },
+    {
+      "id": "agent-loop",
+      "name": "agent-loop",
+      "category": "Tools & harnesses",
+      "creator": "Saik0s",
+      "url": "https://github.com/Saik0s/agent-loop",
+      "description": "A guide + workflows for orchestrating specialized AI personas to build, test, and deploy in a loop.",
+      "prompt": "Use agent-loop's guide to orchestrate specialized AI personas (e.g. planner, builder, tester, reviewer) where a human directs the personas through a build->test->deploy loop collaboratively. A blueprint for structuring multi-persona agentic engineering. (See the repo.)"
+    },
+    {
+      "id": "ralph-prd",
+      "name": "ralph",
+      "category": "Tools & harnesses",
+      "creator": "snarktank",
+      "url": "https://github.com/snarktank/ralph",
+      "description": "An autonomous loop that runs until every item in a PRD is complete.",
+      "prompt": "Use the ralph harness: give it a PRD and it runs an autonomous loop, completing each requirement item by item (implement->test->commit) until the whole PRD is done. (See the repo for setup.)"
+    },
+    {
+      "id": "ralph-claude-code",
+      "name": "ralph-claude-code",
+      "category": "Tools & harnesses",
+      "creator": "Frank Bria",
+      "url": "https://github.com/frankbria/ralph-claude-code",
+      "description": "A Ralph loop for Claude Code with intelligent exit detection.",
+      "prompt": "Use ralph-claude-code to run the Ralph loop with Claude Code, with smart exit detection so it stops when the work is genuinely done rather than looping forever. (See the repo for setup.)"
+    },
+    {
+      "id": "codex-autoresearch-harness",
+      "name": "codex-autoresearch-harness",
+      "category": "Tools & harnesses",
+      "creator": "SarahXC",
+      "url": "https://github.com/SarahXC/codex-autoresearch-harness",
+      "description": "Bash harness to run Karpathy's autoresearch with Codex CLI + an A/B framework.",
+      "prompt": "Use this bash harness to run Karpathy's autoresearch loop with the Codex CLI, including an A/B framework to compare models/approaches across runs. (See the repo for setup.)"
+    },
+    {
+      "id": "autoresearch-guide",
+      "name": "autoresearch-guide",
+      "category": "Tools & harnesses",
+      "creator": "Rkcr7",
+      "url": "https://github.com/Rkcr7/autoresearch-guide",
+      "description": "3,000+ line guide teaching agents to autonomously optimize anything measurable.",
+      "prompt": "Read the autoresearch-guide and apply its pattern: give an agent a file, a metric, and the guide, then let it autonomously optimize the metric overnight (propose->experiment->measure->keep/revert). A deep how-to for the autoresearch loop. (See the repo.)"
+    },
+    {
+      "id": "awesome-autoresearch",
+      "name": "awesome-autoresearch",
+      "category": "Tools & harnesses",
+      "creator": "yibie",
+      "url": "https://github.com/yibie/awesome-autoresearch",
+      "description": "A curated list of autoresearch resources.",
+      "prompt": "Browse awesome-autoresearch for a curated set of autoresearch implementations, harnesses, and write-ups to learn or extend the autoresearch loop. (See the repo.)"
+    },
+    {
+      "id": "react",
+      "name": "ReAct",
+      "category": "Patterns & theory",
+      "creator": "Yao et al.",
+      "url": "https://www.mindstudio.ai/blog/what-is-react-loop-ai-agent-reasoning",
+      "description": "Interleave Thought -> Action -> Observation so reasoning guides tool use and vice versa.",
+      "prompt": "Solve the task by interleaving reasoning and acting. Each step output: Thought (what you're reasoning and why), Action (the tool call to make), then read the Observation (the result). Use the observation to update your next Thought. Loop Thought->Action->Observation until you can give a final answer; then output Answer."
+    },
+    {
+      "id": "reflexion",
+      "name": "Reflexion",
+      "category": "Patterns & theory",
+      "creator": "Shinn et al.",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/1b44b878bb782e6954cd888628510e90-Paper-Conference.pdf",
+      "description": "Actor + Evaluator + Self-Reflection; verbal self-feedback stored in memory across trials.",
+      "prompt": "Attempt the task (Actor). Evaluate the outcome against the goal (Evaluator) — pass or fail with a reason. If it failed, write a short verbal SELF-REFLECTION on WHY it failed and what to do differently, and store it in memory. Retry the task, with all prior reflections in context. Repeat until you pass or hit the trial limit."
+    },
+    {
+      "id": "evaluator-optimizer",
+      "name": "Evaluator-Optimizer",
+      "category": "Patterns & theory",
+      "creator": "Anthropic, Building Effective Agents",
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "description": "Generator proposes, evaluator scores, loop until a quality threshold — the generic critic loop.",
+      "prompt": "Use two roles. GENERATOR produces a candidate answer. EVALUATOR scores it against explicit criteria and returns specific feedback. Feed the feedback back to the GENERATOR to produce an improved candidate. Loop until the EVALUATOR's score clears the threshold or improvement stalls. Keep generator and evaluator as distinct roles."
+    },
+    {
+      "id": "self-consistency-tot",
+      "name": "Self-Consistency / Tree of Thoughts",
+      "category": "Patterns & theory",
+      "creator": "Wang et al. / Yao et al.",
+      "url": "https://arxiv.org/pdf/2405.10467",
+      "description": "Sample many reasoning paths / search a tree of thoughts, then select the best.",
+      "prompt": "For a hard reasoning problem: (Self-Consistency) sample multiple independent reasoning paths and take the majority/most-consistent answer. Or (Tree of Thoughts) branch into several candidate intermediate 'thoughts', evaluate each branch's promise, expand the best, and prune dead ends — searching the tree until you reach a well-supported answer."
+    },
+    {
+      "id": "agent-pattern-catalogue",
+      "name": "Agent Design Pattern Catalogue",
+      "category": "Patterns & theory",
+      "creator": "Liu et al.",
+      "url": "https://arxiv.org/pdf/2405.10467",
+      "description": "A catalogue of architectural patterns for foundation-model agents.",
+      "prompt": "Reference: a catalogue of architectural patterns for foundation-model agents (passive/active goal creation, reflection, tool use, voting, etc.). Use it to pick the right loop/pattern for your agent rather than reinventing one. (See the paper.)"
+    },
+    {
+      "id": "anthropic-workflows",
+      "name": "Anthropic's Agent Workflow Patterns",
+      "category": "Patterns & theory",
+      "creator": "Anthropic",
+      "url": "https://www.anthropic.com/research/building-effective-agents",
+      "description": "The five canonical patterns: prompt chaining, routing, parallelization, orchestrator-worker, evaluator-optimizer.",
+      "prompt": "Reference for composing agent loops. Pick the simplest pattern that fits: PROMPT CHAINING (sequential steps), ROUTING (classify then dispatch), PARALLELIZATION (run subtasks concurrently then aggregate), ORCHESTRATOR-WORKER (a lead delegates dynamic subtasks), or EVALUATOR-OPTIMIZER (generate + critique loop). Prefer workflows (control flow in code) over fully autonomous agents unless you need the flexibility."
+    },
+    {
+      "id": "ralph-loop-agent",
+      "name": "ralph-loop-agent",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "vercel-labs",
+      "url": "https://github.com/vercel-labs/ralph-loop-agent",
+      "description": "Wraps the AI SDK's generateText in an outer loop: run -> verifyCompletion -> inject feedback if not done -> repeat until success or a cost/iteration cap. ~800 stars.",
+      "prompt": "Use ralph-loop-agent (Vercel AI SDK) to wrap a model call in a Ralph-style outer loop: it runs the LLM, calls a verifyCompletion check, and if not done, injects the feedback and loops — stopping on success or a cost/iteration threshold. Good for adding 'keep going until verified' autonomy to an AI SDK app. (See the repo.)"
+    },
+    {
+      "id": "continuous-claude",
+      "name": "continuous-claude",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "AnandChowdhary",
+      "url": "https://github.com/AnandChowdhary/continuous-claude",
+      "description": "Runs Claude Code in a continuous loop that autonomously opens PRs, waits for CI, merges, then starts the next task — context carried in a markdown handoff file. ~1.4k stars.",
+      "prompt": "Use continuous-claude to run Claude Code in a continuous loop: it picks the next task, implements it, opens a PR, waits for CI, merges when green, and carries context forward via a shared markdown handoff file — then starts the next task. Set a task list and a stop condition. (See the repo.)"
+    },
+    {
+      "id": "loki-mode",
+      "name": "loki-mode",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "asklokesh",
+      "url": "https://github.com/asklokesh/loki-mode",
+      "description": "Multi-agent autonomous SDLC orchestrator running Reason-Act-Reflect-Verify cycles with quality gates, from PRD or one-line brief to deployed app. ~982 stars.",
+      "prompt": "Use loki-mode to run a multi-agent autonomous SDLC: give it a PRD or one-line brief and it runs Reason -> Act -> Reflect -> Verify cycles across specialized agents, passing through quality gates toward a deployed app. (See the repo for setup.)"
+    },
+    {
+      "id": "ouroboros",
+      "name": "ouroboros",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Q00",
+      "url": "https://github.com/Q00/ouroboros",
+      "description": "Spec-first loop: a Socratic interview crystallizes an immutable spec, tasks are decomposed and executed, an evaluator scores outputs, and the loop runs until similarity to spec is high. ~4.6k stars.",
+      "prompt": "Use ouroboros ('stop prompting, start specifying'): it runs a Socratic interview to crystallize an immutable spec, decomposes the work, executes tasks, and has an evaluator score outputs against the spec — looping until the spec is satisfied to a high similarity threshold. (See the repo.)"
+    },
+    {
+      "id": "claude-code-harness",
+      "name": "claude-code-harness",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Chachamaru127",
+      "url": "https://github.com/Chachamaru127/claude-code-harness",
+      "description": "Enforces a Plan -> Work -> Review -> Ship cycle for Claude Code: specs approved before implementation, review gated separately, evidence packaged before release. ~2.8k stars.",
+      "prompt": "Use claude-code-harness to enforce a Plan -> Work -> Review -> Ship loop in Claude Code: the spec must be approved before implementation, review is a separate gate, and evidence is packaged before release — so quality gates can't be skipped. (See the repo.)"
+    },
+    {
+      "id": "evoagentx",
+      "name": "EvoAgentX",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "EvoAgentX",
+      "url": "https://github.com/EvoAgentX/EvoAgentX",
+      "description": "Self-evolving agent framework: evaluators score agents, then TextGrad/AFlow/EvoPrompt optimization evolves both prompts and workflow structure across iterations. ~3.1k stars.",
+      "prompt": "Use EvoAgentX to build self-evolving agents: automated evaluators score your agents on benchmarks, then optimization algorithms (TextGrad / AFlow / EvoPrompt) evolve both the prompts and the workflow structure across iterations — improving the system automatically. (See the repo.)"
+    },
+    {
+      "id": "self-improving-coding-agent",
+      "name": "self_improving_coding_agent",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "MaximeRobeyns",
+      "url": "https://github.com/MaximeRobeyns/self_improving_coding_agent",
+      "description": "Four-step self-referential loop: evaluate the agent on benchmarks -> archive -> let it improve its OWN codebase -> repeat, stacking measured gains. ~353 stars.",
+      "prompt": "Use self_improving_coding_agent to run a self-referential loop: evaluate the agent on benchmarks, archive the results, then point the agent at its OWN codebase to improve it, and repeat — stacking only improvements that measurably raise benchmark performance. (See the repo.)"
+    },
+    {
+      "id": "helixent",
+      "name": "helixent",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "MagicCube",
+      "url": "https://github.com/MagicCube/helixent",
+      "description": "Minimal TypeScript library for ReAct-style agent loops (think -> act -> observe) on Bun, with parallel tool calls and observation injection. ~582 stars.",
+      "prompt": "Use helixent (TypeScript/Bun) to build a ReAct-style loop: the agent thinks, acts (calls tools, in parallel where possible), observes the results, and feeds observations back into the next reasoning step — looping until done. A small library, not a full framework. (See the repo.)"
+    },
+    {
+      "id": "millrace",
+      "name": "millrace",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "tim-osterhus",
+      "url": "https://github.com/tim-osterhus/millrace",
+      "description": "Configurable governed agentic-loop runtime: explicit stage gates, durable queues, compiled execution plans, and recovery rules that persist state across context windows. ~48 stars.",
+      "prompt": "Use millrace to run a governed agentic loop: define explicit stage gates, durable queues, and recovery rules so the loop's state persists across individual agent context windows and execution is reliable rather than ad-hoc. (See the repo for setup.)"
+    },
+    {
+      "id": "foreman",
+      "name": "foreman",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "VisionForge-OU",
+      "url": "https://github.com/VisionForge-OU/foreman",
+      "description": "Boris-style TUI supervisor for headless Claude Code agents: plan -> ADR/PRD -> issues -> TDD build -> e2e, with human review gates and per-worktree budget caps. ~56 stars.",
+      "prompt": "Use foreman, a TUI supervisor for headless Claude Code agents: it drives plan -> ADR/PRD -> issues -> TDD build -> e2e with human review gates at the design stages and per-worktree budget caps, so multiple agents run under control. (See the repo.)"
+    },
+    {
+      "id": "llm-loop",
+      "name": "llm-loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "nibzard",
+      "url": "https://github.com/nibzard/llm-loop",
+      "description": "Plugin for Simon Willison's `llm` CLI that runs a turn-based autonomous loop (configurable --max-turns, default 25) with optional manual tool-call approval. ~17 stars.",
+      "prompt": "Use the llm-loop plugin for the `llm` CLI to run a turn-based autonomous loop: the agent chains observations into the next turn, bounded by --max-turns (default 25), with optional manual approval of tool calls. (See the repo.)"
+    },
+    {
+      "id": "awesome-harness-engineering",
+      "name": "awesome-harness-engineering",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "ai-boost",
+      "url": "https://github.com/ai-boost/awesome-harness-engineering",
+      "description": "Awesome-list of agent-loop design primitives: planning, context mgmt, MCP, permissions, memory, orchestration, verification, observability, HITL. ~1.9k stars.",
+      "prompt": "Browse awesome-harness-engineering — the reference index for the whole agent-harness space: planning, context management, MCP integration, permissions, memory, orchestration, verification, observability, and human-in-the-loop patterns. Use it to design your own loops. (See the repo.)"
+    },
+    {
+      "id": "addyosmani-agent-skills",
+      "name": "agent-skills (Addy Osmani)",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "addyosmani",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "description": "Production Claude Code slash-command suite (/spec /plan /build /test /review /ship) implementing a verifiable multi-phase loop; `/build auto` removes human stepping. ~64k stars.",
+      "prompt": "Use Addy Osmani's agent-skills: a slash-command suite for Claude Code (/spec, /plan, /build, /test, /review, /ship) that implements a verifiable multi-phase development loop. Run them in order, or `/build auto` to remove human stepping between tasks. (See the repo.)"
+    },
+    {
+      "id": "loop-engineering-cn",
+      "name": "Loop Engineering (循环工程)",
+      "category": "International (translated)",
+      "creator": "Omar (omarsar0); ThinkInAI community",
+      "url": "https://www.53ai.com/news/tishicijiqiao/2026062001243.html",
+      "description": "Write the program that drives the agent: goal -> execute -> judge -> re-prompt with errors -> repeat; stop on budget or judge pass. [translated from Chinese]",
+      "prompt": "Stop hand-writing prompts; engineer the loop. Define the goal and a JUDGE that decides done. Each pass: execute the step, have the judge score the result, and if not done, re-prompt the agent with the specific errors. Set a hard budget (max attempts, time, files changed, or spend) as the safety stop. Exit when the judge passes or the budget is exhausted."
+    },
+    {
+      "id": "metaskills-bootstrap",
+      "name": "MetaSkills Self-Bootstrap Loop (元技能自举)",
+      "category": "International (translated)",
+      "creator": "geffzhang; via 53AI",
+      "url": "https://www.53ai.com/news/Assistant/2026061894560.html",
+      "description": "Agent generates new reusable workflow templates for itself: match -> fill -> DAG conflict check -> quality gate -> sandbox dry-run -> human approval. [translated from Chinese]",
+      "prompt": "Let the agent build its own reusable skills. Loop: match the task to an existing template (or none), have the LLM fill in the steps, run a DAG conflict check, pass a quality gate, then a sandbox dry-run. Gate on human Accept / Dismiss / Revise before saving the new template. Over time the agent bootstraps new MetaSkills using its existing ones."
+    },
+    {
+      "id": "hermes-judge-loop",
+      "name": "Judge-Model Termination Loop (法官模型)",
+      "category": "International (translated)",
+      "creator": "Youming Zhang, Tencent Cloud",
+      "url": "https://cloud.tencent.com/developer/article/2669097",
+      "description": "Pursue a persistent goal across turns with a SEPARATE judge model deciding completion (not self-declaration); parallel tool calls. [translated from Chinese]",
+      "prompt": "Pursue the goal across multiple turns. Crucially, do NOT let the acting agent declare itself done -- use a SEPARATE judge model to decide completion each turn. Execute tool calls in parallel where safe. Stop only when the judge declares the goal met (or a human pauses). This removes the self-grading bias that makes agents quit early or loop forever."
+    },
+    {
+      "id": "self-repair-passt",
+      "name": "Self-Repair Loop (pass@t)",
+      "category": "International (translated)",
+      "creator": "Jianfeng Gao & Chenglong Wang, Microsoft Research",
+      "url": "https://cloud.tencent.com/developer/article/2308702",
+      "description": "Four roles: generator -> executor (unit tests) -> feedback model -> repair model; separate feedback model from actor; stop when a sample passes all tests. [translated from Chinese]",
+      "prompt": "Repair code with four distinct roles: GENERATOR writes a candidate, EXECUTOR runs the unit tests, a separate FEEDBACK model explains why it failed, and a REPAIR model fixes it using that feedback. Keep the feedback model DIFFERENT from the actor (a stronger feedback model repairs weaker code far better). Loop until a sample passes all tests."
+    },
+    {
+      "id": "prefix-cache-loop",
+      "name": "Prefix-Caching Agent Loop (前缀缓存)",
+      "category": "International (translated)",
+      "creator": "OpenAI Eng; via Synced (机器之心)",
+      "url": "https://cloud.tencent.com/developer/article/2624854",
+      "description": "Tool-call loop with the invariant that the old prompt is always an exact prefix of the new one, making per-token cost linear via KV-cache reuse. [translated from Chinese]",
+      "prompt": "Run the tool-call loop (input -> infer -> decode -> decide -> execute) but enforce one structural invariant: the previous prompt must always be an exact PREFIX of the next prompt, so the KV-cache is reused and per-token cost stays linear instead of quadratic. Compact context past a threshold rather than rewriting earlier turns. Stop when the model returns an assistant message with no tool calls."
+    },
+    {
+      "id": "pev",
+      "name": "Plan-Execute-Validate (PEV)",
+      "category": "Testing & evaluation",
+      "creator": "Manjunath G",
+      "url": "https://dev.to/manjunathgovindaraju/building-a-reliable-langgraph-workflow-plan-execute-validate-pev-automated-retries-and-mcp-1pik",
+      "description": "Planner -> executor -> LLM-scorer loop; route to retry, replan, or complete based on a quality score; stop on pass or budget.",
+      "prompt": "Run a Plan-Execute-Validate loop. PLAN the steps. EXECUTE the current step. VALIDATE the result with an LLM scorer against criteria. Based on the score, route to: RETRY (same step), REPLAN (rethink the approach), or COMPLETE. Stop when the final step passes the quality bar (e.g. score >= 0.80) or retries/replans are exhausted."
+    },
+    {
+      "id": "iteration-flywheel",
+      "name": "The Iteration Flywheel",
+      "category": "Testing & evaluation",
+      "creator": "Hamel Husain",
+      "url": "https://hamel.dev/blog/posts/evals/",
+      "description": "Three-activity cycle -- evaluate quality -> debug issues -> change behaviour; tightening the eval step speeds every other step.",
+      "prompt": "Spin the eval flywheel: (1) EVALUATE output quality on real examples, (2) DEBUG the issues you find, (3) CHANGE the system to fix them -- then repeat. The leverage point is making the EVALUATE step fast and cheap, because it accelerates every other turn. Keep going until quality is consistently acceptable on your eval set."
+    },
+    {
+      "id": "model-human-alignment",
+      "name": "Model-Human Alignment Loop",
+      "category": "Testing & evaluation",
+      "creator": "Hamel Husain",
+      "url": "https://hamel.dev/blog/posts/evals/",
+      "description": "Iterate the LLM-judge critique prompt until model grades agree with human grades on 25-50 examples.",
+      "prompt": "Calibrate your LLM-as-judge. Grade 25-50 examples with both the model and a human; compare. Iterate the judge's critique prompt to close the gaps. Repeat until model/human agreement stabilizes at an acceptable correlation. Only then trust the judge to scale. Re-check periodically as data drifts."
+    },
+    {
+      "id": "basic-reflection",
+      "name": "Basic Reflection (generator + reflector)",
+      "category": "Patterns & theory",
+      "creator": "Ankush Gola / LangChain",
+      "url": "https://www.langchain.com/blog/reflection-agents",
+      "description": "Generator LLM paired with a reflector LLM playing 'teacher'; generate -> reflect -> revise; stop at an iteration cap.",
+      "prompt": "Pair two roles. GENERATOR produces the output. REFLECTOR acts as a critical teacher, giving specific feedback on what is weak or wrong. Feed the reflection back to the generator to revise. Loop generate -> reflect -> revise, capping at ~6 iterations so it terminates. Return the final revised output."
+    },
+    {
+      "id": "lats",
+      "name": "Language Agent Tree Search (LATS)",
+      "category": "Patterns & theory",
+      "creator": "Zhou et al. / LangChain",
+      "url": "https://www.langchain.com/blog/reflection-agents",
+      "description": "Reflection + Monte-Carlo tree search: Select -> Expand -> Reflect/Evaluate -> Backpropagate; stop when solved or depth cap.",
+      "prompt": "For hard multi-step problems, search instead of guessing. Run MCTS over actions: SELECT a promising node, EXPAND candidate next steps, REFLECT/EVALUATE each, and BACKPROPAGATE the value up the tree. Expand the best branches, prune dead ones. Stop when the root is solved or you hit a depth cap (e.g. 5)."
+    },
+    {
+      "id": "on-the-loop-harness",
+      "name": "On-the-Loop (Harness Loop)",
+      "category": "Patterns & theory",
+      "creator": "Kief Morris (Thoughtworks)",
+      "url": "https://martinfowler.com/articles/exploring-gen-ai/humans-and-agents.html",
+      "description": "Humans improve the HARNESS that produces artifacts rather than fixing artifacts directly; agents run the inner loop.",
+      "prompt": "Work ON the loop, not just IN it. Instead of hand-fixing each artifact the agent produces, improve the HARNESS (prompts, checks, scaffolding) that generates them, so the whole class of outputs gets better. Let agents run the inner code loop; you steer the middle loop. Stop investing in the harness when improvements hit diminishing returns."
+    },
+    {
+      "id": "tdd-copilot",
+      "name": "TDD Red-Green-Refactor (AI-assisted)",
+      "category": "Testing & evaluation",
+      "creator": "Paul Sobocinski (Thoughtworks)",
+      "url": "https://martinfowler.com/articles/exploring-gen-ai/06-tdd-with-coding-assistance.html",
+      "description": "Red-Green-Refactor wheel for AI coding; each phase gates on a hard condition; fall back to manual if regeneration fails twice.",
+      "prompt": "Drive AI-assisted coding with TDD. RED: only advance once you have a correctly failing test. GREEN: have the assistant write minimal code to pass it -- if regeneration fails twice, fall back to coding it by hand. REFACTOR: clean up while green. Loop per behavior. The hard gates keep the assistant honest."
+    },
+    {
+      "id": "timebox-ultimatum",
+      "name": "Timebox / Ultimatum Loop",
+      "category": "Engineering",
+      "creator": "Birgitta Bockeler (Thoughtworks)",
+      "url": "https://martinfowler.com/articles/exploring-gen-ai/08-how-to-tackle-unreliability.html",
+      "description": "Give an assistant's suggestion a hard time budget; if it does not yield value with minimal extra effort, abandon and code manually.",
+      "prompt": "Timebox the assistant. Give its suggestion a hard time/effort budget. If it does not produce real value within that budget with only minimal extra effort from you, abandon it and write the code manually. Do not sink more time into coaxing a bad suggestion -- the stop condition is the first clear sign of non-value."
+    },
+    {
+      "id": "deepsearch-loop",
+      "name": "DeepSearch Loop",
+      "category": "Research & data science",
+      "creator": "Han Xiao (Jina AI)",
+      "url": "https://simonwillison.net/2025/Mar/4/deepsearch-deepresearch/",
+      "description": "Iterative search -> read -> reason cycle over vector/FTS/ripgrep tools; stop when the optimal answer is found.",
+      "prompt": "Answer hard questions by looping search -> read -> reason. Each pass: run the best search (vector, full-text, or ripgrep), read the top results, reason about what is still missing, and issue a sharper next query. Keep going until you have found the optimal, well-supported answer -- not just the first plausible one."
+    },
+    {
+      "id": "guardrails-correction",
+      "name": "Guardrails Correction Loop",
+      "category": "Engineering",
+      "creator": "Eugene Yan",
+      "url": "https://eugeneyan.com/writing/llm-patterns/",
+      "description": "Generate -> validate via guardrails; if a check fails, filter or regenerate; stop when output passes all validators or a max-retry cap.",
+      "prompt": "Wrap generation in validators. Generate the output, then run it through your guardrails (schema, safety, format, factuality checks). If any check fails, either filter the bad part or regenerate with the failure noted. Loop until the output passes all validators or you hit a max-retry cap, then return the best passing result."
+    },
+    {
+      "id": "boomerang-tasks",
+      "name": "Boomerang Tasks (Roo Code)",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "RooCodeInc",
+      "url": "https://roocodeinc.github.io/Roo-Code/features/boomerang-tasks",
+      "description": "Parent task delegates subtasks to specialist modes; each runs in isolated context and signals attempt_completion; ends when all return.",
+      "prompt": "Use an orchestrator that delegates. The parent task breaks the goal into subtasks and hands each to a specialist mode (Code, Debug, Architect), each running in its OWN isolated context. Each subtask signals attempt_completion when done and 'boomerangs' back. The orchestrator synthesizes the results once all subtasks return. (Roo Code feature.)"
+    },
+    {
+      "id": "forge",
+      "name": "Forge",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "LucasDuys",
+      "url": "https://github.com/LucasDuys/forge",
+      "description": "Idea -> R-numbered spec -> dependency-ordered task DAG -> TDD per git worktree -> reviewer + 4-level verifier; stop on FORGE_COMPLETE or budget. ~29 stars.",
+      "prompt": "Use Forge: it turns an idea into an R-numbered spec, builds a dependency-ordered task DAG, then executes each task TDD-style in its own git worktree, with a reviewer plus a 4-level verifier. It stops on a FORGE_COMPLETE promise signal or when the budget is exhausted (writing .forge/resume.md to continue later). (See the repo.)"
+    },
+    {
+      "id": "cavekit",
+      "name": "Cavekit",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "JuliusBrussee",
+      "url": "https://github.com/JuliusBrussee/cavekit",
+      "description": "grill -> spec -> research -> review -> build over a durable SPEC.md; test failures back-propagate into spec invariants. ~1k stars.",
+      "prompt": "Use Cavekit's spec-driven loop: grill -> spec -> research -> review -> build, all centered on a single durable SPEC.md. When tests fail, the failures back-propagate into the spec's invariants (a 'backprop reflex'), so the spec tightens over time. Stop when tests satisfy all invariants in the spec. (See the repo.)"
+    },
+    {
+      "id": "orch",
+      "name": "ORCH",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "oxgeneral",
+      "url": "https://github.com/oxgeneral/orch",
+      "description": "CTO agent splits goal into tasks; parallel engineering agents in isolated worktrees; QA verifies; state machine todo->in_progress->review->done. ~83 stars.",
+      "prompt": "Use ORCH: a CTO agent breaks the goal into tasks, parallel engineering agents work in isolated git worktrees, and QA agents verify. Tasks move through a state machine (todo -> in_progress -> review -> done). Run with --once to exit when all tasks reach a terminal status. (See the repo.)"
+    },
+    {
+      "id": "bernstein",
+      "name": "Bernstein",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Alex Chernysh",
+      "url": "https://github.com/chernistry/bernstein",
+      "description": "Manager decomposes goal -> agents in isolated worktrees -> janitor verifies (tests/lint/types) -> verified work merges; loop nodes re-fire until a bash predicate exits 0. ~574 stars.",
+      "prompt": "Use Bernstein for audit-grade multi-agent work: a manager decomposes the goal, agents run in isolated worktrees, and a 'janitor' verifies each (tests, lint, types) before verified work merges. Workflow loop nodes re-fire until a bash predicate exits 0. Stop with `bernstein stop` or when all agents exit clean. (See the repo.)"
+    },
+    {
+      "id": "great-cto",
+      "name": "GreatCTO",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "avelikiy",
+      "url": "https://github.com/avelikiy/great_cto",
+      "description": "Spec synthesis -> single human approval gate -> scaffold/backend/frontend/test/deploy; risk-tiered gates; stop when a live URL ships. ~41 stars.",
+      "prompt": "Use GreatCTO: it synthesizes a spec, pauses at a single human 'CTO' approval gate, then runs scaffold -> backend -> frontend -> test -> deploy automatically. Gates are risk-tiered (maintenance = no gate; irreversible changes = full gate + frontier model). Stops when a live URL ships. (See the repo.)"
+    },
+    {
+      "id": "pi-ralph",
+      "name": "pi-ralph",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "samfoy",
+      "url": "https://github.com/samfoy/pi-ralph",
+      "description": "Agent cycles through named 'hats' (roles) triggered by emitted events; stop on a completion_promise string or max_iterations/runtime. ~13 stars.",
+      "prompt": "Use pi-ralph: the agent cycles through named 'hats' (roles), each triggered by emitted events. It stops on a configurable completion_promise string (e.g. LOOP_COMPLETE) or on the max_iterations / max_runtime_seconds guard rails. A role-cycling take on the Ralph loop. (See the repo.)"
+    },
+    {
+      "id": "ccg-workflow",
+      "name": "CCG Workflow",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "fengshao1227",
+      "url": "https://github.com/fengshao1227/ccg-workflow",
+      "description": "Classify -> parallel Codex+Gemini analysis -> plan -> hard-stop user approval -> parallel impl -> dual-model cross-review -> quality gates. ~5.6k stars.",
+      "prompt": "Use CCG: /ccg:go classifies the task, runs parallel Codex + Gemini analysis, produces a plan, then HARD-STOPS at a user approval gate. On approval, parallel implementation agents build it, followed by dual-model cross-review and quality gates. Stops when all phase gates pass or the user rejects the plan. (See the repo.)"
+    },
+    {
+      "id": "claude-engineer",
+      "name": "Claude Engineer v3 (tool-creation loop)",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Doriandarko",
+      "url": "https://github.com/Doriandarko/claude-engineer",
+      "description": "Agent detects a capability gap, generates a new tool, validates, hot-reloads it, and chains tools; bounded by MAX_CONVERSATION_TOKENS. ~11k stars.",
+      "prompt": "Use Claude Engineer v3's self-expanding loop: when the agent hits a capability gap, it designs and generates a NEW tool via its toolcreator, validates it, hot-reloads it dynamically, and chains tools automatically to finish the task. It stops when it judges the task complete; MAX_CONVERSATION_TOKENS is the hard bound. (See the repo.)"
+    }
   ]
 }
