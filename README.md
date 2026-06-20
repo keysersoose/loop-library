@@ -7,7 +7,7 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-133-8957e5.svg)
+![Loops](https://img.shields.io/badge/loops-141-8957e5.svg)
 ![Domains](https://img.shields.io/badge/domains-19-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
@@ -15,7 +15,7 @@
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
 *Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
-**⬇ [Download all 133 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
+**⬇ [Download all 141 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
@@ -286,6 +286,8 @@ Battle-tested open-source repos whose whole job is to run a loop for you — ver
 
 | Repo | The loop it runs | Creator | Stars | Source |
 |------|------------------|---------|-------|--------|
+| **claude-task-master** | Parse a PRD into a dependency-ordered task graph; `next` returns the unblocked task; implement → done → next until the graph is drained. | eyaltoledano | ~27.6k | [github](https://github.com/eyaltoledano/claude-task-master) |
+| **feature-dev (Claude Code plugin)** | 7-phase gate loop: discovery → explore → clarify → architecture → implement → review → summary, with human gates before architecture & implement. | Anthropic | ~133k | [github](https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/commands/feature-dev.md) |
 | **agent-skills** | Slash-command suite (`/spec /plan /build /test /review /ship`) — a verifiable multi-phase loop; `/build auto` removes human stepping. | Addy Osmani | ~64k | [github](https://github.com/addyosmani/agent-skills) |
 | **claude-engineer** | v3 self-expanding loop: detect a capability gap → generate a new tool → validate → hot-reload → chain tools; bounded by a token cap. | Doriandarko | ~11k | [github](https://github.com/Doriandarko/claude-engineer) |
 | **ccg-workflow** | Classify → parallel Codex+Gemini analysis → plan → hard-stop user approval → parallel impl → dual-model cross-review → gates. | fengshao1227 | ~5.6k | [github](https://github.com/fengshao1227/ccg-workflow) |

@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**133 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**141 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -12,8 +12,8 @@ _Prompts are original implementations of each loop's technique, written for this
 ## Categories
 
 - [Foundational](#foundational) (3)
-- [Engineering](#engineering) (22)
-- [Testing & evaluation](#testing--evaluation) (16)
+- [Engineering](#engineering) (23)
+- [Testing & evaluation](#testing--evaluation) (17)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
 - [Research & data science](#research--data-science) (5)
 - [Security & red-teaming](#security--red-teaming) (2)
@@ -24,11 +24,11 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Marketing & growth](#marketing--growth) (1)
 - [Support & sales](#support--sales) (1)
 - [Operations](#operations) (5)
-- [DevOps & infrastructure](#devops--infrastructure) (4)
+- [DevOps & infrastructure](#devops--infrastructure) (5)
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
-- [Patterns & theory](#patterns--theory) (10)
-- [Loop frameworks (GitHub)](#loop-frameworks-github) (25)
+- [Patterns & theory](#patterns--theory) (11)
+- [Loop frameworks (GitHub)](#loop-frameworks-github) (29)
 - [International (translated)](#international-translated) (5)
 
 
@@ -259,6 +259,14 @@ Harden this codebase in two phases. PHASE 1 (Explore-Fix): hunt bugs, security i
 Before ANY change, query the codebase graph via MCP: call who_calls(<symbol>) and impact_of(<change>) to get the full blast radius with citations. Then propose the change. After implementing, call diff_spec_vs_code(<feature_id>) to confirm the code matches its reverse-PRD spec. If drift is detected, fix and re-check. Only open a PR when diff_spec_vs_code returns zero drift. Never change code without first querying the graph.
 ```
 
+### Tool-Observable Output Loop
+*Give the agent a tool to observe its OWN output (start a server, hit an endpoint, read a log, run a headless check); write code -> observe -> fix; stop when the observation confirms correctness.*  
+**Creator:** Boris Cherny (Claude Code creator) · **Source:** https://www.reddit.com/r/ClaudeAI/comments/1q2c0ne/
+
+```text
+You have a `run_and_observe` tool that starts the process and returns its real output (HTTP response, logs, test result). Implement <feature>. After each change, call the tool and read the ACTUAL behavior. If it doesn't match the expected behavior below, diagnose the discrepancy, fix the code, and observe again. Stop only when the observation confirms the expected behavior. Expected: <description>. Don't claim done from reading the code -- prove it by observing.
+```
+
 
 ## Testing & evaluation
 
@@ -388,6 +396,14 @@ You are the reviewer in a capped review loop (round {round} of {max}). Review th
 
 ```text
 Run a four-agent quality pipeline. A: define explicit acceptance criteria. B: implement against them. C: review B's work in a loop until no findings remain. D (adversarial, did NOT implement): independently verify the output against A's ORIGINAL criteria, ignoring C's verdict -- list any criterion not provably met; output APPROVED or FAIL+reason, no fixes. Final gate: D APPROVED and A signs off. The separation (D never saw the implementation reasoning) is the point.
+```
+
+### Clavix Verify-or-Redo Gate
+*PRD -> plan -> implement -> verify -> archive, where verify enforces 'no completion without evidence' — a failed check triggers fix + re-verify, repeating until verify passes (Iron Law: issues found = issues fixed + re-verified).*  
+**Creator:** Bob5k · **Source:** https://clavix.dev
+
+```text
+Run the pipeline for this feature. (1) Elicit requirements -> PRD. (2) Break the PRD into ordered tasks. (3) Implement each task. (4) VERIFY every task against its success criteria with evidence -- if any criterion fails, fix it and re-verify before marking done; never advance on an unverified task (Iron Law: issues found = issues fixed + re-verified). (5) Archive outputs. Stop only when the verify phase exits clean.
 ```
 
 
@@ -727,6 +743,14 @@ Poll CI on a fixed interval. When a run goes red, fetch the logs, identify the f
 After a deploy, poll the health and smoke-test endpoints on an interval. Treat the deploy as unverified until all checks return healthy responses within the timeout. If checks fail past the threshold, surface it (and trigger rollback if configured). Only mark the deploy verified once a full pass is healthy. Log each check.
 ```
 
+### CI-Gated Automated Review Loop
+*An agent runs as a CI job on every PR, doing a full review and posting inline comments, iterating until zero blocking findings — before a human is ever assigned.*  
+**Creator:** Boris Cherny / Anthropic · **Source:** https://www.reddit.com/r/ClaudeAI/comments/1q2c0ne/
+
+```text
+You are an automated code reviewer running in CI on PR #<number>. Fetch the diff (`gh pr diff`). For each changed file check correctness bugs, security issues, broken contracts, and missing tests; post inline comments on blocking issues. Then re-read the diff + latest commit: if all blocking issues are resolved, output REVIEW_PASSED; otherwise output REVIEW_FAILED: <summary> and the job re-triggers on the next push. A human is assigned only after REVIEW_PASSED.
+```
+
 
 ## Autonomous coding agents
 
@@ -926,6 +950,14 @@ Work ON the loop, not just IN it. Instead of hand-fixing each artifact the agent
 
 ```text
 Don't reach for a framework. Hand-roll the loop: (1) send the messages to the model, (2) if it returns a tool call, execute the tool and append the result to the messages, (3) if it returns a plain answer, you're done. Loop steps 1-2 until the model stops asking for tools. Add a max-iteration cap. Most 'agent' needs are ~20 lines of this, not a library.
+```
+
+### Heterogeneous Model Routing Loop
+*Orchestrator decomposes a goal into typed subtasks and routes each to the cheapest capable model (strong=plan, cheap=implement, mid=review); validate each, escalate tier on failure; stop when all validators pass or retries exhausted.*  
+**Creator:** r/ClaudeAI community (impl: robertgumeny/doug) · **Source:** https://www.reddit.com/r/ClaudeAI/comments/1s3vwy1/
+
+```text
+You are an orchestrator for goal: <goal>. (1) Use a strong reasoning model to produce a plan of TYPED subtasks (planning / implementation / review). (2) Route each subtask to a model tier: planning->strong, implementation->cheap/fast, review->mid. (3) Run each subtask in its assigned tier. (4) Run a deterministic validator for that type (lint, tests, diff check). On failure, retry; after 2 failures escalate to the next model tier. Stop when all validators pass or max-retries are exhausted. Report status per subtask. Routing the right model per task type is the point -- don't use one model for everything.
 ```
 
 
@@ -1129,6 +1161,38 @@ Run a mutable task queue. For each task at the head: (1) create an isolated git 
 
 ```text
 Run a multi-epoch learning loop. Each epoch: (1) run the task using the current Skillbook heuristics injected into your system prompt; (2) hand the full execution trace to a Reflector that extracts what worked and what failed; (3) pass those findings to a SkillManager that adds/refines/removes entries in a persistent Skillbook file; (4) start the next epoch with the updated Skillbook. Stop when the build is error-free and all tests pass, or after N epochs. Only the SkillManager may write the Skillbook -- never edit it yourself.
+```
+
+### Taskmaster Next-Task Driver
+*Parse a PRD into a dependency-ordered task graph; `next` returns the immediately-unblocked task; implement -> done -> next; stop when no task has unmet dependencies. ~27.6k stars.*  
+**Creator:** eyaltoledano · **Source:** https://github.com/eyaltoledano/claude-task-master
+
+```text
+Parse the PRD with `task-master parse-prd` to build a dependency-ordered task graph. Then loop: call `task-master next` to get the next UNBLOCKED task, implement it (use `task-master expand` to split it into subtasks if complex), mark it done, and call `next` again. Stop when `task-master next` returns nothing -- that means every dependency chain is resolved. Let the graph, not your guesses, decide order.
+```
+
+### feature-dev 7-Phase Gate Loop
+*Seven phases (discovery -> codebase exploration -> clarifying Qs -> architecture -> implement -> review -> summary) with hard human-approval gates before architecture and implementation. ~133k stars.*  
+**Creator:** Anthropic (Claude Code team) · **Source:** https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/commands/feature-dev.md
+
+```text
+Run feature-dev. Phase 1: ask clarifying questions about the problem + constraints. Phase 2: spawn parallel agents to map the codebase (architecture, similar patterns, relevant files). Phase 3: surface every gap/ambiguity and WAIT for my answers. Phase 4: propose 2-3 architecture approaches with trade-offs -- do NOT proceed until I pick one. Phase 5: implement the chosen design. Phase 6: launch reviewer agents, consolidate findings, present them, and ask fix-now-or-defer. Phase 7: write a summary of decisions. The human gates before phases 4 and 5 are mandatory.
+```
+
+### SpecPulse CLI-First Execute Loop
+*CLI scaffolds the feature spec first, then /sp-execute runs pick-next -> implement -> validate -> mark-complete continuously until /sp-validate confirms the whole spec is met. ~389 stars.*  
+**Creator:** abdullahazad / specpulse · **Source:** https://github.com/specpulse/specpulse
+
+```text
+Initialize with `/sp-pulse <feature>`, then `/sp-spec` for requirements and `/sp-plan` + `/sp-task` to break them into tasks. Then `/sp-execute all`: for each pending task, implement it, validate against its success criteria, mark it complete, move on. Repeat until no pending tasks remain, then run `/sp-validate` to confirm the full spec is met. Stop when validate exits clean.
+```
+
+### REAP Generational Loop
+*Five phases (learning -> planning -> implement<->validate -> completion) that evolve a project 'Genome' across generations; the Genome is read-only mid-generation; stops at human fitness approval. ~43 stars.*  
+**Creator:** casamia123 / c-d-cc · **Source:** https://github.com/c-d-cc/reap
+
+```text
+Start a new REAP generation. Work the five phases in order: LEARNING (read .reap/genome/ + current state), PLANNING (write 02-planning.md), IMPLEMENTATION, VALIDATION (loop back to implementation if checks fail), COMPLETION (write 05-completion.md with fitness notes + proposed Genome changes). Do NOT modify .reap/genome/ during the generation -- log issues to the backlog. Stop and present the completion document for my approval before any Genome change.
 ```
 
 

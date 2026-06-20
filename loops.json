@@ -1202,6 +1202,78 @@
       "url": "https://www.reddit.com/r/OpenClaw/comments/1rs7yns/",
       "description": "A nightly cron meditation: append dated reflections per topic -> if one recurs 5+ nights AND changes behavior, distill to 1-2 sentences into SOUL.md and archive it; stops promoting when resolved.",
       "prompt": "Run a nightly meditation loop. Each night: (1) open meditations.md for active reflection topics; (2) append a dated entry to each reflections/<topic>.md; (3) check whether any reflection has recurred 5+ consecutive nights AND would change your actual operating behavior; (4) if yes, distill it to 1-2 sharp sentences, append to SOUL.md under 'Core Truths', mark the topic archived, and log the breakthrough. Promote ONLY behavioral rules -- never mere sentiment."
+    },
+    {
+      "id": "tool-observable-output",
+      "name": "Tool-Observable Output Loop",
+      "category": "Engineering",
+      "creator": "Boris Cherny (Claude Code creator)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1q2c0ne/",
+      "description": "Give the agent a tool to observe its OWN output (start a server, hit an endpoint, read a log, run a headless check); write code -> observe -> fix; stop when the observation confirms correctness.",
+      "prompt": "You have a `run_and_observe` tool that starts the process and returns its real output (HTTP response, logs, test result). Implement <feature>. After each change, call the tool and read the ACTUAL behavior. If it doesn't match the expected behavior below, diagnose the discrepancy, fix the code, and observe again. Stop only when the observation confirms the expected behavior. Expected: <description>. Don't claim done from reading the code -- prove it by observing."
+    },
+    {
+      "id": "ci-gated-review",
+      "name": "CI-Gated Automated Review Loop",
+      "category": "DevOps & infrastructure",
+      "creator": "Boris Cherny / Anthropic",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1q2c0ne/",
+      "description": "An agent runs as a CI job on every PR, doing a full review and posting inline comments, iterating until zero blocking findings — before a human is ever assigned.",
+      "prompt": "You are an automated code reviewer running in CI on PR #<number>. Fetch the diff (`gh pr diff`). For each changed file check correctness bugs, security issues, broken contracts, and missing tests; post inline comments on blocking issues. Then re-read the diff + latest commit: if all blocking issues are resolved, output REVIEW_PASSED; otherwise output REVIEW_FAILED: <summary> and the job re-triggers on the next push. A human is assigned only after REVIEW_PASSED."
+    },
+    {
+      "id": "hetero-model-routing",
+      "name": "Heterogeneous Model Routing Loop",
+      "category": "Patterns & theory",
+      "creator": "r/ClaudeAI community (impl: robertgumeny/doug)",
+      "url": "https://www.reddit.com/r/ClaudeAI/comments/1s3vwy1/",
+      "description": "Orchestrator decomposes a goal into typed subtasks and routes each to the cheapest capable model (strong=plan, cheap=implement, mid=review); validate each, escalate tier on failure; stop when all validators pass or retries exhausted.",
+      "prompt": "You are an orchestrator for goal: <goal>. (1) Use a strong reasoning model to produce a plan of TYPED subtasks (planning / implementation / review). (2) Route each subtask to a model tier: planning->strong, implementation->cheap/fast, review->mid. (3) Run each subtask in its assigned tier. (4) Run a deterministic validator for that type (lint, tests, diff check). On failure, retry; after 2 failures escalate to the next model tier. Stop when all validators pass or max-retries are exhausted. Report status per subtask. Routing the right model per task type is the point -- don't use one model for everything."
+    },
+    {
+      "id": "taskmaster",
+      "name": "Taskmaster Next-Task Driver",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "eyaltoledano",
+      "url": "https://github.com/eyaltoledano/claude-task-master",
+      "description": "Parse a PRD into a dependency-ordered task graph; `next` returns the immediately-unblocked task; implement -> done -> next; stop when no task has unmet dependencies. ~27.6k stars.",
+      "prompt": "Parse the PRD with `task-master parse-prd` to build a dependency-ordered task graph. Then loop: call `task-master next` to get the next UNBLOCKED task, implement it (use `task-master expand` to split it into subtasks if complex), mark it done, and call `next` again. Stop when `task-master next` returns nothing -- that means every dependency chain is resolved. Let the graph, not your guesses, decide order."
+    },
+    {
+      "id": "anthropic-feature-dev",
+      "name": "feature-dev 7-Phase Gate Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "Anthropic (Claude Code team)",
+      "url": "https://github.com/anthropics/claude-code/blob/main/plugins/feature-dev/commands/feature-dev.md",
+      "description": "Seven phases (discovery -> codebase exploration -> clarifying Qs -> architecture -> implement -> review -> summary) with hard human-approval gates before architecture and implementation. ~133k stars.",
+      "prompt": "Run feature-dev. Phase 1: ask clarifying questions about the problem + constraints. Phase 2: spawn parallel agents to map the codebase (architecture, similar patterns, relevant files). Phase 3: surface every gap/ambiguity and WAIT for my answers. Phase 4: propose 2-3 architecture approaches with trade-offs -- do NOT proceed until I pick one. Phase 5: implement the chosen design. Phase 6: launch reviewer agents, consolidate findings, present them, and ask fix-now-or-defer. Phase 7: write a summary of decisions. The human gates before phases 4 and 5 are mandatory."
+    },
+    {
+      "id": "specpulse",
+      "name": "SpecPulse CLI-First Execute Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "abdullahazad / specpulse",
+      "url": "https://github.com/specpulse/specpulse",
+      "description": "CLI scaffolds the feature spec first, then /sp-execute runs pick-next -> implement -> validate -> mark-complete continuously until /sp-validate confirms the whole spec is met. ~389 stars.",
+      "prompt": "Initialize with `/sp-pulse <feature>`, then `/sp-spec` for requirements and `/sp-plan` + `/sp-task` to break them into tasks. Then `/sp-execute all`: for each pending task, implement it, validate against its success criteria, mark it complete, move on. Repeat until no pending tasks remain, then run `/sp-validate` to confirm the full spec is met. Stop when validate exits clean."
+    },
+    {
+      "id": "clavix",
+      "name": "Clavix Verify-or-Redo Gate",
+      "category": "Testing & evaluation",
+      "creator": "Bob5k",
+      "url": "https://clavix.dev",
+      "description": "PRD -> plan -> implement -> verify -> archive, where verify enforces 'no completion without evidence' — a failed check triggers fix + re-verify, repeating until verify passes (Iron Law: issues found = issues fixed + re-verified).",
+      "prompt": "Run the pipeline for this feature. (1) Elicit requirements -> PRD. (2) Break the PRD into ordered tasks. (3) Implement each task. (4) VERIFY every task against its success criteria with evidence -- if any criterion fails, fix it and re-verify before marking done; never advance on an unverified task (Iron Law: issues found = issues fixed + re-verified). (5) Archive outputs. Stop only when the verify phase exits clean."
+    },
+    {
+      "id": "reap",
+      "name": "REAP Generational Loop",
+      "category": "Loop frameworks (GitHub)",
+      "creator": "casamia123 / c-d-cc",
+      "url": "https://github.com/c-d-cc/reap",
+      "description": "Five phases (learning -> planning -> implement<->validate -> completion) that evolve a project 'Genome' across generations; the Genome is read-only mid-generation; stops at human fitness approval. ~43 stars.",
+      "prompt": "Start a new REAP generation. Work the five phases in order: LEARNING (read .reap/genome/ + current state), PLANNING (write 02-planning.md), IMPLEMENTATION, VALIDATION (loop back to implementation if checks fail), COMPLETION (write 05-completion.md with fitness notes + proposed Genome changes). Do NOT modify .reap/genome/ during the generation -- log issues to the backlog. Stop and present the completion document for my approval before any Genome change."
     }
   ]
 }
