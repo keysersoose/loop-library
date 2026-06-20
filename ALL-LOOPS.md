@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**122 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**125 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -13,12 +13,12 @@ _Prompts are original implementations of each loop's technique, written for this
 
 - [Foundational](#foundational) (3)
 - [Engineering](#engineering) (20)
-- [Testing & evaluation](#testing--evaluation) (13)
+- [Testing & evaluation](#testing--evaluation) (14)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
 - [Research & data science](#research--data-science) (5)
 - [Security & red-teaming](#security--red-teaming) (2)
 - [Writing & content](#writing--content) (6)
-- [Design](#design) (5)
+- [Design](#design) (6)
 - [Accessibility](#accessibility) (2)
 - [Data & analytics](#data--analytics) (2)
 - [Marketing & growth](#marketing--growth) (1)
@@ -27,7 +27,7 @@ _Prompts are original implementations of each loop's technique, written for this
 - [DevOps & infrastructure](#devops--infrastructure) (4)
 - [Autonomous coding agents](#autonomous-coding-agents) (5)
 - [Tools & harnesses](#tools--harnesses) (9)
-- [Patterns & theory](#patterns--theory) (9)
+- [Patterns & theory](#patterns--theory) (10)
 - [Loop frameworks (GitHub)](#loop-frameworks-github) (22)
 - [International (translated)](#international-translated) (5)
 
@@ -350,6 +350,14 @@ Calibrate your LLM-as-judge. Grade 25-50 examples with both the model and a huma
 Drive AI-assisted coding with TDD. RED: only advance once you have a correctly failing test. GREEN: have the assistant write minimal code to pass it -- if regeneration fails twice, fall back to coding it by hand. REFACTOR: clean up while green. Loop per behavior. The hard gates keep the assistant honest.
 ```
 
+### autonomy-loop (trust-nothing)
+*A coding loop that refuses to trust 'the tests pass' — it proves it by mutating/breaking the test; if the test still passes, the test is worthless and gets fixed.*  
+**Creator:** @inferencegod · **Source:** https://x.com/i/status/2068008938440663411
+
+```text
+Don't trust 'the tests pass.' After they're green, prove the tests are real: mutate the code under test (break it on purpose) and confirm a test now FAILS. If everything still passes after you broke the behavior, the test is worthless — strengthen it. Only trust a green suite that you've shown can go red. Loop this mutation check on the critical paths.
+```
+
 
 ## Prompt & model optimization
 
@@ -539,6 +547,14 @@ Build the smallest PLAYABLE core loop first (move, interact, win/lose). Then ite
 
 ```text
 Plan the video edit (shots, cuts, captions, pacing). Produce a draft, then REFLECT: watch it back and evaluate against the goal (clarity, pacing, hook). Use that self-evaluation to refine the plan and re-render the affected parts. Repeat the reflect->refine loop until the cut meets the goal. (Or use the VideoAgent framework.)
+```
+
+### The Screenshot Feedback Loop
+*Agent renders its output headless, screenshots it, a vision model critiques the image, and it fixes the code — loop until the visual matches the goal.*  
+**Creator:** r/LocalLLaMA (community) · **Source:** https://www.reddit.com/r/LocalLLaMA/comments/1u89f2q/headless_screenshot_loops_let_a_local_30b_agent/
+
+```text
+Close the visual feedback loop. After each code change, render the output headless and capture a screenshot. Feed the screenshot to a vision-capable model and ask it to critique against the goal (layout, artifacts, correctness — not the code, the actual pixels). Apply the fixes and re-render. Loop until the rendered result matches the target. Great for UI, games, and graphics where 'it compiles' != 'it looks right'.
 ```
 
 
@@ -862,6 +878,14 @@ For hard multi-step problems, search instead of guessing. Run MCTS over actions:
 
 ```text
 Work ON the loop, not just IN it. Instead of hand-fixing each artifact the agent produces, improve the HARNESS (prompts, checks, scaffolding) that generates them, so the whole class of outputs gets better. Let agents run the inner code loop; you steer the middle loop. Stop investing in the harness when improvements hit diminishing returns.
+```
+
+### The 20-Line Agent Loop
+*Replace a heavy framework with a tiny hand-rolled loop: call model -> run the tool it asks for -> feed the result back -> repeat until no tool call.*  
+**Creator:** r/AI_Agents (community) · **Source:** https://www.reddit.com/r/AI_Agents/comments/1p227ra/i_deleted_400_lines_of_langchain_and_replaced_it/
+
+```text
+Don't reach for a framework. Hand-roll the loop: (1) send the messages to the model, (2) if it returns a tool call, execute the tool and append the result to the messages, (3) if it returns a plain answer, you're done. Loop steps 1-2 until the model stops asking for tools. Add a max-iteration cap. Most 'agent' needs are ~20 lines of this, not a library.
 ```
 
 

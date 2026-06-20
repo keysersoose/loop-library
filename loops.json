@@ -1103,6 +1103,33 @@
       "url": "https://github.com/Doriandarko/claude-engineer",
       "description": "Agent detects a capability gap, generates a new tool, validates, hot-reloads it, and chains tools; bounded by MAX_CONVERSATION_TOKENS. ~11k stars.",
       "prompt": "Use Claude Engineer v3's self-expanding loop: when the agent hits a capability gap, it designs and generates a NEW tool via its toolcreator, validates it, hot-reloads it dynamically, and chains tools automatically to finish the task. It stops when it judges the task complete; MAX_CONVERSATION_TOKENS is the hard bound. (See the repo.)"
+    },
+    {
+      "id": "minimal-python-loop",
+      "name": "The 20-Line Agent Loop",
+      "category": "Patterns & theory",
+      "creator": "r/AI_Agents (community)",
+      "url": "https://www.reddit.com/r/AI_Agents/comments/1p227ra/i_deleted_400_lines_of_langchain_and_replaced_it/",
+      "description": "Replace a heavy framework with a tiny hand-rolled loop: call model -> run the tool it asks for -> feed the result back -> repeat until no tool call.",
+      "prompt": "Don't reach for a framework. Hand-roll the loop: (1) send the messages to the model, (2) if it returns a tool call, execute the tool and append the result to the messages, (3) if it returns a plain answer, you're done. Loop steps 1-2 until the model stops asking for tools. Add a max-iteration cap. Most 'agent' needs are ~20 lines of this, not a library."
+    },
+    {
+      "id": "screenshot-feedback-loop",
+      "name": "The Screenshot Feedback Loop",
+      "category": "Design",
+      "creator": "r/LocalLLaMA (community)",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1u89f2q/headless_screenshot_loops_let_a_local_30b_agent/",
+      "description": "Agent renders its output headless, screenshots it, a vision model critiques the image, and it fixes the code — loop until the visual matches the goal.",
+      "prompt": "Close the visual feedback loop. After each code change, render the output headless and capture a screenshot. Feed the screenshot to a vision-capable model and ask it to critique against the goal (layout, artifacts, correctness — not the code, the actual pixels). Apply the fixes and re-render. Loop until the rendered result matches the target. Great for UI, games, and graphics where 'it compiles' != 'it looks right'."
+    },
+    {
+      "id": "autonomy-loop",
+      "name": "autonomy-loop (trust-nothing)",
+      "category": "Testing & evaluation",
+      "creator": "@inferencegod",
+      "url": "https://x.com/i/status/2068008938440663411",
+      "description": "A coding loop that refuses to trust 'the tests pass' — it proves it by mutating/breaking the test; if the test still passes, the test is worthless and gets fixed.",
+      "prompt": "Don't trust 'the tests pass.' After they're green, prove the tests are real: mutate the code under test (break it on purpose) and confirm a test now FAILS. If everything still passes after you broke the behavior, the test is worthless — strengthen it. Only trust a green suite that you've shown can go red. Loop this mutation check on the critical paths."
     }
   ]
 }
