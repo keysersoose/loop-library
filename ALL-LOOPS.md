@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**151 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**156 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -17,16 +17,16 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Prompt & model optimization](#prompt--model-optimization) (4)
 - [Research & data science](#research--data-science) (6)
 - [Security & red-teaming](#security--red-teaming) (2)
-- [Writing & content](#writing--content) (6)
+- [Writing & content](#writing--content) (7)
 - [Design](#design) (6)
 - [Accessibility](#accessibility) (2)
 - [Data & analytics](#data--analytics) (2)
-- [Marketing & growth](#marketing--growth) (1)
+- [Marketing & growth](#marketing--growth) (2)
 - [Support & sales](#support--sales) (1)
 - [Operations](#operations) (6)
-- [DevOps & infrastructure](#devops--infrastructure) (6)
-- [Autonomous coding agents](#autonomous-coding-agents) (6)
-- [Tools & harnesses](#tools--harnesses) (9)
+- [DevOps & infrastructure](#devops--infrastructure) (7)
+- [Autonomous coding agents](#autonomous-coding-agents) (7)
+- [Tools & harnesses](#tools--harnesses) (10)
 - [Patterns & theory](#patterns--theory) (12)
 - [Loop frameworks (GitHub)](#loop-frameworks-github) (30)
 - [International (translated)](#international-translated) (5)
@@ -614,6 +614,20 @@ Audit the site for search + generative-engine visibility: crawlability, indexati
 Review the latest shipped features (from the changelog/PRs). Write a tight 3-5 minute podcast script that explains what's new, why it matters, and how to use it, in a natural spoken voice. Generate the audio. Run this on each release so every update gets its own short episode.
 ```
 
+### Per-Scene Vision-Critic Regen Loop
+*A producer agent orchestrates multi-stage video/image ad creation, and after each scene is generated a vision-capable critic judges it on an explicit rubric (fidelity, hallucination, text, anatomy), routing failures back with a structured per-dimension verdict for surgical per-scene regen, stopping when every scene passes all rubric dimensions.*  
+**Creator:** LedellWu (Creatify AI) · **Source:** https://x.com/LedellWu/status/2056453589950951792
+
+```text
+Run an ad production loop with an in-loop vision critic (not a post-hoc filter):
+1. Producer agent: gather 8-10 reference ads from the target platform in the brand's category and add them to the typed asset graph alongside uploaded product images.
+2. For each scene in the storyboard, generate the visual using the specified model.
+3. After each generation, pass the output to a vision critic agent. The critic scores the scene on: (a) product/brand fidelity, (b) object hallucination, (c) text accuracy, (d) physical plausibility, (e) anatomy. For any dimension below threshold, emit a structured verdict: which dimension failed, by how much, on which frame or region.
+4. Route failures back to the generator with the structured verdict. The generator makes targeted fixes to only the failed dimensions -- full regeneration is a last resort.
+5. Repeat for the scene until the critic passes all dimensions.
+6. Proceed to the next scene. Stop when every scene in the storyboard has a full critic PASS. Persist a per-brand memory of which reference styles and parameters passed so future runs start from that baseline.
+```
+
 
 ## Design
 
@@ -712,6 +726,17 @@ Label a dataset efficiently. (1) Auto-label items where model confidence exceeds
 
 ```text
 Run growth as a compounding loop. Each cycle: pick one lever (hook, offer, audience, or channel), ship a small fast A/B test with a clear metric, measure, and roll the winning learning back into your creative, targeting, and spend. Kill losers quickly. Keep cycles small and frequent so each one sharpens the next. Track the metric trend across cycles.
+```
+
+### Ad Brief QA Pipeline Loop
+*Three sequential agents -- competitive researcher, brief writer, QA scorer -- where the QA agent scores each brief on 10 rules (min 7/10 to pass) and routes any brief below threshold back to the writer with specific fix notes, stopping only when all briefs score 7+.*  
+**Creator:** EddChalk (MHI Media) · **Source:** https://x.com/EddChalk/status/2024549250806255805
+
+```text
+Run an ad brief production loop for the given product and brand. Three agents in sequence:
+1. Research agent: scrape 5-10 active competitor ads from the target ad platform, extract repeating hooks, map visual patterns, and run Golden Pain Extraction (pull verbatim emotional language from reviews and social comments, tag each pain to a human-drive motivation). Compile a research doc: competitor analysis, pains, dream outcomes, available assets.
+2. Brief writer: using the research doc, write N ad briefs. Each brief must include: 3 copy variations (headline + subline + CTA), visual direction, and for video briefs, a timed body script ([0-3s] hook, [3-8s] setup, [8-15s] product, [15-18s] proof, [18-20s] CTA). If any timed segment is violated, fix it before writing the brief.
+3. QA agent: score each brief on the 10 Golden Rules rubric (0-10 per rule). If total score < 7, do NOT pass the brief -- return it to the brief writer with the specific failing rules and required fixes. Rerun until every brief scores >= 7. Stop when all N briefs score 7+ and deliver them.
 ```
 
 
@@ -827,6 +852,18 @@ You are an automated code reviewer running in CI on PR #<number>. Fetch the diff
 You've finished the task loop. Before ANY downstream action (merge, deploy, send, write), assemble a review frame: (1) your original promise/spec, (2) the acceptance criteria, (3) a diff of first input vs final output with turn + token totals, (4) a row-by-row evidence log of every step, (5) any unresolved assumptions or breaches. Present it and HALT. No downstream action happens until a human explicitly signs off; record that attestation as an audit receipt.
 ```
 
+### Durable Step-Checkpoint Agent Loop
+*A three-layer agentic loop -- cron trigger + LLM decision-maker, durable retryable skill units, and a crash-resilient orchestrator with per-step checkpointing -- that prevents duplicate side-effects on restart, stopping when all steps complete exactly once with confirmed idempotency.*  
+**Creator:** __vandos__ / djfarrelly (Inngest) · **Source:** https://x.com/__vandos__/status/2068067164738011243
+
+```text
+Build your agent loop with three explicit layers to prevent duplicate execution on crash or restart:
+Layer 1 (Trigger): a cron or event trigger fires the loop. The LLM reads the current checkpoint state and decides what action to take next -- it does not reprocess steps already logged as COMPLETED.
+Layer 2 (Skill): each discrete action (API call, file write, message send, DB write) is wrapped as a durable skill unit. Assign each invocation a stable idempotency key derived from the logical operation (hash of user-id + action-type + payload -- never a fresh UUID or timestamp). On retry, if the key already exists in the checkpoint store, return the stored result without re-executing.
+Layer 3 (Orchestrator): maintains a step-level execution log. On restart, read the log, skip completed steps, resume from the first incomplete one. Support hot-deploy of updated skill code without killing in-flight runs.
+Stop condition: all steps in the task graph have a COMPLETED checkpoint entry and all idempotency keys have resolved results. Never let 'done' mean 'the LLM said so' -- require a confirmed checkpoint entry.
+```
+
 
 ## Autonomous coding agents
 
@@ -887,6 +924,21 @@ Set up a peer agent team to accomplish: [GOAL].
 Rules: no agent may declare the overall goal complete until every other agent confirms its scope is resolved; a stuck agent messages the relevant peer rather than escalating.
 
 Stop when all items in TASKS.md are done AND every agent has posted a final confirmation.
+```
+
+### Squid: Six-Role No-Self-Approval Team
+*Six Claude Code agents in strict role separation -- PM, SWE (red-green TDD), adversarial Tester, PR Reviewer, On-call (CI loop), and Self-Improve -- where no single agent may both write code and judge its own correctness, stopping when CI is green and the Self-Improve agent has proposed harness updates.*  
+**Creator:** pauliusztin_ (Piotr Szczypta, Decoding AI) · **Source:** https://x.com/pauliusztin_/status/2057076372720460010
+
+```text
+Run a feature through the Squid six-role pipeline. Roles and responsibilities:
+1. PM: translate the feature spec into an ordered list of atomic tasks; write an ADR and update the DDD glossary.
+2. SWE: implement using strict red-green TDD (write failing test, write minimal passing code, refactor). Use CLI tools only -- no MCP wrappers.
+3. Tester: run adversarial verification against real evidence (test output lines, acceptance criteria, file diffs). If any criterion is unmet, return a structured failure report.
+4. PR Reviewer: diff-only review for dead code, duplication, missing coverage, and doc drift. Output a signed-off LGTM or a numbered fix list.
+5. On-call: loop on CI/CD (run checks, read error, push fix) until all checks pass.
+6. Self-improve: scan the completed run for friction points and propose concrete updates to CLAUDE.md, skills, and subagent prompts.
+Constraint: no agent may self-approve its own output. Stop when CI is green AND Self-improve has filed its update proposals.
 ```
 
 
@@ -962,6 +1014,19 @@ Read the autoresearch-guide and apply its pattern: give an agent a file, a metri
 
 ```text
 Browse awesome-autoresearch for a curated set of autoresearch implementations, harnesses, and write-ups to learn or extend the autoresearch loop. (See the repo.)
+```
+
+### LoopFlow: YAML-Defined Gate + Budget + Memory Loop
+*A YAML-declared loop where a fixer agent writes and a skeptical reviewer agent gates (must emit VERDICT: PASS -- anything else is a FAIL), with a hard dual-budget cap and per-iteration Markdown memory injected on each run, stopping when the gate outputs VERDICT: PASS within the budget.*  
+**Creator:** GoSailGlobal (gosaillab.com) · **Source:** https://x.com/GoSailGlobal/status/2068494938422313309
+
+```text
+Define your loop as a YAML file with: goal, a sequence of steps (each step has a persona, an instruction, and an expected artifact), and one gate step with persona 'skeptical reviewer'. Run the loop as follows:
+1. Fixer agent executes all non-gate steps and produces the artifacts.
+2. Reviewer agent reads all artifacts, checks them against the goal, and emits VERDICT: PASS or VERDICT: FAIL with numbered objections. No verdict defaults to FAIL.
+3. On FAIL, inject the objections into the fixer's next context along with the memory log from all prior rounds, and re-run from step 1.
+4. On PASS, archive the memory log and stop.
+Safety: enforce a hard dollar budget ceiling (e.g. --max-budget-usd) before starting and abort if exceeded. Log each round to a Markdown file and inject that log at the start of every subsequent round so no context is lost between runs. Stop when VERDICT: PASS is received within budget.
 ```
 
 

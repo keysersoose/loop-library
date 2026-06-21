@@ -1364,6 +1364,51 @@
       "url": "https://x.com/heynavtoor/status/2067281413368611267",
       "description": "Query five expert personas (practitioner, skeptic, economist, historian, academic) in sequence, synthesize, then re-query conflicting personas until the synthesis has no unresolved contradictions.",
       "prompt": "Research topic: [TOPIC]\n\nRun five sequential perspective queries:\n1. PRACTITIONER - What do practitioners know about [TOPIC] that academics miss? What actually works in the field?\n2. SKEPTIC - Strongest counterargument against the mainstream view? What could go wrong?\n3. ECONOMIST - Who profits from the current narrative? What incentives shape the discourse?\n4. HISTORIAN - What historical pattern maps onto this? How has it played out before?\n5. ACADEMIC - What does peer-reviewed evidence actually say? What is overstated?\n\nThen synthesize into a structured summary and list any direct contradictions between perspectives.\n\nStop when all five perspectives are answered AND the synthesis has no unresolved contradictions. If contradictions remain, re-query the two conflicting personas with the specific disagreement as context and re-synthesize. Repeat until internally consistent."
+    },
+    {
+      "id": "squid-six-role",
+      "name": "Squid: Six-Role No-Self-Approval Team",
+      "category": "Autonomous coding agents",
+      "creator": "pauliusztin_ (Piotr Szczypta, Decoding AI)",
+      "url": "https://x.com/pauliusztin_/status/2057076372720460010",
+      "description": "Six Claude Code agents in strict role separation -- PM, SWE (red-green TDD), adversarial Tester, PR Reviewer, On-call (CI loop), and Self-Improve -- where no single agent may both write code and judge its own correctness, stopping when CI is green and the Self-Improve agent has proposed harness updates.",
+      "prompt": "Run a feature through the Squid six-role pipeline. Roles and responsibilities:\n1. PM: translate the feature spec into an ordered list of atomic tasks; write an ADR and update the DDD glossary.\n2. SWE: implement using strict red-green TDD (write failing test, write minimal passing code, refactor). Use CLI tools only -- no MCP wrappers.\n3. Tester: run adversarial verification against real evidence (test output lines, acceptance criteria, file diffs). If any criterion is unmet, return a structured failure report.\n4. PR Reviewer: diff-only review for dead code, duplication, missing coverage, and doc drift. Output a signed-off LGTM or a numbered fix list.\n5. On-call: loop on CI/CD (run checks, read error, push fix) until all checks pass.\n6. Self-improve: scan the completed run for friction points and propose concrete updates to CLAUDE.md, skills, and subagent prompts.\nConstraint: no agent may self-approve its own output. Stop when CI is green AND Self-improve has filed its update proposals."
+    },
+    {
+      "id": "loopflow-yaml-gate",
+      "name": "LoopFlow: YAML-Defined Gate + Budget + Memory Loop",
+      "category": "Tools & harnesses",
+      "creator": "GoSailGlobal (gosaillab.com)",
+      "url": "https://x.com/GoSailGlobal/status/2068494938422313309",
+      "description": "A YAML-declared loop where a fixer agent writes and a skeptical reviewer agent gates (must emit VERDICT: PASS -- anything else is a FAIL), with a hard dual-budget cap and per-iteration Markdown memory injected on each run, stopping when the gate outputs VERDICT: PASS within the budget.",
+      "prompt": "Define your loop as a YAML file with: goal, a sequence of steps (each step has a persona, an instruction, and an expected artifact), and one gate step with persona 'skeptical reviewer'. Run the loop as follows:\n1. Fixer agent executes all non-gate steps and produces the artifacts.\n2. Reviewer agent reads all artifacts, checks them against the goal, and emits VERDICT: PASS or VERDICT: FAIL with numbered objections. No verdict defaults to FAIL.\n3. On FAIL, inject the objections into the fixer's next context along with the memory log from all prior rounds, and re-run from step 1.\n4. On PASS, archive the memory log and stop.\nSafety: enforce a hard dollar budget ceiling (e.g. --max-budget-usd) before starting and abort if exceeded. Log each round to a Markdown file and inject that log at the start of every subsequent round so no context is lost between runs. Stop when VERDICT: PASS is received within budget."
+    },
+    {
+      "id": "ad-brief-qa-pipeline",
+      "name": "Ad Brief QA Pipeline Loop",
+      "category": "Marketing & growth",
+      "creator": "EddChalk (MHI Media)",
+      "url": "https://x.com/EddChalk/status/2024549250806255805",
+      "description": "Three sequential agents -- competitive researcher, brief writer, QA scorer -- where the QA agent scores each brief on 10 rules (min 7/10 to pass) and routes any brief below threshold back to the writer with specific fix notes, stopping only when all briefs score 7+.",
+      "prompt": "Run an ad brief production loop for the given product and brand. Three agents in sequence:\n1. Research agent: scrape 5-10 active competitor ads from the target ad platform, extract repeating hooks, map visual patterns, and run Golden Pain Extraction (pull verbatim emotional language from reviews and social comments, tag each pain to a human-drive motivation). Compile a research doc: competitor analysis, pains, dream outcomes, available assets.\n2. Brief writer: using the research doc, write N ad briefs. Each brief must include: 3 copy variations (headline + subline + CTA), visual direction, and for video briefs, a timed body script ([0-3s] hook, [3-8s] setup, [8-15s] product, [15-18s] proof, [18-20s] CTA). If any timed segment is violated, fix it before writing the brief.\n3. QA agent: score each brief on the 10 Golden Rules rubric (0-10 per rule). If total score < 7, do NOT pass the brief -- return it to the brief writer with the specific failing rules and required fixes. Rerun until every brief scores >= 7. Stop when all N briefs score 7+ and deliver them."
+    },
+    {
+      "id": "durable-step-checkpoint",
+      "name": "Durable Step-Checkpoint Agent Loop",
+      "category": "DevOps & infrastructure",
+      "creator": "__vandos__ / djfarrelly (Inngest)",
+      "url": "https://x.com/__vandos__/status/2068067164738011243",
+      "description": "A three-layer agentic loop -- cron trigger + LLM decision-maker, durable retryable skill units, and a crash-resilient orchestrator with per-step checkpointing -- that prevents duplicate side-effects on restart, stopping when all steps complete exactly once with confirmed idempotency.",
+      "prompt": "Build your agent loop with three explicit layers to prevent duplicate execution on crash or restart:\nLayer 1 (Trigger): a cron or event trigger fires the loop. The LLM reads the current checkpoint state and decides what action to take next -- it does not reprocess steps already logged as COMPLETED.\nLayer 2 (Skill): each discrete action (API call, file write, message send, DB write) is wrapped as a durable skill unit. Assign each invocation a stable idempotency key derived from the logical operation (hash of user-id + action-type + payload -- never a fresh UUID or timestamp). On retry, if the key already exists in the checkpoint store, return the stored result without re-executing.\nLayer 3 (Orchestrator): maintains a step-level execution log. On restart, read the log, skip completed steps, resume from the first incomplete one. Support hot-deploy of updated skill code without killing in-flight runs.\nStop condition: all steps in the task graph have a COMPLETED checkpoint entry and all idempotency keys have resolved results. Never let 'done' mean 'the LLM said so' -- require a confirmed checkpoint entry."
+    },
+    {
+      "id": "per-scene-vision-regen",
+      "name": "Per-Scene Vision-Critic Regen Loop",
+      "category": "Writing & content",
+      "creator": "LedellWu (Creatify AI)",
+      "url": "https://x.com/LedellWu/status/2056453589950951792",
+      "description": "A producer agent orchestrates multi-stage video/image ad creation, and after each scene is generated a vision-capable critic judges it on an explicit rubric (fidelity, hallucination, text, anatomy), routing failures back with a structured per-dimension verdict for surgical per-scene regen, stopping when every scene passes all rubric dimensions.",
+      "prompt": "Run an ad production loop with an in-loop vision critic (not a post-hoc filter):\n1. Producer agent: gather 8-10 reference ads from the target platform in the brand's category and add them to the typed asset graph alongside uploaded product images.\n2. For each scene in the storyboard, generate the visual using the specified model.\n3. After each generation, pass the output to a vision critic agent. The critic scores the scene on: (a) product/brand fidelity, (b) object hallucination, (c) text accuracy, (d) physical plausibility, (e) anatomy. For any dimension below threshold, emit a structured verdict: which dimension failed, by how much, on which frame or region.\n4. Route failures back to the generator with the structured verdict. The generator makes targeted fixes to only the failed dimensions -- full regeneration is a last resort.\n5. Repeat for the scene until the critic passes all dimensions.\n6. Proceed to the next scene. Stop when every scene in the storyboard has a full critic PASS. Persist a per-brand memory of which reference styles and parameters passed so future runs start from that baseline."
     }
   ]
 }
