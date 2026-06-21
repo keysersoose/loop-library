@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**148 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**151 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -13,9 +13,9 @@ _Prompts are original implementations of each loop's technique, written for this
 
 - [Foundational](#foundational) (3)
 - [Engineering](#engineering) (25)
-- [Testing & evaluation](#testing--evaluation) (18)
+- [Testing & evaluation](#testing--evaluation) (19)
 - [Prompt & model optimization](#prompt--model-optimization) (4)
-- [Research & data science](#research--data-science) (5)
+- [Research & data science](#research--data-science) (6)
 - [Security & red-teaming](#security--red-teaming) (2)
 - [Writing & content](#writing--content) (6)
 - [Design](#design) (6)
@@ -25,7 +25,7 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Support & sales](#support--sales) (1)
 - [Operations](#operations) (6)
 - [DevOps & infrastructure](#devops--infrastructure) (6)
-- [Autonomous coding agents](#autonomous-coding-agents) (5)
+- [Autonomous coding agents](#autonomous-coding-agents) (6)
 - [Tools & harnesses](#tools--harnesses) (9)
 - [Patterns & theory](#patterns--theory) (12)
 - [Loop frameworks (GitHub)](#loop-frameworks-github) (30)
@@ -430,6 +430,23 @@ Run the pipeline for this feature. (1) Elicit requirements -> PRD. (2) Break the
 Wire a PostToolUse hook that fires after every Write/Edit. It spawns a lightweight reviewer sub-agent: 'You are a semantic code reviewer. Here is the file just modified: [DIFF]. Check it against the conventions/anti-patterns in CLAUDE.md. List any violations, inconsistencies, or regressions; if none, respond CLEAN.' Inject the report as a system reminder into the next turn. The main agent must resolve every flagged issue before starting new work. The loop settles when the reviewer returns CLEAN with nothing outstanding.
 ```
 
+### Qualitative-Judge + Deterministic-Gate Loop
+*Improve output toward a qualitative goal ('until it's simple enough', 'until it's fast enough') judged by an LLM, while a separate deterministic gate enforces correctness; loop exits only when both pass at once.*  
+**Creator:** @MatthewBerman (dual-gate refinement via @inferencegod) · **Source:** https://x.com/MatthewBerman/status/2067458261285241227
+
+```text
+You are improving [code/output] toward the qualitative goal: "[GOAL - e.g. until it is simple enough / reads cleanly / is fast enough]".
+
+Each iteration:
+1. Generate or revise the output.
+2. Run the DETERMINISTIC GATE: [tests / benchmark / lint]. If it fails, fix the regression before anything else - never skip this.
+3. Ask an LLM judge: "Does this satisfy the goal '[GOAL]'? Rate 1-5 and explain." If below [THRESHOLD e.g. 4], revise and repeat.
+
+Stop when the deterministic gate passes AND the judge scores >= [THRESHOLD] in two consecutive rounds.
+
+Constraint: the judge may never lower the deterministic bar or waive the gate. Qualitative goals are the judge's domain; correctness is the gate's domain. Both must hold simultaneously to exit.
+```
+
 
 ## Prompt & model optimization
 
@@ -506,6 +523,25 @@ Continuously monitor the deployed model for data/prediction drift. When drift ex
 
 ```text
 Answer hard questions by looping search -> read -> reason. Each pass: run the best search (vector, full-text, or ripgrep), read the top results, reason about what is still missing, and issue a sharper next query. Keep going until you have found the optimal, well-supported answer -- not just the first plausible one.
+```
+
+### STORM Five-Persona Research Loop
+*Query five expert personas (practitioner, skeptic, economist, historian, academic) in sequence, synthesize, then re-query conflicting personas until the synthesis has no unresolved contradictions.*  
+**Creator:** @heynavtoor (Stanford STORM) · **Source:** https://x.com/heynavtoor/status/2067281413368611267
+
+```text
+Research topic: [TOPIC]
+
+Run five sequential perspective queries:
+1. PRACTITIONER - What do practitioners know about [TOPIC] that academics miss? What actually works in the field?
+2. SKEPTIC - Strongest counterargument against the mainstream view? What could go wrong?
+3. ECONOMIST - Who profits from the current narrative? What incentives shape the discourse?
+4. HISTORIAN - What historical pattern maps onto this? How has it played out before?
+5. ACADEMIC - What does peer-reviewed evidence actually say? What is overstated?
+
+Then synthesize into a structured summary and list any direct contradictions between perspectives.
+
+Stop when all five perspectives are answered AND the synthesis has no unresolved contradictions. If contradictions remain, re-query the two conflicting personas with the specific disagreement as context and re-synthesize. Repeat until internally consistent.
 ```
 
 
@@ -832,6 +868,25 @@ Give AutoGPT a high-level goal. It will decompose the goal into tasks, execute t
 
 ```text
 Run BabyAGI's loop on an objective: it pulls the top task, executes it, stores the result in a vector store, then creates and reprioritizes new tasks based on the objective and what it has learned — repeating until the objective is met or you cap iterations. (See the BabyAGI repo for setup.)
+```
+
+### Peer-Messaging Agent Team Loop
+*Run named specialist agents that share a live task list and message each other directly mid-task with no central orchestrator; iterates until every task is done and all agents confirm their scope.*  
+**Creator:** @whemohere · **Source:** https://x.com/whemohere/status/2067962372820529297
+
+```text
+Set up a peer agent team to accomplish: [GOAL].
+
+1. Enable agent-team mode in settings.json so agents can message each other directly (no middleman).
+2. Define the team:
+   - Agent A ([ROLE e.g. Planner]) owns [SCOPE]
+   - Agent B ([ROLE e.g. Implementer]) owns [SCOPE]
+   - Agent C ([ROLE e.g. Reviewer]) owns [SCOPE]
+3. Shared TASKS.md: every agent reads and writes it. Any agent can add tasks, request help from a peer, or mark items done. Agents message each other to hand off work.
+
+Rules: no agent may declare the overall goal complete until every other agent confirms its scope is resolved; a stuck agent messages the relevant peer rather than escalating.
+
+Stop when all items in TASKS.md are done AND every agent has posted a final confirmation.
 ```
 
 

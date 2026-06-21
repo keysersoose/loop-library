@@ -1337,6 +1337,33 @@
       "url": "https://www.reddit.com/r/ClaudeAI/comments/1oivjvm/",
       "description": "After every Write/Edit, a sub-agent semantically reviews the change against project conventions/anti-patterns and injects findings before the next turn; stops when it returns CLEAN with no outstanding violations.",
       "prompt": "Wire a PostToolUse hook that fires after every Write/Edit. It spawns a lightweight reviewer sub-agent: 'You are a semantic code reviewer. Here is the file just modified: [DIFF]. Check it against the conventions/anti-patterns in CLAUDE.md. List any violations, inconsistencies, or regressions; if none, respond CLEAN.' Inject the report as a system reminder into the next turn. The main agent must resolve every flagged issue before starting new work. The loop settles when the reviewer returns CLEAN with nothing outstanding."
+    },
+    {
+      "id": "qualitative-judge-gate",
+      "name": "Qualitative-Judge + Deterministic-Gate Loop",
+      "category": "Testing & evaluation",
+      "creator": "@MatthewBerman (dual-gate refinement via @inferencegod)",
+      "url": "https://x.com/MatthewBerman/status/2067458261285241227",
+      "description": "Improve output toward a qualitative goal ('until it's simple enough', 'until it's fast enough') judged by an LLM, while a separate deterministic gate enforces correctness; loop exits only when both pass at once.",
+      "prompt": "You are improving [code/output] toward the qualitative goal: \"[GOAL - e.g. until it is simple enough / reads cleanly / is fast enough]\".\n\nEach iteration:\n1. Generate or revise the output.\n2. Run the DETERMINISTIC GATE: [tests / benchmark / lint]. If it fails, fix the regression before anything else - never skip this.\n3. Ask an LLM judge: \"Does this satisfy the goal '[GOAL]'? Rate 1-5 and explain.\" If below [THRESHOLD e.g. 4], revise and repeat.\n\nStop when the deterministic gate passes AND the judge scores >= [THRESHOLD] in two consecutive rounds.\n\nConstraint: the judge may never lower the deterministic bar or waive the gate. Qualitative goals are the judge's domain; correctness is the gate's domain. Both must hold simultaneously to exit."
+    },
+    {
+      "id": "peer-agent-team",
+      "name": "Peer-Messaging Agent Team Loop",
+      "category": "Autonomous coding agents",
+      "creator": "@whemohere",
+      "url": "https://x.com/whemohere/status/2067962372820529297",
+      "description": "Run named specialist agents that share a live task list and message each other directly mid-task with no central orchestrator; iterates until every task is done and all agents confirm their scope.",
+      "prompt": "Set up a peer agent team to accomplish: [GOAL].\n\n1. Enable agent-team mode in settings.json so agents can message each other directly (no middleman).\n2. Define the team:\n   - Agent A ([ROLE e.g. Planner]) owns [SCOPE]\n   - Agent B ([ROLE e.g. Implementer]) owns [SCOPE]\n   - Agent C ([ROLE e.g. Reviewer]) owns [SCOPE]\n3. Shared TASKS.md: every agent reads and writes it. Any agent can add tasks, request help from a peer, or mark items done. Agents message each other to hand off work.\n\nRules: no agent may declare the overall goal complete until every other agent confirms its scope is resolved; a stuck agent messages the relevant peer rather than escalating.\n\nStop when all items in TASKS.md are done AND every agent has posted a final confirmation."
+    },
+    {
+      "id": "storm-five-personas",
+      "name": "STORM Five-Persona Research Loop",
+      "category": "Research & data science",
+      "creator": "@heynavtoor (Stanford STORM)",
+      "url": "https://x.com/heynavtoor/status/2067281413368611267",
+      "description": "Query five expert personas (practitioner, skeptic, economist, historian, academic) in sequence, synthesize, then re-query conflicting personas until the synthesis has no unresolved contradictions.",
+      "prompt": "Research topic: [TOPIC]\n\nRun five sequential perspective queries:\n1. PRACTITIONER - What do practitioners know about [TOPIC] that academics miss? What actually works in the field?\n2. SKEPTIC - Strongest counterargument against the mainstream view? What could go wrong?\n3. ECONOMIST - Who profits from the current narrative? What incentives shape the discourse?\n4. HISTORIAN - What historical pattern maps onto this? How has it played out before?\n5. ACADEMIC - What does peer-reviewed evidence actually say? What is overstated?\n\nThen synthesize into a structured summary and list any direct contradictions between perspectives.\n\nStop when all five perspectives are answered AND the synthesis has no unresolved contradictions. If contradictions remain, re-query the two conflicting personas with the specific disagreement as context and re-synthesize. Repeat until internally consistent."
     }
   ]
 }
