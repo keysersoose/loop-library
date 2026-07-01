@@ -2,7 +2,7 @@
 
 > A curated, credited collection of AI-agent loops — repeatable workflows for coding agents (Claude Code, Cursor, Codex, Gemini CLI) that iterate until a stopping condition is met. Each loop ships with a ready-to-paste prompt.
 
-**156 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
+**157 loops** · repo: https://github.com/keysersoose/loop-library · site: https://keysersoose.github.io/loop-library/
 
 _Prompts are original implementations of each loop's technique, written for this library so they are copy-paste ready and license-clean. Credit each creator if you share._
 
@@ -14,7 +14,7 @@ _Prompts are original implementations of each loop's technique, written for this
 - [Foundational](#foundational) (3)
 - [Engineering](#engineering) (25)
 - [Testing & evaluation](#testing--evaluation) (19)
-- [Prompt & model optimization](#prompt--model-optimization) (4)
+- [Prompt & model optimization](#prompt--model-optimization) (5)
 - [Research & data science](#research--data-science) (6)
 - [Security & red-teaming](#security--red-teaming) (2)
 - [Writing & content](#writing--content) (7)
@@ -480,6 +480,14 @@ Instead of hand-tuning prompts, declare your task as modules with input/output s
 
 ```text
 Evolve prompts genetically. Start with a population of candidate prompts. Each generation: score every candidate on a fixed eval set (fitness), keep the top performers, then create the next generation by mutating and recombining them (also evolve the mutation instructions themselves). Repeat for G generations and return the highest-fitness prompt.
+```
+
+### The Fable 5 Prompt Optimizer
+*Every substantive prompt is silently rewritten into a Fable-5-optimized prompt (intent, done-criteria, boundaries), shown, then executed.*  
+**Creator:** keysersoose · **Source:** https://github.com/keysersoose/loop-library/blob/main/loops/fable5-prompt-optimizer.md
+
+```text
+Before acting on any substantive user prompt (skip short follow-ups like "continue", slash commands, and prompts that are already precise): silently rewrite it into an optimized prompt that adds (1) intent — why + who it's for + what the output enables; (2) definition of done + how it will be verified (tests, live check, screenshot); (3) boundaries — smallest change, no unrequested refactors or scope; (4) autonomy — act when enough info exists, give a recommendation not a survey, never end the turn on a promise; (5) evidence — audit every progress claim against a tool result; (6) output style — lead with the outcome, complete sentences. Show a short "Optimized prompt:" block (2-5 lines), then execute it immediately with no approval step. Preserve the user's intent exactly — refine form, never add scope. Ask at most ONE clarifying question, and only if the answer materially changes execution. Full auto-trigger install for Claude Code: loops/fable5-prompt-optimizer.md.
 ```
 
 

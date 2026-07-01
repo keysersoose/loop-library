@@ -7,7 +7,7 @@
 [![Awesome](https://img.shields.io/badge/awesome-yes-c5203e.svg)](https://github.com/keysersoose/loop-library)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-![Loops](https://img.shields.io/badge/loops-156-8957e5.svg)
+![Loops](https://img.shields.io/badge/loops-157-8957e5.svg)
 ![Domains](https://img.shields.io/badge/domains-19-1f6feb.svg)
 
 *Refactor until the architecture is clean. Add tests until 100%. Hunt bugs until none remain.*
@@ -15,7 +15,7 @@
 
 ### 🔎 [**Browse & copy every loop interactively → keysersoose.github.io/loop-library**](https://keysersoose.github.io/loop-library/)
 *Every loop ships with a ready-to-paste **prompt**. Search, filter, copy one — or grab them all:*
-**⬇ [Download all 156 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
+**⬇ [Download all 157 prompts (`ALL-LOOPS.md`)](./ALL-LOOPS.md)** · **[`loops.json`](./loops.json)** (machine-readable) · *one click, no link-chasing.*
 
 </div>
 
@@ -146,6 +146,7 @@ Loops that improve the *prompt or model itself* against a metric.
 | **TextGrad** | "Textual gradient descent" — an LLM proposes edits that reduce a textual loss, backpropagated through your pipeline. | Stanford (Yuksekgonul et al.) | [arXiv](https://arxiv.org/pdf/2406.07496) |
 | **DSPy** | Program prompts as modules with signatures; a compiler optimizes them against a metric instead of you hand-tuning. | Stanford NLP (Khattab et al.) | [github](https://github.com/stanfordnlp/dspy) |
 | **PromptBreeder** | Evolutionary search that mutates and "breeds" prompts, selecting by fitness across generations. | Google DeepMind (Fernando et al.) | [overview](https://futureagi.com/blog/top-10-prompt-optimization-tools-2025/) |
+| **The Fable 5 Prompt Optimizer** | Rewrites every raw prompt into a Fable-5-optimized prompt (intent, done-criteria, boundaries), shows it, then executes it. *Full text in this repo.* | [keysersoose](https://github.com/keysersoose) | [loops/fable5-prompt-optimizer.md](./loops/fable5-prompt-optimizer.md) |
 
 ---
 
@@ -357,6 +358,7 @@ The academic patterns every loop is built on.
 Loops whose complete, copy-paste text lives here (authored by this repo, MIT-licensed):
 
 - **[Senior Loops](./loops/senior-loops.md)** — the five build loops with exact enter / continue / exit / safety conditions and per-step verification artifacts. Drop into your `CLAUDE.md` and your AI builds like a senior engineer.
+- **[The Fable 5 Prompt Optimizer](./loops/fable5-prompt-optimizer.md)** — a per-turn refine → execute loop that rewrites every raw prompt into a Fable-5-optimized prompt before running it. Ships with a ready-to-paste prompt AND a full Claude Code auto-trigger install (skill + `UserPromptSubmit` hook).
 
 > Want the full text of *your* loop hosted here? See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
